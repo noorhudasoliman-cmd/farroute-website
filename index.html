@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Farroute — the moment it won't ship, we reroute it</title>
+<meta name="description" content="Farroute is a browser extension that catches the moment a retailer won't ship to you, then routes you to a reliable forwarding address with a real, all-in cost." />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="airmail-edge"></div>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="#top" class="wordmark">FARROUTE<span class="dot">.</span></a>
+    <nav class="primary-nav">
+      <a href="#problem">The Problem</a>
+      <a href="#how">How It Works</a>
+      <a href="#wedge">Why Farroute</a>
+      <a href="#waitlist">Join The Waitlist</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow">Pre-launch — Chrome &amp; Safari extension</p>
+        <h1>Every store. Every<br />country. <em>No&nbsp;exceptions.</em></h1>
+        <p class="lede">
+          The moment a retailer says it can't deliver to your country, Farroute steps in
+          with a real forwarding address and the true, all-in cost to get it to your door —
+          not just the cheapest quote.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#waitlist">Join the waitlist</a>
+          <a class="btn btn-ghost" href="#how">See how it works</a>
+        </div>
+      </div>
+
+      <div class="stamp-panel" data-reveal>
+        <div class="manifest-row">
+          <span>Manifest №&nbsp;FR-0417</span>
+          <span>Origin: Retailer Checkout</span>
+        </div>
+        <div class="stamp-sequence">
+          <div class="stamp denied">
+            Cannot Ship To Your Country
+            <span class="stamp-code">ERR_NO_ROUTE</span>
+          </div>
+          <div class="stamp cleared">
+            Cleared Via Farroute
+            <span class="stamp-code">ROUTE_FOUND</span>
+          </div>
+        </div>
+        <div class="address">
+          <strong>Rerouted to:</strong> Forwarding address, matched by landed cost + reliability<br />
+          <strong>Est. arrival:</strong> Calculated at checkout, before you commit
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="tear" />
+
+  <section id="problem">
+    <div class="wrap problem-grid">
+      <div class="problem-copy" data-reveal>
+        <p class="eyebrow">The Moment</p>
+        <h2 style="font-family:var(--font-display); font-weight:800; text-transform:uppercase; font-size:clamp(1.6rem,2.6vw,2.1rem);">
+          You find it. You want it. Then this shows up.
+        </h2>
+        <ul>
+          <li>You've already decided to buy — this is the exact second the sale is lost.</li>
+          <li>Today the only fix is a frantic search through old blog posts comparing forwarders.</li>
+          <li>Most of those comparisons show a quoted price that isn't the price you actually pay.</li>
+        </ul>
+      </div>
+      <div class="browser-mock" data-reveal>
+        <div class="bar"><span></span><span></span><span></span></div>
+        <div class="content">
+          <div class="item-name">Wool Overcoat, Size M</div>
+          <div class="item-price">$248.00</div>
+          <div class="block-msg">
+            <span class="glyph">!</span>
+            <span>This item cannot be shipped to your selected country.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="tear" />
+
+  <section id="how">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">How It Works</p>
+        <h2>Four steps, in the order they actually happen</h2>
+      </div>
+      <div class="steps">
+        <div class="step" data-reveal>
+          <div class="num">01</div>
+          <h3>Install</h3>
+          <p>Add Farroute to Chrome or Safari. It stays quiet until you need it.</p>
+        </div>
+        <div class="step" data-reveal>
+          <div class="num">02</div>
+          <h3>Blocked</h3>
+          <p>A retailer tells you it won't ship to your country. Farroute recognizes the moment.</p>
+        </div>
+        <div class="step" data-reveal>
+          <div class="num">03</div>
+          <h3>Rerouted</h3>
+          <p>Farroute surfaces a forwarding address and the real, all-in cost to get it home.</p>
+        </div>
+        <div class="step" data-reveal>
+          <div class="num">04</div>
+          <h3>Delivered</h3>
+          <p>You complete checkout to the forwarding address. It arrives, tracked, at your door.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="tear" />
+
+  <section id="wedge">
+    <div class="wrap wedge-grid">
+      <div data-reveal>
+        <p class="eyebrow">Why Farroute</p>
+        <h2 style="font-family:var(--font-display); font-weight:800; text-transform:uppercase; font-size:clamp(1.6rem,2.6vw,2.1rem);">
+          Not the cheapest quote.<br />The real one.
+        </h2>
+        <p style="color:var(--ink-soft); margin-top:1rem; max-width:32ch;">
+          Forwarder comparisons online show you a headline shipping rate. Farroute shows
+          the number you'll actually see on your card — before you commit to an address.
+        </p>
+      </div>
+      <div class="compare-card" data-reveal>
+        <div class="compare-row">
+          <div class="label">Headline quote<small>What most comparison sites show</small></div>
+          <div class="value">$14.00</div>
+        </div>
+        <div class="compare-row">
+          <div class="label">Volumetric weight adjustment<small>The most common hidden line item</small></div>
+          <div class="value">+ $9.40</div>
+        </div>
+        <div class="compare-row">
+          <div class="label">Service &amp; handling fee<small>Consolidation, repack, or membership</small></div>
+          <div class="value">+ $4.00</div>
+        </div>
+        <div class="compare-row total">
+          <div class="label">What Farroute shows you<small>Before you pick an address</small></div>
+          <div class="value">$27.40</div>
+        </div>
+        <div class="compare-note">Illustrative example — actual figures depend on the item and forwarder.</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="tear" />
+
+  <section id="waitlist">
+    <div class="wrap">
+      <div class="waitlist-panel" data-reveal>
+        <div>
+          <h2>Be first through customs.</h2>
+          <p>Farroute is in development now. Join the waitlist and we'll tell you the moment Chrome and Safari extensions are live.</p>
+        </div>
+        <div>
+          <form class="waitlist-form" id="waitlist-form">
+            <div class="field-row">
+              <input type="email" id="waitlist-email" placeholder="you@email.com" required aria-label="Email address" />
+              <button class="btn btn-primary" type="submit">Notify me</button>
+            </div>
+            <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+            <p class="form-note">No spam. One email, when it ships.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-meta">
+      <span>FARROUTE — Route around "cannot ship to your country."</span>
+      <span>&copy; <span id="year"></span> Farroute. All routes illustrative until launch.</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge">Chrome — In Development</span>
+      <span class="badge">Safari — In Development</span>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
