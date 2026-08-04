@@ -159,19 +159,73 @@ nav.primary-nav a {
 
 nav.primary-nav a:hover { color: var(--ink); border-color: var(--stamp-red); }
 
+nav.primary-nav a.btn-nav,
+nav.primary-nav a.btn-nav:hover {
+  color: var(--paper-raised);
+  border: 1px solid var(--postal-blue);
+  padding: 0.55rem 1.1rem;
+}
+
 .nav-toggle { display: none; }
 
 /* ---------- hero --------------------------------------------------------- */
 .hero {
-  padding-block: 4.5rem 5rem;
+  padding-block: 4rem 4.5rem;
   border-bottom: 1px solid var(--line);
 }
 
-.hero .wrap {
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 3.5rem;
+.hero .wrap.hero-stack {
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  gap: 3rem;
+  text-align: center;
+}
+
+.hero-inner { max-width: 40rem; }
+
+.hero-inner .eyebrow { justify-content: center; }
+
+.btn-hero {
+  margin-top: 1.8rem;
+  font-size: 0.95rem;
+  padding: 1.15rem 2.4rem;
+}
+
+/* ---------- route diagram -------------------------------------------------- */
+.route-diagram {
+  width: 100%;
+  max-width: 46rem;
+}
+
+.route-diagram svg { width: 100%; height: auto; display: block; }
+
+.route-labels {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 0.6rem;
+}
+
+.route-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  font-family: var(--font-mono);
+}
+
+.route-label:nth-child(1) { text-align: left; }
+.route-label:nth-child(2) { text-align: center; }
+.route-label:nth-child(3) { text-align: right; }
+
+.route-label strong {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.route-label span {
+  font-size: 0.72rem;
+  color: var(--ink-soft);
 }
 
 .eyebrow {
@@ -436,6 +490,12 @@ section:last-of-type { border-bottom: none; }
 }
 .step:last-child { border-right: none; }
 
+.step-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-bottom: 1rem;
+}
+
 .step .num {
   font-family: var(--font-mono);
   font-size: 0.78rem;
@@ -587,9 +647,6 @@ footer .wrap {
 
 /* ---------- responsive -------------------------------------------------------- */
 @media (max-width: 860px) {
-  nav.primary-nav { display: none; }
-  .hero .wrap { grid-template-columns: 1fr; }
-  .problem-grid { grid-template-columns: 1fr; }
   .wedge-grid { grid-template-columns: 1fr; }
   .steps { grid-template-columns: 1fr 1fr; }
   .step { border-bottom: 1px solid var(--line); }
@@ -599,4 +656,6 @@ footer .wrap {
 @media (max-width: 540px) {
   .steps { grid-template-columns: 1fr; }
   .field-row { flex-direction: column; }
+  .route-labels { grid-template-columns: 1fr; gap: 0.6rem; text-align: center !important; }
+  .route-label:nth-child(1), .route-label:nth-child(3) { text-align: center; }
 }

@@ -15,10 +15,7 @@
   <div class="wrap">
     <a href="#top" class="wordmark">FARROUTE<span class="dot">.</span></a>
     <nav class="primary-nav">
-      <a href="#problem">The Problem</a>
-      <a href="#how">How It Works</a>
-      <a href="#wedge">Why Farroute</a>
-      <a href="#waitlist">Join The Waitlist</a>
+      <a href="#waitlist" class="btn btn-primary btn-nav">Join the waitlist</a>
     </nav>
   </div>
 </header>
@@ -26,68 +23,34 @@
 <main id="top">
 
   <section class="hero">
-    <div class="wrap">
-      <div>
+    <div class="wrap hero-stack">
+      <div class="hero-inner" data-reveal>
         <p class="eyebrow">Pre-launch — Chrome &amp; Safari extension</p>
         <h1>Every store. Every<br />country. <em>No&nbsp;exceptions.</em></h1>
-        <p class="lede">
-          The moment a retailer says it can't deliver to your country, Farroute steps in
-          with a real forwarding address and the true, all-in cost to get it to your door —
-          not just the cheapest quote.
-        </p>
-        <div class="cta-row">
-          <a class="btn btn-primary" href="#waitlist">Join the waitlist</a>
-          <a class="btn btn-ghost" href="#how">See how it works</a>
-        </div>
+        <a class="btn btn-primary btn-hero" href="#waitlist">Join the waitlist</a>
       </div>
 
-      <div class="stamp-panel" data-reveal>
-        <div class="manifest-row">
-          <span>Manifest №&nbsp;FR-0417</span>
-          <span>Origin: Retailer Checkout</span>
-        </div>
-        <div class="stamp-sequence">
-          <div class="stamp denied">
-            Cannot Ship To Your Country
-            <span class="stamp-code">ERR_NO_ROUTE</span>
-          </div>
-          <div class="stamp cleared">
-            Cleared Via Farroute
-            <span class="stamp-code">ROUTE_FOUND</span>
-          </div>
-        </div>
-        <div class="address">
-          <strong>Rerouted to:</strong> Forwarding address, matched by landed cost + reliability<br />
-          <strong>Est. arrival:</strong> Calculated at checkout, before you commit
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <hr class="tear" />
-
-  <section id="problem">
-    <div class="wrap problem-grid">
-      <div class="problem-copy" data-reveal>
-        <p class="eyebrow">The Moment</p>
-        <h2 style="font-family:var(--font-display); font-weight:800; text-transform:uppercase; font-size:clamp(1.6rem,2.6vw,2.1rem);">
-          You find it. You want it. Then this shows up.
-        </h2>
-        <ul>
-          <li>You've already decided to buy — this is the exact second the sale is lost.</li>
-          <li>Today the only fix is a frantic search through old blog posts comparing forwarders.</li>
-          <li>Most of those comparisons show a quoted price that isn't the price you actually pay.</li>
-        </ul>
-      </div>
-      <div class="browser-mock" data-reveal>
-        <div class="bar"><span></span><span></span><span></span></div>
-        <div class="content">
-          <div class="item-name">Wool Overcoat, Size M</div>
-          <div class="item-price">$248.00</div>
-          <div class="block-msg">
-            <span class="glyph">!</span>
-            <span>This item cannot be shipped to your selected country.</span>
-          </div>
+      <div class="route-diagram" data-reveal aria-hidden="false">
+        <svg viewBox="0 0 800 200" role="img" aria-label="A retailer blocks shipping to your country. Farroute finds a forwarding address. Your order is delivered to your door.">
+          <line x1="90" y1="100" x2="710" y2="100" stroke="var(--line)" stroke-width="2" stroke-dasharray="1 11" stroke-linecap="round" />
+          <g transform="translate(90,100)">
+            <circle r="32" fill="none" stroke="var(--stamp-red)" stroke-width="3" />
+            <line x1="-15" y1="-15" x2="15" y2="15" stroke="var(--stamp-red)" stroke-width="3" stroke-linecap="round" />
+            <line x1="-15" y1="15" x2="15" y2="-15" stroke="var(--stamp-red)" stroke-width="3" stroke-linecap="round" />
+          </g>
+          <g transform="translate(400,100)">
+            <circle r="38" fill="var(--postal-blue)" />
+            <text x="0" y="6" text-anchor="middle" font-family="var(--font-mono)" font-size="13" font-weight="700" fill="var(--paper-raised)">FR</text>
+          </g>
+          <g transform="translate(710,100)">
+            <circle r="32" fill="none" stroke="var(--postal-blue)" stroke-width="3" />
+            <path d="M-13,1 L-3,12 L15,-13" fill="none" stroke="var(--postal-blue)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+          </g>
+        </svg>
+        <div class="route-labels">
+          <div class="route-label"><strong>Retailer</strong><span>Won't ship to you</span></div>
+          <div class="route-label"><strong>Farroute</strong><span>Finds your address</span></div>
+          <div class="route-label"><strong>Delivered</strong><span>Arrives at your door</span></div>
         </div>
       </div>
     </div>
@@ -103,21 +66,25 @@
       </div>
       <div class="steps">
         <div class="step" data-reveal>
+          <svg class="step-icon" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="none" stroke="var(--postal-blue)" stroke-width="2.5"/><path d="M20 12v13M14 19l6 6 6-6" fill="none" stroke="var(--postal-blue)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <div class="num">01</div>
           <h3>Install</h3>
           <p>Add Farroute to Chrome or Safari. It stays quiet until you need it.</p>
         </div>
         <div class="step" data-reveal>
+          <svg class="step-icon" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="none" stroke="var(--stamp-red)" stroke-width="2.5"/><line x1="11" y1="11" x2="29" y2="29" stroke="var(--stamp-red)" stroke-width="2.5" stroke-linecap="round"/><line x1="11" y1="29" x2="29" y2="11" stroke="var(--stamp-red)" stroke-width="2.5" stroke-linecap="round"/></svg>
           <div class="num">02</div>
           <h3>Blocked</h3>
           <p>A retailer tells you it won't ship to your country. Farroute recognizes the moment.</p>
         </div>
         <div class="step" data-reveal>
+          <svg class="step-icon" viewBox="0 0 40 40" aria-hidden="true"><path d="M6 26c4-11 24-11 28 0" fill="none" stroke="var(--postal-blue)" stroke-width="2.5" stroke-linecap="round"/><path d="M28 20l6 6-6 6" fill="none" stroke="var(--postal-blue)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <div class="num">03</div>
           <h3>Rerouted</h3>
           <p>Farroute surfaces a forwarding address and the real, all-in cost to get it home.</p>
         </div>
         <div class="step" data-reveal>
+          <svg class="step-icon" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="none" stroke="var(--postal-blue)" stroke-width="2.5"/><path d="M12 20l6 6 11-13" fill="none" stroke="var(--postal-blue)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <div class="num">04</div>
           <h3>Delivered</h3>
           <p>You complete checkout to the forwarding address. It arrives, tracked, at your door.</p>
@@ -133,7 +100,7 @@
       <div data-reveal>
         <p class="eyebrow">Why Farroute</p>
         <h2 style="font-family:var(--font-display); font-weight:800; text-transform:uppercase; font-size:clamp(1.6rem,2.6vw,2.1rem);">
-          Not the cheapest quote.<br />The real one.
+          Real quotes.<br />Every fee, upfront.
         </h2>
         <p style="color:var(--ink-soft); margin-top:1rem; max-width:32ch;">
           Forwarder comparisons online show you a headline shipping rate. Farroute shows
