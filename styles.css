@@ -305,7 +305,12 @@ nav.primary-nav a.btn-nav:hover {
   color: var(--ink-soft);
 }
 
-.route-diagram--steps { max-width: none; }
+.route-diagram--steps {
+  width: 100%;
+  max-width: 100%;
+  margin-inline: auto;
+  display: block;
+}
 
 .route-labels--4 {
   grid-template-columns: repeat(4, 1fr);
