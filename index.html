@@ -14,9 +14,6 @@
 <header class="site-header">
   <div class="wrap">
     <a href="#top" class="wordmark">FARROUTE<span class="dot">.</span></a>
-    <nav class="primary-nav">
-      <a href="#waitlist" class="btn btn-primary btn-nav">Join the waitlist</a>
-    </nav>
   </div>
 </header>
 
@@ -27,31 +24,28 @@
       <div class="hero-inner" data-reveal>
         <p class="eyebrow">Pre-launch — Chrome &amp; Safari extension</p>
         <h1>Every store. Every<br />country. <em>No&nbsp;exceptions.</em></h1>
-        <a class="btn btn-primary btn-hero" href="#waitlist">Join the waitlist</a>
-      </div>
 
-      <div class="route-diagram" data-reveal aria-hidden="false">
-        <svg viewBox="0 0 800 200" role="img" aria-label="A retailer blocks shipping to your country. Farroute finds a forwarding address. Your order is delivered to your door.">
-          <line x1="90" y1="100" x2="710" y2="100" stroke="var(--line)" stroke-width="2" stroke-dasharray="1 11" stroke-linecap="round" />
-          <g transform="translate(90,100)">
-            <circle r="32" fill="none" stroke="var(--stamp-red)" stroke-width="3" />
-            <line x1="-15" y1="-15" x2="15" y2="15" stroke="var(--stamp-red)" stroke-width="3" stroke-linecap="round" />
-            <line x1="-15" y1="15" x2="15" y2="-15" stroke="var(--stamp-red)" stroke-width="3" stroke-linecap="round" />
-          </g>
-          <g transform="translate(400,100)">
-            <circle r="38" fill="var(--postal-blue)" />
-            <text x="0" y="6" text-anchor="middle" font-family="var(--font-mono)" font-size="13" font-weight="700" fill="var(--paper-raised)">FR</text>
-          </g>
-          <g transform="translate(710,100)">
-            <circle r="32" fill="none" stroke="var(--postal-blue)" stroke-width="3" />
-            <path d="M-13,1 L-3,12 L15,-13" fill="none" stroke="var(--postal-blue)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
-          </g>
-        </svg>
-        <div class="route-labels">
-          <div class="route-label"><strong>Retailer</strong><span>Won't ship to you</span></div>
-          <div class="route-label"><strong>Farroute</strong><span>Finds your address</span></div>
-          <div class="route-label"><strong>Delivered</strong><span>Arrives at your door</span></div>
+        <div class="countdown" role="timer" aria-label="Countdown to launch, August 19, 2026">
+          <div class="countdown-unit">
+            <span class="countdown-num" id="cd-days">00</span>
+            <span class="countdown-label">Days</span>
+          </div>
+          <div class="countdown-unit">
+            <span class="countdown-num" id="cd-hours">00</span>
+            <span class="countdown-label">Hrs</span>
+          </div>
+          <div class="countdown-unit">
+            <span class="countdown-num" id="cd-mins">00</span>
+            <span class="countdown-label">Min</span>
+          </div>
+          <div class="countdown-unit">
+            <span class="countdown-num" id="cd-secs">00</span>
+            <span class="countdown-label">Sec</span>
+          </div>
         </div>
+        <p class="countdown-target">Launching August 19, 2026</p>
+
+        <a class="btn btn-cta-dramatic" href="waitlist.html">Join the waitlist</a>
       </div>
     </div>
   </section>
@@ -64,30 +58,33 @@
         <p class="eyebrow">How It Works</p>
         <h2>Four steps, in the order they actually happen</h2>
       </div>
-      <div class="steps">
-        <div class="step" data-reveal>
-          <svg class="step-icon" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="none" stroke="var(--postal-blue)" stroke-width="2.5"/><path d="M20 12v13M14 19l6 6 6-6" fill="none" stroke="var(--postal-blue)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <div class="num">01</div>
-          <h3>Install</h3>
-          <p>Add Farroute to Chrome or Safari. It stays quiet until you need it.</p>
-        </div>
-        <div class="step" data-reveal>
-          <svg class="step-icon" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="none" stroke="var(--stamp-red)" stroke-width="2.5"/><line x1="11" y1="11" x2="29" y2="29" stroke="var(--stamp-red)" stroke-width="2.5" stroke-linecap="round"/><line x1="11" y1="29" x2="29" y2="11" stroke="var(--stamp-red)" stroke-width="2.5" stroke-linecap="round"/></svg>
-          <div class="num">02</div>
-          <h3>Blocked</h3>
-          <p>A retailer tells you it won't ship to your country. Farroute recognizes the moment.</p>
-        </div>
-        <div class="step" data-reveal>
-          <svg class="step-icon" viewBox="0 0 40 40" aria-hidden="true"><path d="M6 26c4-11 24-11 28 0" fill="none" stroke="var(--postal-blue)" stroke-width="2.5" stroke-linecap="round"/><path d="M28 20l6 6-6 6" fill="none" stroke="var(--postal-blue)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <div class="num">03</div>
-          <h3>Rerouted</h3>
-          <p>Farroute surfaces a forwarding address and the real, all-in cost to get it home.</p>
-        </div>
-        <div class="step" data-reveal>
-          <svg class="step-icon" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="none" stroke="var(--postal-blue)" stroke-width="2.5"/><path d="M12 20l6 6 11-13" fill="none" stroke="var(--postal-blue)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <div class="num">04</div>
-          <h3>Delivered</h3>
-          <p>You complete checkout to the forwarding address. It arrives, tracked, at your door.</p>
+      <div class="route-diagram route-diagram--steps" data-reveal>
+        <svg viewBox="0 0 900 160" role="img" aria-label="Four steps: install, blocked, rerouted, delivered">
+          <line x1="75" y1="60" x2="825" y2="60" stroke="var(--line)" stroke-width="2" stroke-dasharray="1 11" stroke-linecap="round" />
+          <g transform="translate(75,60)">
+            <circle r="30" fill="none" stroke="var(--postal-blue)" stroke-width="2.5" />
+            <path d="M0 -9v13M-6 -1l6 7 6-7" fill="none" stroke="var(--postal-blue)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+          </g>
+          <g transform="translate(325,60)">
+            <circle r="30" fill="none" stroke="var(--stamp-red)" stroke-width="2.5" />
+            <line x1="-10" y1="-10" x2="10" y2="10" stroke="var(--stamp-red)" stroke-width="2.5" stroke-linecap="round" />
+            <line x1="-10" y1="10" x2="10" y2="-10" stroke="var(--stamp-red)" stroke-width="2.5" stroke-linecap="round" />
+          </g>
+          <g transform="translate(575,60)">
+            <circle r="30" fill="var(--postal-blue)" />
+            <path d="M-9 3c3-8 15-8 18 0" fill="none" stroke="var(--paper-raised)" stroke-width="2.2" stroke-linecap="round" />
+            <path d="M8 -2l5 5-5 5" fill="none" stroke="var(--paper-raised)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+          </g>
+          <g transform="translate(825,60)">
+            <circle r="30" fill="none" stroke="var(--postal-blue)" stroke-width="2.5" />
+            <path d="M-11 1l6 7 11-13" fill="none" stroke="var(--postal-blue)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />
+          </g>
+        </svg>
+        <div class="route-labels route-labels--4">
+          <div class="route-label"><strong>01 Install</strong><span>Chrome or Safari</span></div>
+          <div class="route-label"><strong>02 Blocked</strong><span>Retailer won't ship</span></div>
+          <div class="route-label"><strong>03 Rerouted</strong><span>Address, real cost</span></div>
+          <div class="route-label"><strong>04 Delivered</strong><span>Tracked, to your door</span></div>
         </div>
       </div>
     </div>
@@ -129,28 +126,6 @@
     </div>
   </section>
 
-  <hr class="tear" />
-
-  <section id="waitlist">
-    <div class="wrap">
-      <div class="waitlist-panel" data-reveal>
-        <div>
-          <h2>Be first through customs.</h2>
-          <p>Farroute is in development now. Join the waitlist and we'll tell you the moment Chrome and Safari extensions are live.</p>
-        </div>
-        <div>
-          <form class="waitlist-form" id="waitlist-form">
-            <div class="field-row">
-              <input type="email" id="waitlist-email" placeholder="you@email.com" required aria-label="Email address" />
-              <button class="btn btn-primary" type="submit">Notify me</button>
-            </div>
-            <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
-            <p class="form-note">No spam. One email, when it ships.</p>
-          </form>
-        </div>
-      </div>
-    </div>
-  </section>
 
 </main>
 

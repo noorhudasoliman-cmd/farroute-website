@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Join the waitlist — Farroute</title>
+<meta name="description" content="Join the Farroute waitlist and be first to know when the Chrome and Safari extension launches." />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="airmail-edge"></div>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="index.html" class="wordmark">FARROUTE<span class="dot">.</span></a>
+  </div>
+</header>
+
+<main>
+  <section class="waitlist-page">
+    <div class="wrap wrap-narrow">
+      <p class="eyebrow" style="justify-content:center;">Pre-launch — Launching August 19, 2026</p>
+      <h1 class="waitlist-page-h1">Join the waitlist.</h1>
+      <p class="waitlist-page-lede">
+        Three quick questions, then you're on the list. We'll only email you when it's time to install.
+      </p>
+
+      <form class="waitlist-form-page" id="waitlist-form">
+        <div class="field-group">
+          <label for="waitlist-email">Email</label>
+          <input type="email" id="waitlist-email" name="email" placeholder="you@email.com" required />
+        </div>
+
+        <div class="field-group">
+          <label for="waitlist-country">Where are you shopping from?</label>
+          <select id="waitlist-country" name="country" required>
+            <option value="" disabled selected>Select one</option>
+            <option value="US">United States</option>
+            <option value="CA">Canada</option>
+            <option value="other">Somewhere else</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label for="waitlist-blocked" class="optional-label">What's something you wanted to buy that wouldn't ship to you? <span>(optional)</span></label>
+          <textarea id="waitlist-blocked" name="blocked_item" rows="3" placeholder="e.g. a jacket from a UK site, sneakers from Japan..."></textarea>
+        </div>
+
+        <button class="btn btn-cta-dramatic btn-full" type="submit">Join the waitlist</button>
+        <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+        <p class="form-note">No spam. One email, when it ships.</p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-meta">
+      <span>FARROUTE — Route around "cannot ship to your country."</span>
+      <span>&copy; <span id="year"></span> Farroute. All routes illustrative until launch.</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge">Chrome — In Development</span>
+      <span class="badge">Safari — In Development</span>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
