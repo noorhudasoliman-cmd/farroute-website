@@ -751,6 +751,8 @@ select { appearance: auto; }
 
 .btn-full { width: 100%; justify-content: center; margin-top: 0.4rem; }
 
+.hp-field { display: none; }
+
 /* ---------- footer ---------------------------------------------------------- */
 footer.site-footer { padding-block: 3rem; }
 

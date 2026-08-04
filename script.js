@@ -58,18 +58,39 @@ if ("IntersectionObserver" in window) {
   revealTargets.forEach((el) => el.classList.add("is-visible"));
 }
 
-// Waitlist form (on waitlist.html) — no backend wired up yet.
-// This only confirms locally; it does not send or store any answers anywhere.
-// Replace with a real submission endpoint before launch.
+// Waitlist form (on waitlist.html) — submits to Netlify Forms.
+// Netlify only detects and provisions a form the first time it's present in a
+// deployed build, so submissions won't appear in the dashboard until after
+// this exact form has been live on a deploy at least once.
 const form = document.getElementById("waitlist-form");
 const status = document.getElementById("form-status");
+
+function encodeFormData(data) {
+  return Object.keys(data)
+    .map((key) => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
+    .join("&");
+}
 
 if (form) {
   form.addEventListener("submit", (event) => {
     event.preventDefault();
-    const email = document.getElementById("waitlist-email").value.trim();
-    if (!email) return;
-    status.textContent = "Saved locally for now, this form isn't wired to a real list yet.";
-    form.reset();
+    const formData = new FormData(form);
+    const payload = {};
+    formData.forEach((value, key) => { payload[key] = value; });
+
+    status.textContent = "Submitting...";
+
+    fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: encodeFormData(payload),
+    })
+      .then(() => {
+        status.textContent = "You're on the list. We'll email you when it's time.";
+        form.reset();
+      })
+      .catch(() => {
+        status.textContent = "Something went wrong submitting that — try again in a moment.";
+      });
   });
 }
