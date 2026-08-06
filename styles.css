@@ -312,11 +312,59 @@ nav.primary-nav a.btn-nav:hover {
   display: block;
 }
 
-.route-labels--4 {
+.route-steps-row {
+  display: grid;
   grid-template-columns: repeat(4, 1fr);
+  position: relative;
+  column-gap: 0.5rem;
 }
 
-.route-labels--4 .route-label { text-align: center; }
+.route-steps-row::before {
+  content: "";
+  position: absolute;
+  top: 30px;
+  left: 12.5%;
+  right: 12.5%;
+  height: 2px;
+  background-image: repeating-linear-gradient(to right, var(--line) 0 2px, transparent 2px 13px);
+  z-index: 0;
+}
+
+.route-step {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.6rem;
+}
+
+.route-step-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.route-step-icon svg { width: 40px; height: 40px; }
+
+.route-step strong {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.route-step span {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  max-width: 11rem;
+}
 
 .eyebrow {
   font-family: var(--font-mono);
@@ -811,13 +859,22 @@ footer .wrap {
   .waitlist-panel { grid-template-columns: 1fr; padding: 1.8rem; }
 }
 
+@media (max-width: 640px) {
+  .route-steps-row {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 2rem;
+  }
+  .route-steps-row::before { display: none; }
+}
+
 @media (max-width: 540px) {
   .steps { grid-template-columns: 1fr; }
   .field-row { flex-direction: column; }
-  .route-labels { grid-template-columns: 1fr; gap: 0.6rem; text-align: center !important; }
-  .route-label:nth-child(1), .route-label:nth-child(3) { text-align: center; }
-  .route-labels--4 { grid-template-columns: 1fr 1fr; gap: 0.9rem 0.5rem; }
   .countdown-unit { min-width: 3.5rem; padding: 0.6rem 0.3rem 0.5rem; }
   .countdown-num { font-size: 1.4rem; }
   .btn-cta-dramatic { padding: 1.1rem 2rem; font-size: 0.95rem; width: 100%; justify-content: center; }
+}
+
+@media (max-width: 400px) {
+  .route-step span { font-size: 0.68rem; max-width: 8.5rem; }
 }
