@@ -580,6 +580,95 @@ section:last-of-type { border-bottom: none; }
   font-size: 1.05rem;
 }
 
+/* ---------- broken checkout section (dark contrast beat) ------------------ */
+.broken-section {
+  background: #0f1420;
+  border-bottom: none;
+}
+
+.broken-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3.5rem;
+  align-items: center;
+}
+
+.broken-h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  line-height: 1.02;
+  color: #f5f0e4;
+  margin-top: 0.6rem;
+}
+
+.broken-copy {
+  margin-top: 1.1rem;
+  color: #9aa3b8;
+  font-size: 1.02rem;
+  max-width: 36ch;
+}
+
+.broken-copy strong { color: var(--stamp-red-soft); font-weight: 600; }
+
+.broken-mock {
+  background: #171d2c;
+  border: 1px solid #2a3348;
+  border-radius: 8px;
+  padding: 1.6rem;
+}
+
+.broken-mock-bar {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.4rem;
+}
+
+.broken-mock-bar span {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: #2a3348;
+}
+
+.broken-mock-bar .dot-red { background: var(--stamp-red-soft); }
+
+.broken-mock-field {
+  height: 2.6rem;
+  background: #222b3f;
+  border-radius: 5px;
+  margin-bottom: 0.9rem;
+}
+
+.broken-mock-field.short { width: 40%; height: 1.2rem; }
+
+.broken-mock-error {
+  margin-top: 1.2rem;
+  border: 1px solid var(--stamp-red-soft);
+  background: rgba(184,64,44,0.12);
+  color: var(--stamp-red-soft);
+  padding: 1rem 1.1rem;
+  border-radius: 6px;
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  font-size: 0.92rem;
+}
+
+.broken-mock-error .glyph {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  width: 1.4rem; height: 1.4rem;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.82rem;
+}
+
+@media (max-width: 860px) {
+  .broken-grid { grid-template-columns: 1fr; gap: 2rem; }
+}
+
 /* ---------- problem mock -------------------------------------------------- */
 .problem-grid {
   display: grid;
