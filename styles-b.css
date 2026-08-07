@@ -1,0 +1,203 @@
+/* ==========================================================================
+   Direction B overrides — photography hero, new logo mark, stat tiles.
+   Loaded after styles.css; only touches what Direction B changes.
+   ========================================================================== */
+
+.wordmark-b {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.wordmark-b span {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.wordmark-b em { font-style: normal; color: var(--stamp-red); }
+
+/* ---------- photo hero -------------------------------------------------- */
+.hero-b {
+  position: relative;
+  min-height: 92vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+}
+
+.hero-b-photo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero-b-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-b-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(26,34,48,0.55) 0%, rgba(26,34,48,0.78) 100%);
+}
+
+.hero-b-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-block: 4rem;
+}
+
+.hero-b-h1 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: clamp(2.4rem, 4.6vw, 3.75rem);
+  line-height: 0.98;
+  letter-spacing: -0.01em;
+  color: #f5f0e4;
+  margin-top: 0.8rem;
+}
+
+.hero-b-h1 em { font-style: normal; color: var(--stamp-red-soft); }
+
+.hero-b .btn-cta-dramatic { margin-top: 2.2rem; }
+
+/* ---------- stat tiles --------------------------------------------------- */
+.stat-tiles { padding-block: 3rem; border-bottom: 1px solid var(--line); }
+
+.stat-tiles-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.stat-tile {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  padding: 1.6rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.stat-num {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 2rem;
+  color: var(--postal-blue);
+}
+
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+.stat-tiles-note {
+  margin-top: 1.2rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+/* ---------- the moment: photo + copy ------------------------------------- */
+.moment-section { padding-block: 5rem; }
+
+.moment-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3.5rem;
+  align-items: center;
+}
+
+.moment-photo {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+
+.moment-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.moment-copy h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  line-height: 1.02;
+}
+
+.moment-copy p {
+  margin-top: 1.2rem;
+  color: var(--ink-soft);
+  font-size: 1.05rem;
+  max-width: 34ch;
+}
+
+.moment-copy em {
+  font-style: normal;
+  color: var(--stamp-red);
+  font-weight: 600;
+}
+
+/* ---------- full-bleed photo divider -------------------------------------- */
+.photo-divider {
+  position: relative;
+  height: 22rem;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-divider img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-divider-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(26,34,48,0.5);
+}
+
+.photo-divider-text {
+  position: relative;
+  z-index: 1;
+  color: #f5f0e4;
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: clamp(1.3rem, 2.4vw, 1.9rem);
+  text-align: center;
+  max-width: 40rem;
+  padding-inline: 2rem;
+}
+
+@media (max-width: 700px) {
+  .stat-tiles-row { grid-template-columns: 1fr; }
+  .hero-b { min-height: 80vh; }
+  .moment-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .photo-divider { height: 16rem; }
+}
