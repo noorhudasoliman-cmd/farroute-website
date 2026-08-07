@@ -24,7 +24,7 @@
 /* ---------- photo hero -------------------------------------------------- */
 .hero-b {
   position: relative;
-  min-height: 92vh;
+  min-height: 70vh;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -197,7 +197,7 @@
 
 @media (max-width: 700px) {
   .stat-tiles-row { grid-template-columns: 1fr; }
-  .hero-b { min-height: 80vh; }
+  .hero-b { min-height: 60vh; }
   .moment-grid { grid-template-columns: 1fr; gap: 2rem; }
   .photo-divider { height: 16rem; }
 }

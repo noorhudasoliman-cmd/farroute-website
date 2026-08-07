@@ -2,7 +2,7 @@
 document.getElementById("year").textContent = new Date().getFullYear();
 
 // Live countdown to launch
-const launchTarget = new Date("2026-09-30T00:00:00");
+const launchTarget = new Date("2026-10-30T00:00:00");
 const cdDays = document.getElementById("cd-days");
 const cdHours = document.getElementById("cd-hours");
 const cdMins = document.getElementById("cd-mins");
