@@ -137,8 +137,8 @@ h1, h2, h3 { text-wrap: balance; margin: 0; }
   text-transform: uppercase;
   text-decoration: none;
   display: flex;
-  align-items: baseline;
-  gap: 0.35rem;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .wordmark .dot { color: var(--stamp-red); }
