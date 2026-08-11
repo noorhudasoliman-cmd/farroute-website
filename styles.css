@@ -954,6 +954,14 @@ footer .wrap {
   gap: 0.4rem;
 }
 
+.footer-contact-link {
+  color: var(--postal-blue);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.footer-contact-link:hover { color: var(--stamp-red); }
+
 .badge-row { display: flex; gap: 0.6rem; }
 
 .badge {
