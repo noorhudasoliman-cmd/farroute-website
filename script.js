@@ -39,6 +39,28 @@ function tickCountdown() {
 tickCountdown();
 countdownInterval = setInterval(tickCountdown, 1000);
 
+// Hero photo carousel — rotates background photo + location tag together.
+// Respects prefers-reduced-motion by leaving the first slide static.
+const heroSlides = document.querySelectorAll(".hero-photo-slide");
+const heroLocationText = document.getElementById("hero-location-text");
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+if (heroSlides.length > 1 && !prefersReducedMotion) {
+  let heroIndex = 0;
+  setInterval(() => {
+    heroSlides[heroIndex].classList.remove("is-active");
+    heroIndex = (heroIndex + 1) % heroSlides.length;
+    heroSlides[heroIndex].classList.add("is-active");
+    if (heroLocationText) {
+      heroLocationText.style.opacity = "0";
+      setTimeout(() => {
+        heroLocationText.textContent = heroSlides[heroIndex].dataset.location;
+        heroLocationText.style.opacity = "1";
+      }, 400);
+    }
+  }, 5000);
+}
+
 // Scroll reveal (skipped entirely for reduced-motion users via CSS fallback)
 const revealTargets = document.querySelectorAll("[data-reveal]");
 if ("IntersectionObserver" in window) {
