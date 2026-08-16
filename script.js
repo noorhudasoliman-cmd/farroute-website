@@ -39,7 +39,7 @@ function tickCountdown() {
 tickCountdown();
 countdownInterval = setInterval(tickCountdown, 1000);
 
-// Hero photo carousel — rotates background photo + location tag together.
+// Hero photo carousel: rotates background photo + location tag together.
 // Respects prefers-reduced-motion by leaving the first slide static.
 const heroSlides = document.querySelectorAll(".hero-photo-slide");
 const heroLocationText = document.getElementById("hero-location-text");
@@ -80,7 +80,7 @@ if ("IntersectionObserver" in window) {
   revealTargets.forEach((el) => el.classList.add("is-visible"));
 }
 
-// Waitlist form (on waitlist.html) — submits to Netlify Forms.
+// Waitlist form (on waitlist.html): submits to Netlify Forms.
 // Netlify only detects and provisions a form the first time it's present in a
 // deployed build, so submissions won't appear in the dashboard until after
 // this exact form has been live on a deploy at least once.
@@ -113,7 +113,7 @@ if (form) {
         form.reset();
       })
       .catch(() => {
-        status.textContent = "Something went wrong submitting that — try again in a moment.";
+        status.textContent = "Something went wrong submitting that. Try again in a moment.";
       });
   });
 }
