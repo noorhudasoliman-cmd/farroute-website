@@ -294,9 +294,9 @@ nav.primary-nav a.btn-nav:hover {
 }
 
 @media (prefers-color-scheme: dark) {
-  .countdown-unit { background: var(--paper-raised); border: 1px solid var(--line); }
+  .countdown-unit { background: var(--paper-raised); color: var(--ink); border: 1px solid var(--line); }
 }
-:root[data-theme="dark"] .countdown-unit { background: var(--paper-raised); border: 1px solid var(--line); }
+:root[data-theme="dark"] .countdown-unit { background: var(--paper-raised); color: var(--ink); border: 1px solid var(--line); }
 
 .countdown-num {
   font-family: var(--font-mono);
