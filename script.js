@@ -85,7 +85,8 @@ if (form) {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: encodeFormData(payload),
     })
-      .then(() => {
+      .then((response) => {
+        if (!response.ok) throw new Error("Form submission failed: " + response.status);
         status.textContent = "You're on the list. We'll email you when it's time.";
         form.reset();
       })
