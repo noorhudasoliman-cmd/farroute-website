@@ -122,7 +122,8 @@
           if (ok) lam = ((lam + 180) % 360 + 360) % 360 - 180;
           if (!ok) { od[o4] = BG[0]; od[o4 + 1] = BG[1]; od[o4 + 2] = BG[2]; od[o4 + 3] = 255; continue; }
           var cw, cd, v0, v1, fv, u;
-          if (inH && lam >= S2.lon0 && lam <= S2.lon1) { cw = S2.w; cd = S2.d; v0 = hv0; v1 = hv1; fv = hfv; u = (lam - S2.lon0) / (S2.lon1 - S2.lon0) * (cw - 1); }
+          var lamH = (inH && S2.lon1 > 180 && lam < S2.lon0) ? lam + 360 : lam;
+          if (inH && lamH >= S2.lon0 && lamH <= S2.lon1) { cw = S2.w; cd = S2.d; v0 = hv0; v1 = hv1; fv = hfv; u = (lamH - S2.lon0) / (S2.lon1 - S2.lon0) * (cw - 1); }
           else { cw = sw; cd = sd; v0 = gv0; v1 = gv1; fv = gfv; u = (lam + 180) / 360 * (sw - 1); }
           var u0 = Math.floor(u), fu = u - u0, u1 = Math.min(u0 + 1, cw - 1);
           var i00 = (v0 * cw + u0) * 4, i10 = (v0 * cw + u1) * 4, i01 = (v1 * cw + u0) * 4, i11 = (v1 * cw + u1) * 4;
@@ -153,20 +154,56 @@
       var lo = [], la = [];
       for (var i = 0; i <= 24; i++) { var f = i / 24; [[f * w, 0], [f * w, h], [0, f * h], [w, f * h], [f * w, h / 2], [w / 2, f * h]].forEach(function (pt) { var q = p2.invert(pt); if (q && isFinite(q[0]) && isFinite(q[1]) && Math.abs(q[1]) <= 90) { lo.push(q[0]); la.push(q[1]); } }); }
       if (lo.length < 4) return Promise.resolve(null);
-      var lon0 = Math.max(-180, Math.floor(Math.min.apply(null, lo) - 1)), lon1 = Math.min(180, Math.ceil(Math.max.apply(null, lo) + 1));
+      // A view over the Pacific straddles the antimeridian, where longitude jumps
+      // from 180 to -180. Measured in the plain frame that reads as a span of
+      // nearly the whole globe, so the old code gave up and left the blurry base
+      // image behind. New Zealand and Fiji sit exactly there.
+      //
+      // So measure both frames and keep the narrower one. The shifted frame runs
+      // past 180, which is what lets a Pacific view be described at all.
+      var rawMin = Math.min.apply(null, lo), rawMax = Math.max.apply(null, lo);
+      var shifted = lo.map(function (v) { return v < 0 ? v + 360 : v; });
+      var shMin = Math.min.apply(null, shifted), shMax = Math.max.apply(null, shifted);
+      var wrap = (shMax - shMin) < (rawMax - rawMin);
+      var lon0 = wrap ? Math.floor(shMin - 1) : Math.max(-180, Math.floor(rawMin - 1));
+      var lon1 = wrap ? Math.ceil(shMax + 1) : Math.min(180, Math.ceil(rawMax + 1));
       var lat0 = Math.max(-90, Math.floor(Math.min.apply(null, la) - 1)), lat1 = Math.min(90, Math.ceil(Math.max.apply(null, la) + 1));
-      if (lon1 - lon0 > 200 || Math.min.apply(null, lo) < -180 || Math.max.apply(null, lo) > 180) return Promise.resolve(null);
+      if (lon1 - lon0 > 200) return Promise.resolve(null);
       var PW = Math.round(w * Math.min(window.devicePixelRatio || 1, 3)), PH = Math.round(PW * (lat1 - lat0) / (lon1 - lon0));
       var mx = Math.max(PW, PH); if (mx > 2400) { PW = Math.round(PW * 2400 / mx); PH = Math.round(PH * 2400 / mx); }
       var key = [lon0, lat0, lon1, lat1, PW].join(',');
       this._hiCache = this._hiCache || {};
       if (this._hiCache[key]) return this._hiCache[key];
-      var url = 'https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&LAYERS=BlueMarble_ShadedRelief_Bathymetry&SRS=EPSG:4326&FORMAT=image/jpeg&BBOX=' + [lon0, lat0, lon1, lat1].join(',') + '&WIDTH=' + PW + '&HEIGHT=' + PH;
-      var pr = new Promise(function (res) {
-        var im = new Image(); im.crossOrigin = 'anonymous'; im.decoding = 'async';
-        im.onload = function () { try { var cv = document.createElement('canvas'); cv.width = im.naturalWidth; cv.height = im.naturalHeight; var x = cv.getContext('2d'); x.drawImage(im, 0, 0);
-          res({ w: cv.width, h: cv.height, d: x.getImageData(0, 0, cv.width, cv.height).data, lon0: lon0, lon1: lon1, lat0: lat0, lat1: lat1 }); } catch (e) { res(null); } };
-        im.onerror = function () { res(null); }; im.src = url;
+
+      // The imagery service cannot serve a box that crosses 180, so a wrapped
+      // frame is fetched as two boxes and stitched side by side into one tile.
+      var tile = function (a, b, wpx) {
+        return new Promise(function (res) {
+          var im = new Image(); im.crossOrigin = 'anonymous'; im.decoding = 'async';
+          im.onload = function () { res(im); }; im.onerror = function () { res(null); };
+          im.src = 'https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&LAYERS=BlueMarble_ShadedRelief_Bathymetry&SRS=EPSG:4326&FORMAT=image/jpeg&BBOX=' + [a, lat0, b, lat1].join(',') + '&WIDTH=' + wpx + '&HEIGHT=' + PH;
+        });
+      };
+      var parts;
+      if (lon1 > 180) {
+        var leftDeg = 180 - lon0, rightDeg = lon1 - 180, span = lon1 - lon0;
+        var lw = Math.max(1, Math.round(PW * leftDeg / span)), rw = Math.max(1, PW - lw);
+        parts = Promise.all([tile(lon0, 180, lw), tile(-180, lon1 - 360, rw)]).then(function (ims) {
+          if (!ims[0] || !ims[1]) return null;
+          return { ims: ims, widths: [lw, rw] };
+        });
+      } else {
+        parts = tile(lon0, lon1, PW).then(function (im) { return im ? { ims: [im], widths: [PW] } : null; });
+      }
+      var pr = parts.then(function (got) {
+        if (!got) return null;
+        try {
+          var totalW = got.widths.reduce(function (a, b) { return a + b; }, 0);
+          var cv = document.createElement('canvas'); cv.width = totalW; cv.height = got.ims[0].naturalHeight;
+          var x = cv.getContext('2d'), at = 0;
+          for (var i = 0; i < got.ims.length; i++) { x.drawImage(got.ims[i], at, 0, got.widths[i], cv.height); at += got.widths[i]; }
+          return { w: cv.width, h: cv.height, d: x.getImageData(0, 0, cv.width, cv.height).data, lon0: lon0, lon1: lon1, lat0: lat0, lat1: lat1 };
+        } catch (e) { return null; }
       });
       var keys = Object.keys(this._hiCache); if (keys.length > 6) delete this._hiCache[keys[0]];
       pr = Promise.all([pr, land50()]).then(function (v) { if (v[0]) v[0].land = v[1]; return v[0]; });
