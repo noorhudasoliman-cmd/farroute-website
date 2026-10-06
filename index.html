@@ -56,7 +56,7 @@ input,select,button,textarea{font:inherit;color:inherit}
 
   <div style="background:#2E5AAC;color:#F4EBDC">
     <div style="max-width:1280px;margin:0 auto;padding:9px 20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 14px;font-size:14px;text-align:center">
-      <span style="font-weight:700">Farroute launches November 15, 2026.</span>
+      <span style="font-weight:700">Farroute launches December 15, 2026.</span>
       <span>Check quotes for any item and create an account to be ready on launch day.</span>
     </div>
   </div>
@@ -72,6 +72,7 @@ input,select,button,textarea{font:inherit;color:inherit}
           <button onClick="{{ t.go }}" style="background:none;border:0;border-bottom:3px solid {{ t.bar }};padding:3px 14px 0;font-size:15px;font-weight:600;color:{{ t.color }};cursor:pointer;white-space:nowrap" style-hover="color:var(--ink)">{{ t.label }}</button>
         </sc-for>
         <div style="display:flex;align-items:center;gap:8px;padding-left:12px;flex-shrink:0">
+          <button onClick="{{ goDownload }}" style="height:42px;background:#2B211B;color:#F4EBDC;border:1.5px solid #2B211B;border-radius:8px;padding:0 16px;cursor:pointer;font-weight:700;font-size:15px;white-space:nowrap" style-hover="background:#2E5AAC;border-color:#2E5AAC">{{ downloadLabel }}</button>
           <button onClick="{{ goAccount }}" style="height:42px;background:transparent;color:var(--ink);border:1.5px solid var(--ink);border-radius:8px;padding:0 14px;cursor:pointer;font-weight:600;font-size:15px;white-space:nowrap" style-hover="border-color:#2E5AAC;color:#2E5AAC">Create account</button>
           <button onClick="{{ goApply }}" style="height:42px;background:transparent;color:var(--ink);border:1.5px solid var(--ink);border-radius:8px;padding:0 14px;cursor:pointer;font-weight:600;font-size:15px;white-space:nowrap" style-hover="border-color:#2E5AAC;color:#2E5AAC">Become a courier</button>
         </div>
@@ -111,7 +112,7 @@ input,select,button,textarea{font:inherit;color:inherit}
                 <label style="display:grid;grid-template-columns:18px 1fr;gap:14px;align-items:center">
                   <svg viewBox="0 0 16 20" style="width:16px;height:20px;justify-self:center;position:relative"><path d="M8 19 C8 19 1 11.5 1 7.5 A7 7 0 0 1 15 7.5 C15 11.5 8 19 8 19 Z" style="fill:#2E5AAC"></path><circle cx="8" cy="7.5" r="2.6" style="fill:var(--paper)"></circle></svg>
                   <select value="{{ dest }}" onChange="{{ onDest }}" aria-label="Deliver to" style="height:62px;border:0;background:transparent;font-size:17px;outline:none;min-width:0;cursor:pointer">
-                    <sc-for list="{{ destinations }}" as="d" hint-placeholder-count="6"><option value="{{ d }}">Deliver to {{ d }}</option></sc-for>
+                    <option value="">Deliver to</option><sc-for list="{{ destinations }}" as="d" hint-placeholder-count="6"><option value="{{ d }}">{{ d }}</option></sc-for>
                   </select>
                 </label>
               </div>
@@ -151,7 +152,7 @@ input,select,button,textarea{font:inherit;color:inherit}
               <button type="submit" style="height:60px;border:0;border-radius:12px;background:#2B211B;color:#F4EBDC;font-weight:700;font-stretch:87.5%;font-size:22px;cursor:pointer" style-hover="background:#2E5AAC">Create a route</button>
               <div style="display:flex;gap:10px;align-items:flex-start;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 14px">
                 <span style="width:8px;height:8px;border-radius:50%;background:#2E5AAC;margin-top:6px;flex-shrink:0"></span>
-                <span style="font-size:13px;line-height:1.45">Orders open on November 15, 2026.</span>
+                <span style="font-size:13px;line-height:1.45">Orders open on December 15, 2026.</span>
               </div>
             </sc-if>
           </form>
@@ -272,7 +273,7 @@ input,select,button,textarea{font:inherit;color:inherit}
             <label style="display:flex;flex-direction:column;gap:6px;max-width:320px;margin-top:6px">
               <span style="font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">Your country</span>
               <select value="{{ dest }}" onChange="{{ onDest }}" style="height:54px;border:1.5px solid var(--line);border-radius:10px;padding:0 12px;background:var(--paper);font-size:16px">
-                <sc-for list="{{ destinations }}" as="d" hint-placeholder-count="6"><option value="{{ d }}">{{ d }}</option></sc-for>
+                <option value="">Deliver to</option><sc-for list="{{ destinations }}" as="d" hint-placeholder-count="6"><option value="{{ d }}">{{ d }}</option></sc-for>
               </select>
             </label>
             <span style="font-size:14px;line-height:1.5;color:var(--muted)">Arrival times count from the day a courier accepts the job. New countries open as couriers join.</span>
@@ -375,7 +376,7 @@ input,select,button,textarea{font:inherit;color:inherit}
             <label style="display:flex;flex-direction:column;gap:6px;max-width:320px">
               <span style="font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">Destination country</span>
               <select value="{{ dest }}" onChange="{{ onDest }}" style="height:54px;border:1.5px solid var(--line);border-radius:10px;padding:0 12px;background:var(--paper);font-size:16px">
-                <sc-for list="{{ destinations }}" as="d" hint-placeholder-count="6"><option value="{{ d }}">{{ d }}</option></sc-for>
+                <option value="">Deliver to</option><sc-for list="{{ destinations }}" as="d" hint-placeholder-count="6"><option value="{{ d }}">{{ d }}</option></sc-for>
               </select>
             </label>
             <div style="border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--paper)">
@@ -444,9 +445,9 @@ input,select,button,textarea{font:inherit;color:inherit}
             <input placeholder="Security code" inputmode="numeric" style="height:52px;min-width:0;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
           </div>
           <input placeholder="Delivery address" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
-          <button type="button" disabled="" style="height:56px;border:0;border-radius:10px;background:var(--line);color:var(--muted);font-weight:700;font-size:17px;cursor:not-allowed">Orders open November 15, 2026</button>
+          <button type="button" disabled="" style="height:56px;border:0;border-radius:10px;background:var(--line);color:var(--muted);font-weight:700;font-size:17px;cursor:not-allowed">Orders open December 15, 2026</button>
           <button onClick="{{ goAccount }}" style="height:52px;border:1.5px solid var(--ink);border-radius:10px;background:transparent;color:var(--ink);font-weight:600;font-size:16px;cursor:pointer" style-hover="border-color:#2E5AAC;color:#2E5AAC">Create an account to order on launch day</button>
-          <span style="font-size:13px;color:var(--muted);line-height:1.45">This price is a quote. Prices can change before launch. From November 15, Farroute holds each payment until a courier confirms the purchase, and refunds the full amount if no courier accepts the job within 72 hours.</span>
+          <span style="font-size:13px;color:var(--muted);line-height:1.45">This price is a quote. Prices can change before launch. From December 15, Farroute holds each payment until a courier confirms the purchase, and refunds the full amount if no courier accepts the job within 72 hours.</span>
         </div>
       </section>
     </sc-if>
@@ -752,23 +753,23 @@ input,select,button,textarea{font:inherit;color:inherit}
     <sc-if value="{{ isAccount }}" hint-placeholder-val="{{ false }}">
       <section data-screen-label="Create account" style="max-width:520px;margin:0 auto;padding:48px 20px 64px;display:flex;flex-direction:column;gap:18px">
         <div style="display:flex;flex-direction:column;gap:8px">
-          <span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--routeInk)">Opens November 15, 2026</span>
+          <span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--routeInk)">Opens December 15, 2026</span>
           <h1 style="margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(34px,6vw,48px);line-height:1;letter-spacing:-0.02em">Create your account</h1>
-          <p style="margin:0;font-size:16px;line-height:1.5;color:var(--muted)">An account saves your quotes and your delivery address. Farroute emails you on November 15 when orders open.</p>
+          <p style="margin:0;font-size:16px;line-height:1.5;color:var(--muted)">An account saves your quotes and your delivery address. Farroute emails you on December 15 when orders open.</p>
         </div>
         <div style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:14px">
           <sc-if value="{{ accountOpen }}" hint-placeholder-val="{{ true }}">
             <input placeholder="Full name" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
             <input placeholder="Email" type="email" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
             <select value="{{ dest }}" onChange="{{ onDest }}" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 12px;background:var(--paper);font-size:16px">
-              <sc-for list="{{ destinations }}" as="d" hint-placeholder-count="6"><option value="{{ d }}">Deliver to {{ d }}</option></sc-for>
+              <option value="">Deliver to</option><sc-for list="{{ destinations }}" as="d" hint-placeholder-count="6"><option value="{{ d }}">{{ d }}</option></sc-for>
             </select>
             <input placeholder="Create a password" type="password" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
             <button onClick="{{ submitAccount }}" style="height:56px;border:0;border-radius:10px;background:#2B211B;color:#F4EBDC;font-weight:700;font-size:17px;cursor:pointer" style-hover="background:#2E5AAC">Create account</button>
           </sc-if>
           <sc-if value="{{ accountDone }}" hint-placeholder-val="{{ false }}">
             <span style="font-weight:700;font-size:20px">Account created</span>
-            <span style="font-size:15px;line-height:1.5;color:var(--muted)">Farroute emails you on November 15, 2026, when orders open. Check quotes for any item.</span>
+            <span style="font-size:15px;line-height:1.5;color:var(--muted)">Farroute emails you on December 15, 2026, when orders open. Check quotes for any item.</span>
             <button onClick="{{ goLanding }}" style="height:52px;border:1.5px solid var(--ink);border-radius:10px;background:transparent;color:var(--ink);font-weight:600;cursor:pointer">Get a quote</button>
           </sc-if>
         </div>
@@ -897,7 +898,7 @@ input,select,button,textarea{font:inherit;color:inherit}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Light&quot;,&quot;Dark&quot;],&quot;default&quot;:&quot;Light&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;startScreen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;landing&quot;,&quot;quote&quot;,&quot;tracking&quot;,&quot;apply&quot;,&quot;earnings&quot;,&quot;jobs&quot;,&quot;job&quot;,&quot;active&quot;],&quot;default&quot;:&quot;landing&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
 class Component extends DCLogic {
-  state = { screen: this.props.startScreen || 'landing', link: '', dest: 'Nigeria', heroTab: 'order', size: 0, faq: 0, sizeManual: null, trackStage: 8, adminRange: 'Month', appDecisions: {}, assigned: {}, assignPick: {}, jobIdx: 0, step: 1, reason: '', appealSent: false, completed: false, applied: false };
+  state = { screen: this.props.startScreen || 'landing', link: '', dest: '', heroTab: 'order', size: 0, faq: 0, sizeManual: null, trackStage: 8, adminRange: 'Month', appDecisions: {}, assigned: {}, assignPick: {}, jobIdx: 0, step: 1, reason: '', appealSent: false, completed: false, applied: false };
   componentDidMount() { this.theme(); }
   componentDidUpdate() { this.theme(); }
   theme() { document.body.dataset.theme = this.props.theme === 'Dark' ? 'dark' : 'light'; }
@@ -905,7 +906,11 @@ class Component extends DCLogic {
 
   renderVals() {
     const s = this.state;
-    const dests = ['Nigeria', 'Ghana', 'Kenya', 'South Africa', 'Egypt', 'Pakistan', 'Bangladesh', 'Philippines', 'Indonesia', 'Vietnam', 'Colombia', 'Peru'];
+    // Every country on the ISO 3166-1 list. Positions come from the same map
+    // dataset the route map already loads, so a pin lands where the country is.
+    // Seven small territories are absent from every map dataset and get no pin.
+    const dests = ["Afghanistan","Aland Islands","Albania","Algeria","American Samoa","Andorra","Angola","Anguilla","Antigua and Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bermuda","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","British Virgin Islands","Brunei","Bulgaria","Burkina Faso","Burundi","Cabo Verde","Cambodia","Cameroon","Canada","Caribbean Netherlands","Cayman Islands","Central African Republic","Chad","Chile","China","Colombia","Comoros","Congo","Congo, Democratic Republic","Cook Islands","Costa Rica","Cote d Ivoire","Croatia","Cuba","Curacao","Cyprus","Czechia","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Falkland Islands","Faroe Islands","Fiji","Finland","France","French Guiana","French Polynesia","Gabon","Gambia","Georgia","Germany","Ghana","Gibraltar","Greece","Greenland","Grenada","Guadeloupe","Guam","Guatemala","Guernsey","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Isle of Man","Israel","Italy","Jamaica","Japan","Jersey","Jordan","Kazakhstan","Kenya","Kiribati","Kosovo","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macao","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Martinique","Mauritania","Mauritius","Mayotte","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Montserrat","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Caledonia","New Zealand","Nicaragua","Niger","Nigeria","Niue","Norfolk Island","North Korea","North Macedonia","Norway","Oman","Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Puerto Rico","Qatar","Reunion","Romania","Russia","Rwanda","Saint Barthelemy","Saint Kitts and Nevis","Saint Lucia","Saint Pierre and Miquelon","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Sint Maarten","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Korea","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia","Turkiye","Turkmenistan","Turks and Caicos Islands","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","United States Virgin Islands","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Wallis and Futuna","Yemen","Zambia","Zimbabwe"];
+    const GEO = {"Afghanistan":[65.93,33.82],"Albania":[20.05,41.13],"Algeria":[2.63,28.06],"American Samoa":[-170.72,-14.3],"Andorra":[1.56,42.54],"Angola":[17.53,-12.27],"Anguilla":[-63.07,18.22],"Antigua and Barbuda":[-61.79,17.28],"Argentina":[-64.76,-34.68],"Armenia":[44.94,40.29],"Aruba":[-69.98,12.52],"Australia":[134.3,-25.76],"Austria":[14.11,47.59],"Azerbaijan":[47.55,40.29],"Bahamas":[-76.59,24.28],"Bahrain":[50.54,26.04],"Bangladesh":[90.25,23.86],"Barbados":[-59.56,13.18],"Belarus":[28.02,53.52],"Belgium":[4.65,50.64],"Belize":[-88.71,17.2],"Benin":[2.33,9.64],"Bermuda":[-64.76,32.31],"Bhutan":[90.4,27.41],"Bolivia":[-64.7,-16.68],"Bosnia and Herzegovina":[17.77,44.17],"Botswana":[23.81,-22.17],"Brazil":[-53.22,-10.64],"British Virgin Islands":[-64.47,18.53],"Brunei":[114.72,4.52],"Bulgaria":[25.21,42.77],"Burkina Faso":[-1.76,12.27],"Burundi":[29.88,-3.36],"Cabo Verde":[-23.96,15.96],"Cambodia":[104.91,12.72],"Cameroon":[12.73,5.68],"Canada":[-96.55,60.42],"Cayman Islands":[-80.91,19.43],"Central African Republic":[20.46,6.57],"Chad":[18.64,15.28],"Chile":[-71.06,-36.07],"China":[103.38,36.69],"Colombia":[-73.08,3.9],"Comoros":[43.68,-11.88],"Congo":[15.22,-0.84],"Congo, Democratic Republic":[23.64,-2.87],"Cook Islands":[-159.79,-21.22],"Costa Rica":[-84.19,9.98],"Cote d Ivoire":[-5.57,7.63],"Croatia":[16.4,45.08],"Cuba":[-78.99,21.64],"Curacao":[-68.97,12.2],"Cyprus":[33.01,34.92],"Czechia":[15.32,49.74],"Denmark":[10.04,55.98],"Djibouti":[42.56,11.75],"Dominica":[-61.36,15.44],"Dominican Republic":[-70.51,18.9],"Ecuador":[-78.75,-1.42],"Egypt":[29.88,26.46],"El Salvador":[-88.87,13.74],"Equatorial Guinea":[10.34,1.71],"Eritrea":[38.86,15.36],"Estonia":[25.55,58.67],"Eswatini":[31.48,-26.56],"Ethiopia":[39.61,8.61],"Falkland Islands":[-59.35,-51.75],"Faroe Islands":[-6.88,62.05],"Fiji":[178.51,-17.43],"Finland":[26.19,64.26],"France":[-6.68,42.95],"French Polynesia":[-144.8,-14.73],"Gabon":[11.79,-0.59],"Gambia":[-15.4,13.45],"Georgia":[43.52,42.17],"Germany":[10.36,51.05],"Ghana":[-1.22,7.95],"Gibraltar":[-5.35,36.13],"Greece":[22.96,39.05],"Greenland":[-41.81,73.08],"Grenada":[-61.68,12.12],"Guam":[144.77,13.44],"Guatemala":[-90.37,15.69],"Guernsey":[-2.57,49.47],"Guinea":[-10.93,10.44],"Guinea-Bissau":[-14.95,12.05],"Guyana":[-58.98,4.79],"Haiti":[-72.69,18.93],"Honduras":[-86.62,14.83],"Hong Kong":[114.11,22.4],"Hungary":[19.38,47.17],"Iceland":[-18.58,65],"India":[79.56,22.78],"Indonesia":[117.18,-2.26],"Iran":[54.44,32.53],"Iraq":[43.77,33.01],"Ireland":[-8.15,53.16],"Isle of Man":[-4.54,54.22],"Israel":[35,31.45],"Italy":[12.2,42.72],"Jamaica":[-77.31,18.16],"Japan":[137.66,37.46],"Jersey":[-2.13,49.22],"Jordan":[36.76,31.24],"Kazakhstan":[67.25,48.36],"Kenya":[37.8,0.6],"Kiribati":[-167.92,0.89],"Kosovo":[20.87,42.57],"Kuwait":[47.59,29.33],"Kyrgyzstan":[74.51,41.47],"Laos":[103.78,18.49],"Latvia":[24.92,56.86],"Lebanon":[35.88,33.92],"Lesotho":[28.23,-29.58],"Liberia":[-9.32,6.45],"Libya":[18.07,27.02],"Liechtenstein":[9.54,47.14],"Lithuania":[23.9,55.32],"Luxembourg":[6.07,49.77],"Macao":[113.51,22.22],"Madagascar":[46.74,-19.32],"Malawi":[34.28,-13.2],"Malaysia":[109.7,3.81],"Maldives":[73.46,3.73],"Mali":[-3.59,17.32],"Malta":[14.41,35.92],"Marshall Islands":[170.33,7.02],"Mauritania":[-10.37,20.22],"Mauritius":[57.57,-20.28],"Mexico":[-102.17,23.92],"Micronesia":[153.3,7.54],"Moldova":[28.47,47.19],"Monaco":[7.41,43.75],"Mongolia":[103.12,46.96],"Montenegro":[19.24,42.79],"Montserrat":[-62.19,16.74],"Morocco":[-8.73,29.77],"Mozambique":[35.6,-17.2],"Myanmar":[96.49,21.11],"Namibia":[17.2,-22.07],"Nauru":[166.93,-0.52],"Nepal":[83.95,28.26],"Netherlands":[4.98,52.23],"New Caledonia":[165.68,-21.3],"New Zealand":[172.92,-41.7],"Nicaragua":[-85.03,12.85],"Niger":[9.33,17.41],"Nigeria":[8.08,9.59],"Niue":[-169.87,-19.05],"Norfolk Island":[167.95,-29.05],"North Korea":[127.16,40.14],"North Macedonia":[21.68,41.6],"Norway":[12.75,66.36],"Oman":[56.06,20.59],"Pakistan":[69.17,29.88],"Palau":[134.41,7.29],"Palestine":[35.2,31.92],"Panama":[-80.12,8.52],"Papua New Guinea":[145.2,-6.47],"Paraguay":[-58.44,-23.21],"Peru":[-74.42,-9.11],"Philippines":[122.92,11.73],"Poland":[19.42,52.11],"Portugal":[-8.53,39.61],"Puerto Rico":[-66.47,18.23],"Qatar":[51.18,25.3],"Romania":[24.98,45.85],"Russia":[95.64,66.03],"Rwanda":[29.92,-1.99],"Saint Barthelemy":[-62.84,17.9],"Saint Kitts and Nevis":[-62.69,17.26],"Saint Lucia":[-60.97,13.89],"Saint Pierre and Miquelon":[-56.3,46.92],"Saint Vincent and the Grenadines":[-61.2,13.23],"Samoa":[-172.16,-13.75],"San Marino":[12.46,43.94],"Sao Tome and Principe":[6.72,0.44],"Saudi Arabia":[44.66,24.09],"Senegal":[-14.47,14.36],"Serbia":[20.81,44.21],"Seychelles":[55.48,-4.66],"Sierra Leone":[-11.79,8.56],"Singapore":[103.82,1.36],"Sint Maarten":[-63.06,18.05],"Slovakia":[19.47,48.71],"Slovenia":[14.8,46.12],"Solomon Islands":[159.62,-8.92],"Somalia":[45.68,4.74],"South Africa":[25.19,-28.97],"South Korea":[127.84,36.37],"South Sudan":[30.25,7.31],"Spain":[-3.7,40.21],"Sri Lanka":[80.7,7.61],"Sudan":[29.91,15.97],"Suriname":[-55.91,4.13],"Sweden":[16.27,62.38],"Switzerland":[8.21,46.8],"Syria":[38.49,35.02],"Taiwan":[120.95,23.75],"Tajikistan":[71.03,38.54],"Tanzania":[34.8,-6.27],"Thailand":[101,15.08],"Timor-Leste":[125.85,-8.83],"Togo":[0.96,8.52],"Tonga":[-174.8,-20.42],"Trinidad and Tobago":[-61.27,10.46],"Tunisia":[9.56,34.09],"Turkiye":[35.17,39.14],"Turkmenistan":[59.45,39.13],"Turks and Caicos Islands":[-71.97,21.83],"Tuvalu":[178.53,-7.77],"Uganda":[32.37,1.27],"Ukraine":[31.32,49.2],"United Arab Emirates":[54.29,23.91],"United Kingdom":[-2.76,54.01],"United States":[-103.63,44.74],"United States Virgin Islands":[-64.8,17.96],"Uruguay":[-56.03,-32.79],"Uzbekistan":[63.3,41.78],"Vanuatu":[167.68,-16.22],"Vatican City":[12.43,41.9],"Venezuela":[-66.17,7.12],"Vietnam":[106.35,16.54],"Wallis and Futuna":[-177.35,-13.89],"Yemen":[47.57,15.92],"Zambia":[27.81,-13.46],"Zimbabwe":[29.85,-19]};
     const arrivals = { Nigeria: 'Oct 1 to Oct 4', Ghana: 'Oct 1 to Oct 5', Kenya: 'Sep 30 to Oct 3', 'South Africa': 'Sep 30 to Oct 3', Egypt: 'Oct 2 to Oct 6', Pakistan: 'Oct 1 to Oct 5', Bangladesh: 'Oct 2 to Oct 6', Philippines: 'Sep 30 to Oct 3', Indonesia: 'Oct 1 to Oct 4', Vietnam: 'Sep 30 to Oct 3', Colombia: 'Sep 30 to Oct 2', Peru: 'Oct 1 to Oct 4' };
     const jobs = [
       { id: 'FR-2208', item: 'Trail running shoes, size 10 US', value: 'US$140.00', dest: 'Nairobi, Kenya', deadline: 'Sat, Sep 26', weight: '1.2 kg', buy: 'Order online for delivery to your address, or buy in person at any store with the exact model.', lines: [['Courier fee', 24.00], ['Packaging allowance', 3.50], ['Local transport allowance', 4.00]] },
@@ -962,11 +967,18 @@ class Component extends DCLogic {
     const countryRules = [...(extraRules[s.dest] || []), ...baseRules].map(r => ({ item: r[0], status: r[1], note: r[2], color: r[1] === 'Prohibited' ? 'var(--routeInk)' : 'var(--muted)' }));
     const more = (() => {
       const cities = { Nigeria: ['Lagos', 3.38, 6.52, 'NIPOST', 'NG'], Ghana: ['Accra', -0.19, 5.60, 'Ghana Post', 'GH'], Kenya: ['Nairobi', 36.82, -1.29, 'Posta Kenya', 'KE'], 'South Africa': ['Johannesburg', 28.05, -26.20, 'South African Post Office', 'ZA'], Egypt: ['Cairo', 31.24, 30.04, 'Egypt Post', 'EG'], Pakistan: ['Karachi', 67.01, 24.86, 'Pakistan Post', 'PK'], Bangladesh: ['Dhaka', 90.41, 23.81, 'Bangladesh Post Office', 'BD'], Philippines: ['Manila', 120.98, 14.60, 'PHLPost', 'PH'], Indonesia: ['Jakarta', 106.85, -6.21, 'Pos Indonesia', 'ID'], Vietnam: ['Ho Chi Minh City', 106.63, 10.82, 'Vietnam Post', 'VN'], Colombia: ['Bogota', -74.07, 4.71, '4-72', 'CO'], Peru: ['Lima', -77.04, -12.05, 'Serpost', 'PE'] };
-      const dc = cities[s.dest] || cities.Nigeria;
+      // dc is always a valid record, because the demo screens read dc[0] in
+      // several places. A country Farroute has a hub city for keeps that city
+      // and its postal operator. Any other country uses its own position from
+      // GEO. With nothing selected, or for the seven small territories absent
+      // from every map dataset, the demo data stands in, and the landing page
+      // shows no quote regardless because hasLink also requires a destination.
+      const geoLL = GEO[s.dest] || null;
+      const dc = cities[s.dest] || (geoLL ? [s.dest, geoLL[0], geoLL[1], 'the national postal service', ''] : cities.Nigeria);
       const post = dc[3];
       const destStop = { lon: dc[1], lat: dc[2], label: dc[0] };
       const col = { lon: -82.99, lat: 39.96 };
-      const hasLink = !!s.link;
+      const hasLink = !!s.link && !!s.dest;
       const autoSize = /keyboard|boot|speaker|game/.test(lk) ? 1 : (/monitor|bicycle|audio/.test(lk) ? 2 : 0);
       const sizeIdx = s.sizeManual != null ? s.sizeManual : autoSize;
       const prices = ['US$168.40', 'US$214.90', 'US$342.60'];
@@ -1026,6 +1038,8 @@ class Component extends DCLogic {
         courierFg: (s.screen === 'apply' || courierScreens.includes(s.screen)) ? '#F4EBDC' : 'var(--paper)',
         navTabs: [['Place order', 'landing'], ['FAQ', 'rules']].map(([label, k]) => { const on = s.screen === k || (k === 'apply' && courierScreens.includes(s.screen)) || (k === 'landing' && s.screen === 'quote'); return { label, go: this.go(k), color: on ? 'var(--routeInk)' : 'var(--muted)', bar: on ? '#2E5AAC' : 'transparent' }; }),
         protoNav: [['Landing', 'landing'], ['FAQ', 'rules'], ['Quote', 'quote'], ['Tracking', 'tracking'], ['Courier apply', 'apply'], ['Earnings', 'earnings'], ['Jobs', 'jobs'], ['Job preview', 'job'], ['Active job', 'active'], ['Account', 'account'], ['Admin', 'admin']].map(([label, k]) => ({ label, go: this.go(k) })),
+        downloadLabel: (new Date() >= new Date('2026-12-15T00:00:00')) ? 'Download now' : 'Download soon',
+        goDownload: this.go('account'),
         isAdmin: s.screen === 'admin', isAccount: s.screen === 'account', accountDone: !!s.accountDone, accountOpen: !s.accountDone,
         hasLink, showMaps: !saver, noMaps: saver,
         sizes: sizeDefs.map((z, i) => ({ name: z.name, kg: z.kg, px: ['38px', '50px', '64px'][i], detected: hasLink && !hit && s.sizeManual == null && i === autoSize, border: i === sizeIdx ? '#2E5AAC' : 'var(--line)', pick: () => this.setState({ sizeManual: i }) })),
@@ -1091,7 +1105,10 @@ class Component extends DCLogic {
       heroTabs: [['Order an item', 'order'], ['Track an order', 'track']].map(([label, k]) => ({ label, pick: () => this.setState({ heroTab: k }), bg: s.heroTab === k ? 'var(--card)' : 'var(--paper)', bar: s.heroTab === k ? '#2E5AAC' : 'transparent' })),
       tabOrder: s.heroTab === 'order', tabTrack: s.heroTab === 'track',
       fromShown: s.link ? 'United States' : 'Read from the link',
-      destCode: ({ Nigeria: 'NG', Ghana: 'GH', Kenya: 'KE', 'South Africa': 'ZA', Egypt: 'EG', Pakistan: 'PK', Bangladesh: 'BD', Philippines: 'PH', Indonesia: 'ID', Vietnam: 'VN', Colombia: 'CO', Peru: 'PE' })[s.dest],
+      // Codes for every country, so a destination outside the original twelve
+      // still shows one instead of an empty space.
+      destCode: ({"Andorra":"AD","United Arab Emirates":"AE","Afghanistan":"AF","Antigua and Barbuda":"AG","Anguilla":"AI","Albania":"AL","Armenia":"AM","Angola":"AO","Argentina":"AR","American Samoa":"AS","Austria":"AT","Australia":"AU","Aruba":"AW","Aland Islands":"AX","Azerbaijan":"AZ","Bosnia and Herzegovina":"BA","Barbados":"BB","Bangladesh":"BD","Belgium":"BE","Burkina Faso":"BF","Bulgaria":"BG","Bahrain":"BH","Burundi":"BI","Benin":"BJ","Saint Barthelemy":"BL","Bermuda":"BM","Brunei":"BN","Bolivia":"BO","Caribbean Netherlands":"BQ","Brazil":"BR","Bahamas":"BS","Bhutan":"BT","Botswana":"BW","Belarus":"BY","Belize":"BZ","Canada":"CA","Congo, Democratic Republic":"CD","Central African Republic":"CF","Congo":"CG","Switzerland":"CH","Cote d Ivoire":"CI","Cook Islands":"CK","Chile":"CL","Cameroon":"CM","China":"CN","Colombia":"CO","Costa Rica":"CR","Cuba":"CU","Cabo Verde":"CV","Curacao":"CW","Cyprus":"CY","Czechia":"CZ","Germany":"DE","Djibouti":"DJ","Denmark":"DK","Dominica":"DM","Dominican Republic":"DO","Algeria":"DZ","Ecuador":"EC","Estonia":"EE","Egypt":"EG","Eritrea":"ER","Spain":"ES","Ethiopia":"ET","Finland":"FI","Fiji":"FJ","Falkland Islands":"FK","Micronesia":"FM","Faroe Islands":"FO","France":"FR","Gabon":"GA","United Kingdom":"GB","Grenada":"GD","Georgia":"GE","French Guiana":"GF","Guernsey":"GG","Ghana":"GH","Gibraltar":"GI","Greenland":"GL","Gambia":"GM","Guinea":"GN","Guadeloupe":"GP","Equatorial Guinea":"GQ","Greece":"GR","Guatemala":"GT","Guam":"GU","Guinea-Bissau":"GW","Guyana":"GY","Hong Kong":"HK","Honduras":"HN","Croatia":"HR","Haiti":"HT","Hungary":"HU","Indonesia":"ID","Ireland":"IE","Israel":"IL","Isle of Man":"IM","India":"IN","Iraq":"IQ","Iran":"IR","Iceland":"IS","Italy":"IT","Jersey":"JE","Jamaica":"JM","Jordan":"JO","Japan":"JP","Kenya":"KE","Kyrgyzstan":"KG","Cambodia":"KH","Kiribati":"KI","Comoros":"KM","Saint Kitts and Nevis":"KN","North Korea":"KP","South Korea":"KR","Kuwait":"KW","Cayman Islands":"KY","Kazakhstan":"KZ","Laos":"LA","Lebanon":"LB","Saint Lucia":"LC","Liechtenstein":"LI","Sri Lanka":"LK","Liberia":"LR","Lesotho":"LS","Lithuania":"LT","Luxembourg":"LU","Latvia":"LV","Libya":"LY","Morocco":"MA","Monaco":"MC","Moldova":"MD","Montenegro":"ME","Madagascar":"MG","Marshall Islands":"MH","North Macedonia":"MK","Mali":"ML","Myanmar":"MM","Mongolia":"MN","Macao":"MO","Martinique":"MQ","Mauritania":"MR","Montserrat":"MS","Malta":"MT","Mauritius":"MU","Maldives":"MV","Malawi":"MW","Mexico":"MX","Malaysia":"MY","Mozambique":"MZ","Namibia":"NA","New Caledonia":"NC","Niger":"NE","Norfolk Island":"NF","Nigeria":"NG","Nicaragua":"NI","Netherlands":"NL","Norway":"NO","Nepal":"NP","Nauru":"NR","Niue":"NU","New Zealand":"NZ","Oman":"OM","Panama":"PA","Peru":"PE","French Polynesia":"PF","Papua New Guinea":"PG","Philippines":"PH","Pakistan":"PK","Poland":"PL","Saint Pierre and Miquelon":"PM","Puerto Rico":"PR","Palestine":"PS","Portugal":"PT","Palau":"PW","Paraguay":"PY","Qatar":"QA","Reunion":"RE","Romania":"RO","Serbia":"RS","Russia":"RU","Rwanda":"RW","Saudi Arabia":"SA","Solomon Islands":"SB","Seychelles":"SC","Sudan":"SD","Sweden":"SE","Singapore":"SG","Slovenia":"SI","Slovakia":"SK","Sierra Leone":"SL","San Marino":"SM","Senegal":"SN","Somalia":"SO","Suriname":"SR","South Sudan":"SS","Sao Tome and Principe":"ST","El Salvador":"SV","Sint Maarten":"SX","Syria":"SY","Eswatini":"SZ","Turks and Caicos Islands":"TC","Chad":"TD","Togo":"TG","Thailand":"TH","Tajikistan":"TJ","Timor-Leste":"TL","Turkmenistan":"TM","Tunisia":"TN","Tonga":"TO","Turkiye":"TR","Trinidad and Tobago":"TT","Tuvalu":"TV","Taiwan":"TW","Tanzania":"TZ","Ukraine":"UA","Uganda":"UG","United States":"US","Uruguay":"UY","Uzbekistan":"UZ","Vatican City":"VA","Saint Vincent and the Grenadines":"VC","Venezuela":"VE","British Virgin Islands":"VG","United States Virgin Islands":"VI","Vietnam":"VN","Vanuatu":"VU","Wallis and Futuna":"WF","Samoa":"WS","Kosovo":"XK","Yemen":"YE","Mayotte":"YT","South Africa":"ZA","Zambia":"ZM","Zimbabwe":"ZW"})[s.dest] || '',
+
       openRoutes: ['United States → Kenya', 'Japan → Philippines', 'United Kingdom → Nigeria', 'Germany → Egypt', 'South Korea → Vietnam', 'United States → Colombia'],
       sizes: sizeDefs.map((z, i) => ({ ...z, pick: () => this.setState({ size: i }), border: s.size === i ? '#2E5AAC' : 'var(--line)' })),
       sizeName: sizeDefs[s.size].name.toLowerCase(), sizeExamples: sizeDefs[s.size].ex,
@@ -1108,7 +1125,7 @@ class Component extends DCLogic {
       isCourier: courierScreens.includes(s.screen), isEarnings: s.screen === 'earnings', isJobs: s.screen === 'jobs', isJob: s.screen === 'job', isActive: s.screen === 'active',
       link: s.link, dest: s.dest, destinations: dests, destList: dests.join(', '),
       linkShown: s.link || 'store.example/products/trail-running-shoe-10',
-      arrival: arrivals[s.dest],
+      arrival: arrivals[s.dest] || 'Estimated once a courier is matched',
       exclusions: ['Perfume', 'Aerosols', 'Loose batteries', 'Food', 'Oversized goods'],
       steps: [
         { n: '1', who: '', lead: 'You paste the product ', t: 'link', tail: '.', d: 'Farroute shows one delivery price and an estimated customs quote.' },
