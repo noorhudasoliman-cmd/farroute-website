@@ -156,8 +156,8 @@
       var lon0 = Math.max(-180, Math.floor(Math.min.apply(null, lo) - 1)), lon1 = Math.min(180, Math.ceil(Math.max.apply(null, lo) + 1));
       var lat0 = Math.max(-90, Math.floor(Math.min.apply(null, la) - 1)), lat1 = Math.min(90, Math.ceil(Math.max.apply(null, la) + 1));
       if (lon1 - lon0 > 200 || Math.min.apply(null, lo) < -180 || Math.max.apply(null, lo) > 180) return Promise.resolve(null);
-      var PW = Math.round(w * Math.min(window.devicePixelRatio || 1, 2)), PH = Math.round(PW * (lat1 - lat0) / (lon1 - lon0));
-      var mx = Math.max(PW, PH); if (mx > 1800) { PW = Math.round(PW * 1800 / mx); PH = Math.round(PH * 1800 / mx); }
+      var PW = Math.round(w * Math.min(window.devicePixelRatio || 1, 3)), PH = Math.round(PW * (lat1 - lat0) / (lon1 - lon0));
+      var mx = Math.max(PW, PH); if (mx > 2400) { PW = Math.round(PW * 2400 / mx); PH = Math.round(PH * 2400 / mx); }
       var key = [lon0, lat0, lon1, lat1, PW].join(',');
       this._hiCache = this._hiCache || {};
       if (this._hiCache[key]) return this._hiCache[key];
@@ -168,7 +168,7 @@
           res({ w: cv.width, h: cv.height, d: x.getImageData(0, 0, cv.width, cv.height).data, lon0: lon0, lon1: lon1, lat0: lat0, lat1: lat1 }); } catch (e) { res(null); } };
         im.onerror = function () { res(null); }; im.src = url;
       });
-      var keys = Object.keys(this._hiCache); if (keys.length > 10) delete this._hiCache[keys[0]];
+      var keys = Object.keys(this._hiCache); if (keys.length > 6) delete this._hiCache[keys[0]];
       pr = Promise.all([pr, land50()]).then(function (v) { if (v[0]) v[0].land = v[1]; return v[0]; });
       this._hiCache[key] = pr;
       return pr;
@@ -265,7 +265,7 @@
         tok++;
         var P0 = PAIRS[idx % PAIRS.length]; idx++; self._idleIdx = idx;
         var T0 = tgt(P0), pa = T0.pa, pb = T0.pb, k = T0.k, tx = T0.tx, ty = T0.ty, myTok = tok;
-        var k0 = K, x0 = TX, y0 = TY, t0 = performance.now(), dur = reduce ? 0 : 1700;
+        var k0 = K, x0 = TX, y0 = TY, t0 = performance.now(), dur = reduce ? 0 : 1000;
         var hp = self._src && k > 1.25 ? self._hiFetch(pfor(T0), w, h) : null;
         [0, 1].forEach(function (o) { var NT = tgt(PAIRS[(idx + o) % PAIRS.length]); if (self._src && NT.k > 1.25) self._hiFetch(pfor(NT), w, h); });
         ov.innerHTML = defs;
@@ -309,7 +309,7 @@
           }, 1350);
           if (!reduce) later(function () { ov.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 400, fill: 'forwards' }).onfinish = function () { if (!alive) return; ov.getAnimations().forEach(function (a) { a.cancel(); }); scene(); }; }, 6600);
         };
-        if (hp && !reduce) Promise.race([hp, new Promise(function (r) { setTimeout(r, 1000); })]).then(function () { if (!alive || myTok !== tok) return; t0 = performance.now(); raf = requestAnimationFrame(step); });
+        if (hp && !reduce) Promise.race([hp, new Promise(function (r) { setTimeout(r, 650); })]).then(function () { if (!alive || myTok !== tok) return; t0 = performance.now(); raf = requestAnimationFrame(step); });
         else raf = requestAnimationFrame(step);
       };
       setT();
