@@ -2,10 +2,9 @@
 #
 # index.html is currently the design reference from the October handoff, not a
 # production build. The handoff README calls for recreating these screens in a
-# real codebase. Two things must change before launch on December 15, 2026:
-# the PROTOTYPE switcher at the top of the page has to go, and the map tiles
-# have to be pre-rendered and self-hosted rather than fetched from Wikimedia
-# and NASA at runtime.
+# real codebase. One thing must still change before launch on December 15,
+# 2026: the map tiles have to be pre-rendered and self-hosted rather than
+# fetched from Wikimedia and NASA at runtime.
 [build]
   publish = "."
   command = ""
