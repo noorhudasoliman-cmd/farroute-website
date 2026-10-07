@@ -160,7 +160,7 @@
           }
           var A = MA ? MA[o4 + 3] / 255 : 0.5, dm = Math.max(r, g) - b, m;
           if (A < 0.12) m = 0; else if (A > 0.88) m = 1; else { m = 12 * dm + 0.15; m = m < 0 ? 0 : m > 1 ? 1 : m; }
-          if (wet) m *= 1 - wet;
+          var m0 = m; if (wet) m *= 1 - wet;
           var t = Math.min(1, Ll * 1.3), lr, lg, lb, f;
           if (t < 0.4) { f = t / 0.4; lr = 0.235 + 0.25 * f; lg = 0.18 + 0.21 * f; lb = 0.145 + 0.165 * f; }
           else if (t < 0.75) { f = (t - 0.4) / 0.35; lr = 0.485 + 0.27 * f; lg = 0.39 + 0.285 * f; lb = 0.31 + 0.26 * f; }
@@ -171,7 +171,11 @@
           // A lake's water colour cannot come from the relief layer, which shows
           // dry ground at that spot, so it would render pale grey. Lakes take a
           // fixed water colour instead, matching the sea.
-          if (wet) { sr += (0.70 - sr) * wet; sg += (0.77 - sg) * wet; sb += (0.845 - sb) * wet; }
+          // Only inside the coastline. The open sea reads dark blue in this
+          // imagery too, so applying this everywhere flattened the ocean to one
+          // tone and threw away the seafloor shading.
+          var wf = wet * m0;
+          if (wf) { sr += (0.70 - sr) * wf; sg += (0.77 - sg) * wf; sb += (0.845 - sb) * wf; }
           var e = ey; var cr = sr + (lr - sr) * m, cg = sg + (lg - sg) * m, cb = sb + (lb - sb) * m;
           od[o4] = 255 * cr * e + BG[0] * (1 - e); od[o4 + 1] = 255 * cg * e + BG[1] * (1 - e); od[o4 + 2] = 255 * cb * e + BG[2] * (1 - e); od[o4 + 3] = 255;
         }
