@@ -11,3 +11,16 @@
   for = "/*"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
+
+# The page is still changing daily before launch, so a browser must never hold
+# on to an old copy of it. Without this a visitor can keep seeing a version
+# that was replaced hours earlier and reasonably conclude nothing shipped.
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "no-store, no-cache, must-revalidate, max-age=0"
+
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "no-store, no-cache, must-revalidate, max-age=0"
