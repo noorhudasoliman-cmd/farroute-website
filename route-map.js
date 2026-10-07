@@ -34,8 +34,8 @@
   function raster() {
     if (!rasterP) {
       var px = (window.innerWidth || 1000) * (window.devicePixelRatio || 1);
-      var sz = px > 1500 ? 1920 : 1280;
-      var src = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/5/56/Blue_Marble_Next_Generation_%2B_topography_%2B_bathymetry.jpg/' + sz + 'px-Blue_Marble_Next_Generation_%2B_topography_%2B_bathymetry.jpg';
+      var sz = px > 1500 ? 2048 : 1280;
+      var src = 'https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&LAYERS=BlueMarble_ShadedRelief_Bathymetry&SRS=EPSG:4326&FORMAT=image/jpeg&BBOX=-180,-90,180,90&WIDTH=' + sz + '&HEIGHT=' + (sz / 2);
       rasterP = new Promise(function (res, rej) {
         var im = new Image(); im.crossOrigin = 'anonymous'; im.decoding = 'async';
         im.onload = function () {
@@ -302,7 +302,7 @@
         tok++;
         var P0 = PAIRS[idx % PAIRS.length]; idx++; self._idleIdx = idx;
         var T0 = tgt(P0), pa = T0.pa, pb = T0.pb, k = T0.k, tx = T0.tx, ty = T0.ty, myTok = tok;
-        var k0 = K, x0 = TX, y0 = TY, t0 = performance.now(), dur = reduce ? 0 : 1000;
+        var k0 = K, x0 = TX, y0 = TY, t0 = performance.now(), dur = reduce ? 0 : 680;
         var hp = self._src && k > 1.25 ? self._hiFetch(pfor(T0), w, h) : null;
         [0, 1].forEach(function (o) { var NT = tgt(PAIRS[(idx + o) % PAIRS.length]); if (self._src && NT.k > 1.25) self._hiFetch(pfor(NT), w, h); });
         ov.innerHTML = defs;
@@ -321,11 +321,11 @@
           if (self._src) {
             var p2 = d3.geoMercator().scale(proj.scale() * K).translate([proj.translate()[0] * K + TX, proj.translate()[1] * K + TY]);
             sharp = self._paint(p2, w, h, true); sharp.style.opacity = 0; ov.parentNode.insertBefore(sharp, ov);
-            sharp.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, fill: 'forwards' });
+            sharp.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 140, fill: 'forwards' });
             if (K > 1.25) { var my = tok; self._hiFetch(p2, w, h).then(function (S2) {
               if (!alive || my !== tok || !S2) return;
               var c2 = self._paint(p2, w, h, true, S2), prev = sharp; c2.style.opacity = 0; ov.parentNode.insertBefore(c2, ov); sharp = c2;
-              c2.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 220, fill: 'forwards' }).onfinish = function () { if (prev && prev !== sharp) prev.remove(); };
+              c2.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 140, fill: 'forwards' }).onfinish = function () { if (prev && prev !== sharp) prev.remove(); };
             }); }
           }
           card(P0);
@@ -346,8 +346,7 @@
           }, 1350);
           if (!reduce) later(function () { ov.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 400, fill: 'forwards' }).onfinish = function () { if (!alive) return; ov.getAnimations().forEach(function (a) { a.cancel(); }); scene(); }; }, 6600);
         };
-        if (hp && !reduce) Promise.race([hp, new Promise(function (r) { setTimeout(r, 650); })]).then(function () { if (!alive || myTok !== tok) return; t0 = performance.now(); raf = requestAnimationFrame(step); });
-        else raf = requestAnimationFrame(step);
+        raf = requestAnimationFrame(step);
       };
       setT();
       if (this._held) scene(); else { this._held = true; if (this._src) { var F0 = tgt(PAIRS[idx % PAIRS.length]); if (F0.k > 1.25) this._hiFetch(pfor(F0), w, h); } later(scene, reduce ? 0 : 3500); }
