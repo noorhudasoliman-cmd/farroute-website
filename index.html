@@ -67,14 +67,10 @@ input,select,button,textarea{font:inherit;color:inherit}
         <svg style="width:50px;height:33px;color:var(--ink)"><use href="#fr"></use></svg>
         <span style="font-weight:700;font-stretch:87.5%;font-size:23px;letter-spacing:-0.02em">Farroute</span>
       </button>
-      <nav style="display:flex;align-items:stretch;justify-content:flex-end;gap:2px;overflow-x:auto;flex:1;min-width:0">
+      <nav style="display:flex;align-items:stretch;justify-content:flex-end;gap:10px;overflow-x:auto;flex:1;min-width:0">
         <sc-for list="{{ navTabs }}" as="t" hint-placeholder-count="4">
-          <button onClick="{{ t.go }}" style="background:none;border:0;border-bottom:3px solid {{ t.bar }};padding:3px 14px 0;font-size:15px;font-weight:600;color:{{ t.color }};cursor:pointer;white-space:nowrap" style-hover="color:var(--ink)">{{ t.label }}</button>
+          <button onClick="{{ t.go }}" style="background:none;border:0;border-bottom:3px solid {{ t.bar }};padding:3px 12px 0;font-size:15px;font-weight:600;color:{{ t.color }};cursor:pointer;white-space:nowrap" style-hover="color:var(--ink)">{{ t.label }}</button>
         </sc-for>
-        <div style="display:flex;align-items:center;gap:8px;padding-left:12px;flex-shrink:0">
-          <button onClick="{{ goAccount }}" style="height:42px;background:transparent;color:var(--ink);border:1.5px solid var(--ink);border-radius:8px;padding:0 14px;cursor:pointer;font-weight:600;font-size:15px;white-space:nowrap" style-hover="border-color:#2E5AAC;color:#2E5AAC">Create account</button>
-          <button onClick="{{ goApply }}" style="height:42px;background:transparent;color:var(--ink);border:1.5px solid var(--ink);border-radius:8px;padding:0 14px;cursor:pointer;font-weight:600;font-size:15px;white-space:nowrap" style-hover="border-color:#2E5AAC;color:#2E5AAC">Become a courier</button>
-        </div>
       </nav>
     </div>
   </header>
@@ -946,7 +942,7 @@ class Component extends DCLogic {
         },
         courierBg: (s.screen === 'apply' || courierScreens.includes(s.screen)) ? '#2E5AAC' : 'var(--ink)',
         courierFg: (s.screen === 'apply' || courierScreens.includes(s.screen)) ? '#F4EBDC' : 'var(--paper)',
-        navTabs: [['Home', 'landing']].map(([label, k]) => { const on = s.screen === k || (k === 'apply' && courierScreens.includes(s.screen)) || (k === 'landing' && s.screen === 'quote'); return { label, go: this.go(k), color: on ? 'var(--routeInk)' : 'var(--muted)', bar: on ? '#2E5AAC' : 'transparent' }; }),
+        navTabs: [['Home', 'landing'], ['Create account', 'account'], ['Become a courier', 'apply']].map(([label, k]) => { const on = s.screen === k || (k === 'apply' && courierScreens.includes(s.screen)) || (k === 'landing' && s.screen === 'quote'); return { label, go: this.go(k), color: 'var(--ink)', bar: on ? '#2E5AAC' : 'transparent' }; }),
         protoNav: [['Landing', 'landing'], ['FAQ', 'rules'], ['Quote', 'quote'], ['Tracking', 'tracking'], ['Courier apply', 'apply'], ['Earnings', 'earnings'], ['Jobs', 'jobs'], ['Job preview', 'job'], ['Active job', 'active'], ['Account', 'account'], ['Admin', 'admin']].map(([label, k]) => ({ label, go: this.go(k) })),
         downloadLabel: (new Date() >= new Date('2026-12-15T00:00:00')) ? 'Download now' : 'Download soon',
         goDownload: this.go('account'),
