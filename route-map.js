@@ -144,21 +144,29 @@
           // Land colour comes from the Sentinel-2 tile where one is loaded.
           // That imagery is darker than the relief layer, so it is lifted to
           // sit in the same tonal range before the brand grading runs.
-          var rl = r, gl = g, bl = b, Ll = L;
+          var rl = r, gl = g, bl = b, Ll = L, wet = 0;
           if (hi && S2.dl) {
-            var q = S2.dl, GN = 1.85;
+            var q = S2.dl, GN = 1.32;
             rl = Math.min(1, (q[i00] * w00 + q[i10] * w10 + q[i01] * w01 + q[i11] * w11) / 255 * GN);
             gl = Math.min(1, (q[i00 + 1] * w00 + q[i10 + 1] * w10 + q[i01 + 1] * w01 + q[i11 + 1] * w11) / 255 * GN);
             bl = Math.min(1, (q[i00 + 2] * w00 + q[i10 + 2] * w10 + q[i01 + 2] * w01 + q[i11 + 2] * w11) / 255 * GN);
             Ll = 0.3 * rl + 0.55 * gl + 0.15 * bl;
+            // Lakes and rivers lie inside the land outline but read almost black
+            // in this imagery, so without this they came out as dark ground.
+            // Water is dark and blue leaning, woodland is dark and green
+            // leaning, and that is what separates the two here.
+            var dk = (0.34 - Ll) / 0.14, bu = (bl - gl) * 10 + 0.25;
+            wet = (dk < 0 ? 0 : dk > 1 ? 1 : dk) * (bu < 0 ? 0 : bu > 1 ? 1 : bu);
           }
           var A = MA ? MA[o4 + 3] / 255 : 0.5, dm = Math.max(r, g) - b, m;
           if (A < 0.12) m = 0; else if (A > 0.88) m = 1; else { m = 12 * dm + 0.15; m = m < 0 ? 0 : m > 1 ? 1 : m; }
+          if (wet) m *= 1 - wet;
           var t = Math.min(1, Ll * 1.3), lr, lg, lb, f;
           if (t < 0.4) { f = t / 0.4; lr = 0.235 + 0.25 * f; lg = 0.18 + 0.21 * f; lb = 0.145 + 0.165 * f; }
           else if (t < 0.75) { f = (t - 0.4) / 0.35; lr = 0.485 + 0.27 * f; lg = 0.39 + 0.285 * f; lb = 0.31 + 0.26 * f; }
           else { f = (t - 0.75) / 0.25; lr = 0.755 + 0.2 * f; lg = 0.675 + 0.247 * f; lb = 0.57 + 0.293 * f; }
-          var gp = Math.max(0, gl - rl) * 0.12; lr += 0.32 * (rl - Ll) - gp * 0.2 + 0.012; lg += 0.32 * (gl - Ll) + gp; lb += 0.32 * (bl - Ll) - gp * 0.4 - 0.012;
+          var sat = (hi && S2.dl) ? 0.15 : 0.32, gw = (hi && S2.dl) ? 0.05 : 0.12;
+          var gp = Math.max(0, gl - rl) * gw; lr += sat * (rl - Ll) - gp * 0.2 + 0.012; lg += sat * (gl - Ll) + gp; lb += sat * (bl - Ll) - gp * 0.4 - 0.012;
           var ld = (L - 0.1) / 0.45; ld = ld < 0 ? 0 : ld > 1 ? 1 : Math.pow(ld, 0.8); var sr = 0.76 + 0.19 * ld + 0.3 * (r - L), sg = 0.81 + 0.135 * ld + 0.3 * (g - L), sb = 0.835 + 0.065 * ld + 0.3 * (b - L);
           var e = ey; var cr = sr + (lr - sr) * m, cg = sg + (lg - sg) * m, cb = sb + (lb - sb) * m;
           od[o4] = 255 * cr * e + BG[0] * (1 - e); od[o4 + 1] = 255 * cg * e + BG[1] * (1 - e); od[o4 + 2] = 255 * cb * e + BG[2] * (1 - e); od[o4 + 3] = 255;
