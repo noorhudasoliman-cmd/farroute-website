@@ -63,7 +63,7 @@ input,select,button,textarea{font:inherit;color:inherit}
   <div style="background:#2E5AAC;color:#F4EBDC">
     <div style="max-width:1280px;margin:0 auto;padding:9px 20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 14px;font-size:14px;text-align:center">
       <span style="font-weight:700">Farroute launches December 15, 2026.</span>
-      <span>Check quotes for any item and create an account to be ready on launch day.</span>
+      <span>Create an account to be ready on launch day.</span>
     </div>
   </div>
 
@@ -645,7 +645,7 @@ input,select,button,textarea{font:inherit;color:inherit}
           </sc-if>
           <sc-if value="{{ accountDone }}" hint-placeholder-val="{{ false }}">
             <span style="font-weight:700;font-size:20px">Account created</span>
-            <span style="font-size:15px;line-height:1.5;color:var(--muted)">Farroute emails you on December 15, 2026, when orders open. Check quotes for any item.</span>
+            <span style="font-size:15px;line-height:1.5;color:var(--muted)">Farroute emails you on December 15, 2026, when orders open.</span>
             <button onClick="{{ goLanding }}" style="height:52px;border:1.5px solid var(--ink);border-radius:10px;background:transparent;color:var(--ink);font-weight:600;cursor:pointer">Get a quote</button>
           </sc-if>
         </div>
@@ -755,7 +755,7 @@ input,select,button,textarea{font:inherit;color:inherit}
         <sc-for list="{{ footerCols }}" as="col" hint-placeholder-count="3">
           <div style="display:flex;flex-direction:column;gap:10px">
             <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">{{ col.h }}</span>
-            <sc-for list="{{ col.links }}" as="l"><a href="#" style="font-size:14px;text-decoration:none">{{ l }}</a></sc-for>
+            <sc-for list="{{ col.links }}" as="l"><button onClick="{{ l.go }}" style="background:none;border:0;padding:0;text-align:left;font-size:14px;font-family:inherit;color:var(--ink);cursor:pointer" style-hover="color:#2E5AAC">{{ l.t }}</button></sc-for>
           </div>
         </sc-for>
       </div>
@@ -1029,9 +1029,9 @@ class Component extends DCLogic {
       coverage: [['United States', 214, 6], ['United Kingdom', 128, 7], ['Japan', 96, 8], ['Germany', 88, 7], ['South Korea', 61, 8]].map(([from, n, base]) => { const o = (dests.indexOf(s.dest) % 3); return { from, couriers: n + ' active couriers', days: (base + o) + ' to ' + (base + o + 3) + ' days' }; }),
       faqs: faqDefs.map((f, i) => ({ q: f[0], a: f[1], open: s.faq === i, sign: s.faq === i ? '\u2212' : '+', toggle: () => this.setState({ faq: s.faq === i ? -1 : i }) })),
       footerCols: [
-        { h: 'Customers', links: ['Order an item', 'Track an order', 'What can travel'] },
-        { h: 'Couriers', links: ['Apply', 'Courier pay', 'Appeals', 'Courier help'] },
-        { h: 'Farroute', links: ['About', 'FAQ', 'Download soon'] }
+        { h: 'Customers', links: [['Order an item', 'landing'], ['Track an order', 'tracking'], ['What can travel', 'rules']].map(([t, k]) => ({ t, go: this.go(k) })) },
+        { h: 'Couriers', links: [['Apply', 'apply'], ['Courier pay', 'earnings'], ['Appeals', 'apply'], ['Courier help', 'apply']].map(([t, k]) => ({ t, go: this.go(k) })) },
+        { h: 'Farroute', links: [['About', 'landing'], ['FAQ', 'rules'], ['Download soon', 'account']].map(([t, k]) => ({ t, go: this.go(k) })) }
       ],
       goTop: () => { this.setState({ screen: 'landing', heroTab: 'order' }); window.scrollTo({ top: 0, behavior: 'smooth' }); },
       isRules: s.screen === 'rules', isLanding: s.screen === 'landing', isQuote: s.screen === 'quote', isTracking: s.screen === 'tracking', isApply: s.screen === 'apply',
