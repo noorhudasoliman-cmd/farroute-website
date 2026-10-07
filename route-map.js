@@ -304,7 +304,7 @@
         var T0 = tgt(P0), pa = T0.pa, pb = T0.pb, k = T0.k, tx = T0.tx, ty = T0.ty, myTok = tok;
         var k0 = K, x0 = TX, y0 = TY, t0 = performance.now(), dur = reduce ? 0 : 680;
         var hp = self._src && k > 1.25 ? self._hiFetch(pfor(T0), w, h) : null;
-        [0, 1].forEach(function (o) { var NT = tgt(PAIRS[(idx + o) % PAIRS.length]); if (self._src && NT.k > 1.25) self._hiFetch(pfor(NT), w, h); });
+        [0].forEach(function (o) { var NT = tgt(PAIRS[(idx + o) % PAIRS.length]); if (self._src && NT.k > 1.25) self._hiFetch(pfor(NT), w, h); });
         ov.innerHTML = defs;
         if (sharp) { var old = sharp; sharp = null; old.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 250, fill: 'forwards' }).onfinish = function () { old.remove(); }; }
         var step = function (now) {
