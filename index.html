@@ -6,6 +6,12 @@
 <script src="./support.js"></script>
 </head>
 <body>
+<form name="contact" data-netlify="true" netlify-honeypot="bot-field" hidden="">
+  <input type="text" name="bot-field" />
+  <input type="text" name="name" />
+  <input type="email" name="email" />
+  <textarea name="message"></textarea>
+</form>
 <x-dc>
 <helmet>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -72,7 +78,6 @@ input,select,button,textarea{font:inherit;color:inherit}
           <button onClick="{{ t.go }}" style="background:none;border:0;border-bottom:3px solid {{ t.bar }};padding:3px 14px 0;font-size:15px;font-weight:600;color:{{ t.color }};cursor:pointer;white-space:nowrap" style-hover="color:var(--ink)">{{ t.label }}</button>
         </sc-for>
         <div style="display:flex;align-items:center;gap:8px;padding-left:12px;flex-shrink:0">
-          <button onClick="{{ goDownload }}" style="height:42px;background:#2B211B;color:#F4EBDC;border:1.5px solid #2B211B;border-radius:8px;padding:0 16px;cursor:pointer;font-weight:700;font-size:15px;white-space:nowrap" style-hover="background:#2E5AAC;border-color:#2E5AAC">{{ downloadLabel }}</button>
           <button onClick="{{ goAccount }}" style="height:42px;background:transparent;color:var(--ink);border:1.5px solid var(--ink);border-radius:8px;padding:0 14px;cursor:pointer;font-weight:600;font-size:15px;white-space:nowrap" style-hover="border-color:#2E5AAC;color:#2E5AAC">Create account</button>
           <button onClick="{{ goApply }}" style="height:42px;background:transparent;color:var(--ink);border:1.5px solid var(--ink);border-radius:8px;padding:0 14px;cursor:pointer;font-weight:600;font-size:15px;white-space:nowrap" style-hover="border-color:#2E5AAC;color:#2E5AAC">Become a courier</button>
         </div>
@@ -84,7 +89,7 @@ input,select,button,textarea{font:inherit;color:inherit}
 
     <sc-if value="{{ isLanding }}" hint-placeholder-val="{{ true }}">
       <section data-screen-label="Place order" style="display:flex;flex-direction:column;background:var(--card)">
-        <div style="position:relative;width:100%;aspect-ratio:1.62 / 1;background:#FBF6EE;color:#2B211B;overflow:hidden;border-bottom:1px solid var(--line)">
+        <div style="position:relative;width:100%;aspect-ratio:2.2 / 1;max-height:46vh;background:#FBF6EE;color:#2B211B;overflow:hidden;border-bottom:1px solid var(--line)">
           <sc-if value="{{ showMaps }}" hint-placeholder-val="{{ true }}">
             <div style="position:absolute;inset:0">
             <x-import component-from-global-scope="route-map" from="./route-map.js" stops="{{ landingStops }}" mode="{{ landingMode }}" highlight="{{ landingHl }}" style="position:absolute;inset:0" hint-size="100%,100%"></x-import>
@@ -97,65 +102,18 @@ input,select,button,textarea{font:inherit;color:inherit}
           
         </div>
 
-        <div style="width:100%;max-width:760px;margin:0 auto;box-sizing:border-box;background:var(--card);padding:32px clamp(20px,4vw,48px) 44px;display:flex;flex-direction:column;gap:24px">
-          <div style="display:flex;flex-direction:column;gap:10px">
-          </div>
-          <form onSubmit="{{ submitOrder }}" style="display:flex;flex-direction:column;gap:24px">
-            <div style="display:flex;flex-direction:column;gap:10px">
-              <span style="font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">Route</span>
-              <div style="position:relative;border:1px solid var(--line);border-radius:14px;background:var(--paper);padding:4px 18px">
-                <span style="position:absolute;left:26px;top:36px;bottom:36px;border-left:2px dotted var(--muted);opacity:.7"></span>
-                <label style="display:grid;grid-template-columns:18px 1fr;gap:14px;align-items:center;border-bottom:1px solid var(--line)">
-                  <span style="width:14px;height:14px;border-radius:50%;border:2.5px solid #2E5AAC;background:var(--paper);position:relative;justify-self:center;box-sizing:border-box"></span>
-                  <input value="{{ link }}" onChange="{{ onLink }}" type="url" inputmode="url" placeholder="Paste a product link" aria-label="Product link" style="height:62px;border:0;background:transparent;font-size:17px;outline:none;min-width:0"></input>
-                </label>
-                <label style="display:grid;grid-template-columns:18px 1fr;gap:14px;align-items:center">
-                  <svg viewBox="0 0 16 20" style="width:16px;height:20px;justify-self:center;position:relative"><path d="M8 19 C8 19 1 11.5 1 7.5 A7 7 0 0 1 15 7.5 C15 11.5 8 19 8 19 Z" style="fill:#2E5AAC"></path><circle cx="8" cy="7.5" r="2.6" style="fill:var(--paper)"></circle></svg>
-                  <select value="{{ dest }}" onChange="{{ onDest }}" aria-label="Deliver to" style="height:62px;border:0;background:transparent;font-size:17px;outline:none;min-width:0;cursor:pointer">
-                    <option value="">Deliver to</option><sc-for list="{{ destinations }}" as="d" hint-placeholder-count="6"><option value="{{ d }}">{{ d }}</option></sc-for>
-                  </select>
-                </label>
-              </div>
+        <div style="width:100%;max-width:760px;margin:0 auto;box-sizing:border-box;background:var(--card);padding:26px clamp(20px,4vw,48px) 40px;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center">
+          <span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Farroute launches December 15, 2026</span>
+          <h1 style="margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(27px,4.2vw,40px);line-height:1.04;letter-spacing:-0.025em;text-wrap:balance;max-width:16em">We create routes, you order anywhere.</h1>
+          <sc-if value="{{ preLaunch }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+              <div style="min-width:78px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-weight:700;font-stretch:87.5%;font-size:34px;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">{{ cdDays }}</span><span style="font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Days</span></div>
+              <div style="min-width:78px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-weight:700;font-stretch:87.5%;font-size:34px;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">{{ cdHours }}</span><span style="font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Hours</span></div>
+              <div style="min-width:78px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-weight:700;font-stretch:87.5%;font-size:34px;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">{{ cdMins }}</span><span style="font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Minutes</span></div>
+              <div style="min-width:78px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-weight:700;font-stretch:87.5%;font-size:34px;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">{{ cdSecs }}</span><span style="font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Seconds</span></div>
             </div>
-
-            <div style="display:flex;flex-direction:column;gap:10px">
-              <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
-                <span style="font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">Parcel size</span>
-              </div>
-              <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
-                <sc-for list="{{ sizes }}" as="z" hint-placeholder-count="3">
-                  <button type="button" onClick="{{ z.pick }}" style="position:relative;background:var(--card);border:1.5px solid {{ z.border }};border-radius:12px;padding:16px 8px 12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--ink)" style-hover="border-color:#2E5AAC">
-                    <sc-if value="{{ z.detected }}"><span style="position:absolute;top:8px;left:8px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#F4EBDC;background:#2E5AAC;border-radius:4px;padding:2px 5px">Detected</span></sc-if>
-                    <div style="height:66px;display:flex;align-items:flex-end;justify-content:center"><svg viewBox="0 0 40 40" style="width:{{ z.px }};height:{{ z.px }}"><use href="#bx"></use></svg></div>
-                    <span style="font-weight:700;font-size:16px">{{ z.name }}</span>
-                    <span style="font-size:12px;color:var(--muted)">{{ z.kg }}</span>
-                  </button>
-                </sc-for>
-              </div>
-            </div>
-
-            <sc-if value="{{ blocked }}" hint-placeholder-val="{{ false }}">
-              <div style="border:1.5px solid var(--routeInk);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:6px">
-                <span style="font-size:15px;font-weight:700;color:var(--routeInk)">Farroute cannot deliver this item to {{ dest }}.</span>
-                <span style="font-size:14px;line-height:1.45">{{ blockReason }}</span>
-                <button type="button" onClick="{{ goRules }}" style="align-self:flex-start;background:none;border:0;padding:0;font-size:13px;font-weight:600;text-decoration:underline;text-decoration-color:#2E5AAC;text-underline-offset:3px;cursor:pointer">See the shipping rules for {{ dest }}</button>
-              </div>
-              <button type="button" disabled="" style="height:60px;border:0;border-radius:12px;background:var(--line);color:var(--muted);font-weight:700;font-size:18px;cursor:not-allowed">This item cannot be routed</button>
-            </sc-if>
-            <sc-if value="{{ notBlocked }}" hint-placeholder-val="{{ true }}">
-              <sc-if value="{{ hasLink }}" hint-placeholder-val="{{ false }}">
-                <div style="border-top:1.5px dashed var(--line);padding-top:18px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;align-items:end">
-                  <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:13px;color:var(--muted)">Delivered price to {{ dest }}</span><span style="font-weight:700;font-stretch:87.5%;font-size:40px;line-height:1;letter-spacing:-0.02em">{{ price }}</span></div>
-                  <div style="display:flex;flex-direction:column;gap:4px;text-align:right"><span style="font-size:13px;color:var(--muted)">Arrives</span><span style="font-weight:600;font-size:17px;white-space:nowrap">{{ arrival }}</span></div>
-                </div>
-              </sc-if>
-              <button type="submit" style="height:60px;border:0;border-radius:12px;background:#2B211B;color:#F4EBDC;font-weight:700;font-stretch:87.5%;font-size:22px;cursor:pointer" style-hover="background:#2E5AAC">Create a route</button>
-              <div style="display:flex;gap:10px;align-items:flex-start;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 14px">
-                <span style="width:8px;height:8px;border-radius:50%;background:#2E5AAC;margin-top:6px;flex-shrink:0"></span>
-                <span style="font-size:13px;line-height:1.45">Orders open on December 15, 2026.</span>
-              </div>
-            </sc-if>
-          </form>
+          </sc-if>
+          <button onClick="{{ goDownload }}" style="height:60px;border:0;border-radius:12px;background:#2B211B;color:#F4EBDC;font-weight:700;font-stretch:87.5%;font-size:20px;padding:0 36px;cursor:pointer" style-hover="background:#2E5AAC">{{ downloadLabel }}</button>
         </div>
 
       </section>
@@ -167,8 +125,8 @@ input,select,button,textarea{font:inherit;color:inherit}
               <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px">
               <div style="position:relative;align-self:stretch;display:flex;justify-content:center"><span style="width:52px;height:52px;border-radius:50%;border:1px solid var(--line);background:var(--paper);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" style="width:26px;height:26px;fill:none;stroke:var(--ink);stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"></path><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"></path></svg></span><div style="position:absolute;top:50%;left:calc(50% + 36px);width:calc(100% - 46px);transform:translateY(-50%);display:flex;align-items:center;pointer-events:none"><span style="width:6px;height:6px;border-radius:50%;background:var(--ink);flex-shrink:0"></span><span style="flex:1;min-width:16px;height:1.5px;margin:0 -4px 0 -6px;background-image:repeating-linear-gradient(90deg,var(--ink) 0 6px,transparent 6px 11px);opacity:.55"></span><svg viewBox="0 0 12 12" style="width:12px;height:12px;flex-shrink:0;fill:none;stroke:var(--ink);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round"><path d="M3.5 1.5 8.5 6l-5 4.5"></path></svg></div></div>
               <div style="display:flex;flex-direction:column;gap:8px">
-                <span style="font-weight:600;font-size:20px;line-height:1.2;color:var(--ink);text-wrap:pretty">You paste the product <span style="color:var(--routeInk)">link</span>.</span>
-                <span style="font-size:15px;line-height:1.5;color:var(--muted);text-wrap:pretty">Farroute shows one delivery price and an estimated customs quote.</span>
+                <span style="font-weight:600;font-size:20px;line-height:1.2;color:var(--ink);text-wrap:pretty">Error (<span style="color:var(--routeInk)">in the blue</span>): Does not ship to your country</span>
+                <span style="font-size:15px;line-height:1.5;color:var(--muted);text-wrap:pretty">You receive an error message at checkout and Farroute provides you with a delivery price and customs estimate.</span>
               </div>
             </div>
               <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px">
@@ -199,136 +157,46 @@ input,select,button,textarea{font:inherit;color:inherit}
         </div>
       </section>
 
-      <section data-screen-label="Price and duties" style="max-width:1180px;margin:0 auto;padding:72px 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:20px;align-items:stretch">
-        <div style="background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column">
-          <div style="height:10px;background:repeating-linear-gradient(135deg,#2E5AAC 0 14px,var(--card) 14px 22px,#2B211B 22px 36px,var(--card) 36px 44px)"></div>
-          <div style="padding:28px;display:flex;flex-direction:column;gap:18px;flex:1">
-            <div style="display:flex;justify-content:space-between;gap:12px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted)"><span>SAMPLE QUOTE</span><span>COLUMBUS, US → {{ destCode }}</span></div>
-            <span style="font-size:15px;color:var(--muted)">Trail running shoes, delivered to {{ dest }}</span>
-            <div style="display:flex;flex-direction:column;gap:14px;border-top:1.5px dashed var(--line);padding-top:16px">
-              <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 16px;align-items:baseline">
-                <span style="font-size:15px;font-weight:600">Item price</span>
-                <span style="font-size:15px;font-variant-numeric:tabular-nums;text-align:right">US$112.00</span>
-                <span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted)">Listed price at the store</span>
-              </div>
-              <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 16px;align-items:baseline">
-                <span style="font-size:15px;font-weight:600">Sales tax</span>
-                <span style="font-size:15px;font-variant-numeric:tabular-nums;text-align:right">US$8.96</span>
-                <span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted)">8% of US$112.00, charged by the store</span>
-              </div>
-              <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 16px;align-items:baseline">
-                <span style="font-size:15px;font-weight:600">Local courier</span>
-                <span style="font-size:15px;font-variant-numeric:tabular-nums;text-align:right">US$14.00</span>
-                <span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted)">Buys the item and posts the parcel</span>
-              </div>
-              <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 16px;align-items:baseline">
-                <span style="font-size:15px;font-weight:600">International shipping</span>
-                <span style="font-size:15px;font-variant-numeric:tabular-nums;text-align:right">US$24.50</span>
-                <span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted)">1.2 kg, Columbus to {{ dest }}, tracked</span>
-              </div>
-              <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 16px;align-items:baseline">
-                <span style="font-size:15px;font-weight:600">Farroute service fee</span>
-                <span style="font-size:15px;font-variant-numeric:tabular-nums;text-align:right">US$4.99</span>
-                <span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted)">Flat fee per order</span>
-              </div>
-              <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:baseline;border-top:1px solid var(--line);padding-top:12px">
-                <span style="font-size:14px;color:var(--muted)">Subtotal</span>
-                <span style="font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums">US$164.45</span>
-              </div>
-              <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 16px;align-items:baseline">
-                <span style="font-size:15px;font-weight:600">Payment processing</span>
-                <span style="font-size:15px;font-variant-numeric:tabular-nums;text-align:right">US$3.95</span>
-                <span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted)">2.4% of US$164.45</span>
-              </div>
+
+
+
+      <section id="contact" data-screen-label="Contact" style="background:var(--card);border-top:1px solid var(--line)">
+        <div style="max-width:1180px;margin:0 auto;padding:64px 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:40px;align-items:start">
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <h2 style="margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(30px,4.5vw,46px);line-height:1.02;letter-spacing:-0.025em">Contact us</h2>
+            <p style="margin:0;font-size:17px;line-height:1.55;color:var(--muted);max-width:32em">Send a message and we will reply by email. You can also reach us directly.</p>
+            <div style="display:flex;flex-direction:column;gap:10px;padding-top:4px">
+              <a href="mailto:contactus@farroute.com" style="font-size:17px;font-weight:600;text-decoration:none;color:var(--routeInk)">contactus@farroute.com</a>
+              <a href="tel:+16472015591" style="font-size:17px;font-weight:600;text-decoration:none;color:var(--routeInk)">+1 647 201 5591</a>
             </div>
-            <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:end;border-top:1.5px dashed var(--line);padding-top:16px">
-              <span style="font-weight:600;font-size:16px">Total charged</span>
-              <span style="font-weight:700;font-stretch:87.5%;font-size:clamp(40px,6vw,56px);line-height:.95;letter-spacing:-0.03em;font-variant-numeric:tabular-nums">US$168.40</span>
+          </div>
+          <sc-if value="{{ contactOpen }}" hint-placeholder-val="{{ true }}">
+            <form onSubmit="{{ submitContact }}" style="display:flex;flex-direction:column;gap:14px">
+              <label style="display:flex;flex-direction:column;gap:6px">
+                <span style="font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">Your name</span>
+                <input value="{{ cName }}" onChange="{{ onCName }}" name="name" required="" style="height:52px;border:1px solid var(--line);border-radius:10px;background:var(--paper);padding:0 14px;font-size:16px;outline:none;color:var(--ink)"></input>
+              </label>
+              <label style="display:flex;flex-direction:column;gap:6px">
+                <span style="font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">Your email</span>
+                <input value="{{ cEmail }}" onChange="{{ onCEmail }}" name="email" type="email" required="" style="height:52px;border:1px solid var(--line);border-radius:10px;background:var(--paper);padding:0 14px;font-size:16px;outline:none;color:var(--ink)"></input>
+              </label>
+              <label style="display:flex;flex-direction:column;gap:6px">
+                <span style="font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">Message</span>
+                <textarea value="{{ cMsg }}" onChange="{{ onCMsg }}" name="message" rows="5" required="" style="border:1px solid var(--line);border-radius:10px;background:var(--paper);padding:12px 14px;font-size:16px;outline:none;resize:vertical;font-family:inherit;color:var(--ink)"></textarea>
+              </label>
+              <sc-if value="{{ contactFailed }}"><span style="font-size:14px;line-height:1.45;color:var(--routeInk)">That did not send. Please email contactus@farroute.com instead.</span></sc-if>
+              <button type="submit" style="height:56px;border:0;border-radius:10px;background:#2B211B;color:#F4EBDC;font-weight:700;font-size:17px;cursor:pointer;align-self:flex-start;padding:0 30px" style-hover="background:#2E5AAC">Send message</button>
+            </form>
+          </sc-if>
+          <sc-if value="{{ contactSent }}" hint-placeholder-val="{{ false }}">
+            <div style="border:1.5px solid var(--ok);background:var(--okBg);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:6px">
+              <span style="font-weight:700;font-size:18px;color:var(--ok)">Message sent</span>
+              <span style="font-size:15px;line-height:1.5">Thank you. We will reply to you by email.</span>
             </div>
-            <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:baseline;background:var(--paper);border-radius:10px;padding:12px 14px">
-              <span style="font-size:14px;line-height:1.45">Customs duties and import taxes<br><span style="color:var(--muted)">Set by customs in {{ dest }}. Paid to the carrier on arrival.</span></span>
-              <span style="font-size:14px;color:var(--muted);white-space:nowrap">Not included</span>
-            </div>
-            <div style="margin-top:auto;height:34px;background:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 4px,var(--ink) 4px 7px,transparent 7px 9px,var(--ink) 9px 10px,transparent 10px 13px);opacity:.85"></div>
-          </div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:20px">
-          <div style="display:flex;flex-direction:column;gap:12px">
-            <span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--routeInk)">The price, plainly</span>
-            <h2 style="margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(32px,5vw,52px);line-height:1;letter-spacing:-0.025em">The price at checkout is the price charged.</h2>
-            <p style="margin:0;font-size:16px;line-height:1.55;color:var(--muted)">Every line of the price is shown before payment, with the calculation behind each line. Farroute does not add fees after payment.</p>
-          </div>
-          <div style="background:#2B211B;color:#F4EBDC;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:10px">
-            <span style="font-weight:600;font-size:18px">Customs duties are separate, and are yours to pay.</span>
-            <span style="font-size:15px;line-height:1.55;opacity:.85">Customs in {{ dest }} sets duties and import taxes on every parcel. The carrier collects the amount from you on arrival. Farroute declares the full value of every item and does not estimate, reduce or collect duties.</span>
-          </div>
+          </sc-if>
         </div>
       </section>
 
-      <section data-screen-label="Coverage" style="background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
-        <div style="max-width:1180px;margin:0 auto;padding:72px 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:36px;align-items:start">
-          <div style="display:flex;flex-direction:column;gap:14px">
-            <span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--routeInk)">Where Farroute delivers</span>
-            <h2 style="margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(32px,5vw,52px);line-height:1;letter-spacing:-0.025em">Check a route before ordering.</h2>
-            <label style="display:flex;flex-direction:column;gap:6px;max-width:320px;margin-top:6px">
-              <span style="font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">Your country</span>
-              <select value="{{ dest }}" onChange="{{ onDest }}" style="height:54px;border:1.5px solid var(--line);border-radius:10px;padding:0 12px;background:var(--paper);font-size:16px">
-                <option value="">Deliver to</option><sc-for list="{{ destinations }}" as="d" hint-placeholder-count="6"><option value="{{ d }}">{{ d }}</option></sc-for>
-              </select>
-            </label>
-            <span style="font-size:14px;line-height:1.5;color:var(--muted)">Arrival times count from the day a courier accepts the job. New countries open as couriers join.</span>
-          </div>
-          <div style="border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--paper)">
-            <div style="display:grid;grid-template-columns:1fr auto;gap:12px;padding:12px 18px;font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.08em;color:var(--muted);border-bottom:1px solid var(--line)"><span>BUY FROM</span><span style="white-space:nowrap">TO {{ destCode }}</span></div>
-            <sc-for list="{{ coverage }}" as="c" hint-placeholder-count="5">
-              <div style="display:grid;grid-template-columns:1fr auto;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line);align-items:center">
-                <div style="display:flex;flex-direction:column;gap:2px"><span style="font-weight:600;font-size:16px">{{ c.from }}</span><span style="font-size:13px;color:var(--muted)">{{ c.couriers }}</span></div>
-                <span style="font-weight:700;font-stretch:87.5%;font-size:18px;white-space:nowrap">{{ c.days }}</span>
-              </div>
-            </sc-for>
-          </div>
-        </div>
-      </section>
-
-      <section data-screen-label="Courier recruitment" style="background:#2B211B;color:#F4EBDC">
-        <div style="max-width:1180px;margin:0 auto;padding:72px 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:44px;align-items:center">
-          <div style="display:flex;flex-direction:column;gap:18px">
-            <span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#C9A274">For couriers</span>
-            <h2 style="margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(34px,5.5vw,56px);line-height:1;letter-spacing:-0.025em">Earn by shipping from where you live.</h2>
-            <p style="margin:0;font-size:17px;line-height:1.55;opacity:.85">Farroute pays for every item and every shipping label, so a courier never spends personal money on a job. Couriers pick the jobs they want and see the full pay before accepting.</p>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px">
-              <sc-for list="{{ courierFacts }}" as="f" hint-placeholder-count="4">
-                <div style="border:1px solid rgba(244,241,234,.2);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:6px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#C9A274">{{ f.n }}</span><span style="font-size:14px;line-height:1.45">{{ f.t }}</span></div>
-              </sc-for>
-            </div>
-            <button onClick="{{ goApply }}" style="align-self:flex-start;height:54px;border:0;border-radius:10px;background:#2B211B;color:#F4EBDC;font-weight:700;font-size:17px;padding:0 24px;cursor:pointer" style-hover="background:#2E5AAC">Apply to be a courier</button>
-          </div>
-          <div style="display:flex;justify-content:center">
-            <div style="width:290px;border-radius:36px;background:#000000;padding:12px;box-shadow:0 30px 60px rgba(0,0,0,.4)">
-              <div style="border-radius:26px;background:#F4EBDC;color:#2B211B;padding:22px 18px;display:flex;flex-direction:column;gap:14px">
-                <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:700;font-stretch:87.5%;font-size:17px">Earnings</span><svg style="width:40px;height:26px;color:#2B211B"><use href="#fr"></use></svg></div>
-                <div style="background:#FBF6EE;border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:4px">
-                  <span style="font-size:12px;color:#5E574E">Next payout · Friday, Sep 25</span>
-                  <span style="font-weight:700;font-stretch:87.5%;font-size:38px;line-height:1">US$118.75</span>
-                  <span style="font-size:12px;color:#5E574E">Pending</span>
-                </div>
-                <div style="background:#E4ECDF;color:#1F6B4A;border-radius:12px;padding:12px;font-size:13px;font-weight:600">Job FR-2190 complete. US$19.80 added.</div>
-                <div style="display:flex;flex-direction:column;gap:8px">
-                  <div style="background:#FBF6EE;border-radius:12px;padding:12px;display:flex;justify-content:space-between;font-size:13px"><span>Hardcover cookbook</span><span style="font-weight:700">US$22.40</span></div>
-                  <div style="background:#FBF6EE;border-radius:12px;padding:12px;display:flex;justify-content:space-between;font-size:13px"><span>Wireless earbuds</span><span style="font-weight:700">US$26.10</span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section style="background:#C9A274;color:#2B211B">
-        <div style="max-width:1180px;margin:0 auto;padding:56px 20px;display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between">
-          <h2 style="margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(36px,6vw,64px);line-height:.95;letter-spacing:-0.03em">Route anything.</h2>
-          <button onClick="{{ goTop }}" style="height:56px;border:0;border-radius:10px;background:#2B211B;color:#F4EBDC;font-weight:700;font-size:17px;padding:0 24px;cursor:pointer" style-hover="background:#000000">Paste a product link</button>
-        </div>
-      </section>
     </sc-if>
 
     <sc-if value="{{ isRules }}" hint-placeholder-val="{{ false }}">
@@ -765,6 +633,14 @@ input,select,button,textarea{font:inherit;color:inherit}
               <option value="">Deliver to</option><sc-for list="{{ destinations }}" as="d" hint-placeholder-count="6"><option value="{{ d }}">{{ d }}</option></sc-for>
             </select>
             <input placeholder="Create a password" type="password" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
+            <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;padding:2px 0">
+              <input type="checkbox" checked="{{ remindMe }}" onChange="{{ onRemindMe }}" style="width:18px;height:18px;margin-top:2px;accent-color:#2E5AAC;cursor:pointer"></input>
+              <span style="font-size:15px;line-height:1.45">Remind me on launch day, December 15, 2026.</span>
+            </label>
+            <sc-if value="{{ googleReady }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:12px;padding:2px 0"><span style="height:1px;background:var(--line);flex:1"></span><span style="font-size:13px;color:var(--muted)">or</span><span style="height:1px;background:var(--line);flex:1"></span></div>
+              <div id="g-signin" style="display:flex;justify-content:center;min-height:44px"></div>
+            </sc-if>
             <button onClick="{{ submitAccount }}" style="height:56px;border:0;border-radius:10px;background:#2B211B;color:#F4EBDC;font-weight:700;font-size:17px;cursor:pointer" style-hover="background:#2E5AAC">Create account</button>
           </sc-if>
           <sc-if value="{{ accountDone }}" hint-placeholder-val="{{ false }}">
@@ -883,24 +759,34 @@ input,select,button,textarea{font:inherit;color:inherit}
           </div>
         </sc-for>
       </div>
-      <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:24px">
-        <span style="font-size:13px;color:var(--muted)">Farroute handles payment, pricing and courier matching. Customs duties are set and collected by the destination country.</span>
-        <div style="border:2px solid var(--routeInk);color:var(--routeInk);border-radius:6px;padding:4px;transform:rotate(-4deg)">
-          <div style="border:1px solid var(--routeInk);border-radius:3px;padding:8px 14px;display:flex;flex-direction:column;align-items:center;gap:2px">
-            <span style="font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.14em">FARROUTE · 2026</span>
-            <span style="font-weight:700;font-stretch:87.5%;font-size:16px;letter-spacing:.02em;text-transform:uppercase">Routes where none exist.</span>
-          </div>
-        </div>
-      </div>
     </div>
   </footer>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Light&quot;,&quot;Dark&quot;],&quot;default&quot;:&quot;Light&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;startScreen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;landing&quot;,&quot;quote&quot;,&quot;tracking&quot;,&quot;apply&quot;,&quot;earnings&quot;,&quot;jobs&quot;,&quot;job&quot;,&quot;active&quot;],&quot;default&quot;:&quot;landing&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+// Paste the OAuth client ID from the Google Cloud console here to switch on
+// Google sign in. While this is empty the button is not rendered at all.
+const GOOGLE_CLIENT_ID = '';
+
 class Component extends DCLogic {
-  state = { screen: this.props.startScreen || 'landing', link: '', dest: '', heroTab: 'order', size: 0, faq: 0, sizeManual: null, trackStage: 8, adminRange: 'Month', appDecisions: {}, assigned: {}, assignPick: {}, jobIdx: 0, step: 1, reason: '', appealSent: false, completed: false, applied: false };
-  componentDidMount() { this.theme(); }
-  componentDidUpdate() { this.theme(); }
+  state = { screen: this.props.startScreen || 'landing', link: '', dest: '', heroTab: 'order', size: 0, faq: 0, sizeManual: null, trackStage: 8, adminRange: 'Month', appDecisions: {}, assigned: {}, assignPick: {}, jobIdx: 0, step: 1, reason: '', appealSent: false, completed: false, applied: false, now: Date.now() };
+  componentDidMount() { this.theme(); this._tick = setInterval(() => this.setState({ now: Date.now() }), 1000); this.google(); }
+  google() {
+    if (!GOOGLE_CLIENT_ID) return;
+    const draw = () => {
+      const el = document.getElementById('g-signin');
+      if (!el || !window.google || el.childElementCount) return;
+      window.google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: r => this.setState({ accountDone: true, googleToken: r.credential }) });
+      window.google.accounts.id.renderButton(el, { theme: 'outline', size: 'large', width: 320, text: 'continue_with' });
+    };
+    if (window.google) return draw();
+    if (document.getElementById('gsi')) return;
+    const sc = document.createElement('script');
+    sc.id = 'gsi'; sc.src = 'https://accounts.google.com/gsi/client'; sc.async = true; sc.defer = true;
+    sc.onload = draw; document.head.appendChild(sc);
+  }
+  componentWillUnmount() { clearInterval(this._tick); }
+  componentDidUpdate() { this.theme(); this.google(); }
   theme() { document.body.dataset.theme = this.props.theme === 'Dark' ? 'dark' : 'light'; }
   go = (screen, extra = {}) => () => { this.setState({ screen, ...extra }); window.scrollTo(0, 0); };
 
@@ -1033,10 +919,37 @@ class Component extends DCLogic {
       const unassigned = 9 - Object.keys(s.assigned).length;
       const Q = s.adminRange === 'Quarter';
       const ringDefs = Q ? [['Delivered', 2688, .79, 'var(--ok)'], ['In transit', 578, .17, '#2E5AAC'], ['Refunded', 136, .04, 'var(--muted)']] : [['Delivered', 1021, .79, 'var(--ok)'], ['In transit', 214, .17, '#2E5AAC'], ['Refunded', 49, .04, 'var(--muted)']];
+      // Counts down to launch. The clock above ticks once a second.
+      const LAUNCH = new Date('2026-12-15T00:00:00').getTime();
+      const left = Math.max(0, LAUNCH - (s.now || Date.now()));
+      const pad2 = n => String(n).padStart(2, '0');
       return {
+        cdDays: String(Math.floor(left / 86400000)),
+        cdHours: pad2(Math.floor(left / 3600000) % 24),
+        cdMins: pad2(Math.floor(left / 60000) % 60),
+        cdSecs: pad2(Math.floor(left / 1000) % 60),
+        preLaunch: left > 0,
+        remindMe: s.remindMe !== false,
+        onRemindMe: e => this.setState({ remindMe: e.target.checked }),
+        googleReady: !!GOOGLE_CLIENT_ID,
+        cName: s.cName || '', cEmail: s.cEmail || '', cMsg: s.cMsg || '',
+        onCName: e => this.setState({ cName: e.target.value }),
+        onCEmail: e => this.setState({ cEmail: e.target.value }),
+        onCMsg: e => this.setState({ cMsg: e.target.value }),
+        contactOpen: !s.contactSent, contactSent: !!s.contactSent, contactFailed: !!s.contactFailed,
+        // Posts to the host's own form handling. A failure is shown rather than
+        // swallowed, so nobody is told a message was sent when it was not.
+        submitContact: e => {
+          e.preventDefault();
+          const body = new URLSearchParams({ 'form-name': 'contact', name: s.cName || '', email: s.cEmail || '', message: s.cMsg || '' });
+          this.setState({ contactFailed: false });
+          fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body.toString() })
+            .then(r => this.setState(r.ok ? { contactSent: true } : { contactFailed: true }))
+            .catch(() => this.setState({ contactFailed: true }));
+        },
         courierBg: (s.screen === 'apply' || courierScreens.includes(s.screen)) ? '#2E5AAC' : 'var(--ink)',
         courierFg: (s.screen === 'apply' || courierScreens.includes(s.screen)) ? '#F4EBDC' : 'var(--paper)',
-        navTabs: [['Place order', 'landing'], ['FAQ', 'rules']].map(([label, k]) => { const on = s.screen === k || (k === 'apply' && courierScreens.includes(s.screen)) || (k === 'landing' && s.screen === 'quote'); return { label, go: this.go(k), color: on ? 'var(--routeInk)' : 'var(--muted)', bar: on ? '#2E5AAC' : 'transparent' }; }),
+        navTabs: [['Home', 'landing']].map(([label, k]) => { const on = s.screen === k || (k === 'apply' && courierScreens.includes(s.screen)) || (k === 'landing' && s.screen === 'quote'); return { label, go: this.go(k), color: on ? 'var(--routeInk)' : 'var(--muted)', bar: on ? '#2E5AAC' : 'transparent' }; }),
         protoNav: [['Landing', 'landing'], ['FAQ', 'rules'], ['Quote', 'quote'], ['Tracking', 'tracking'], ['Courier apply', 'apply'], ['Earnings', 'earnings'], ['Jobs', 'jobs'], ['Job preview', 'job'], ['Active job', 'active'], ['Account', 'account'], ['Admin', 'admin']].map(([label, k]) => ({ label, go: this.go(k) })),
         downloadLabel: (new Date() >= new Date('2026-12-15T00:00:00')) ? 'Download now' : 'Download soon',
         goDownload: this.go('account'),
@@ -1116,9 +1029,9 @@ class Component extends DCLogic {
       coverage: [['United States', 214, 6], ['United Kingdom', 128, 7], ['Japan', 96, 8], ['Germany', 88, 7], ['South Korea', 61, 8]].map(([from, n, base]) => { const o = (dests.indexOf(s.dest) % 3); return { from, couriers: n + ' active couriers', days: (base + o) + ' to ' + (base + o + 3) + ' days' }; }),
       faqs: faqDefs.map((f, i) => ({ q: f[0], a: f[1], open: s.faq === i, sign: s.faq === i ? '\u2212' : '+', toggle: () => this.setState({ faq: s.faq === i ? -1 : i }) })),
       footerCols: [
-        { h: 'Customers', links: ['Order an item', 'Track an order', 'What can travel', 'Refunds'] },
+        { h: 'Customers', links: ['Order an item', 'Track an order', 'What can travel'] },
         { h: 'Couriers', links: ['Apply', 'Courier pay', 'Appeals', 'Courier help'] },
-        { h: 'Farroute', links: ['About', 'Customs and duties', 'Store partnerships', 'Privacy'] }
+        { h: 'Farroute', links: ['About', 'FAQ', 'Download soon'] }
       ],
       goTop: () => { this.setState({ screen: 'landing', heroTab: 'order' }); window.scrollTo({ top: 0, behavior: 'smooth' }); },
       isRules: s.screen === 'rules', isLanding: s.screen === 'landing', isQuote: s.screen === 'quote', isTracking: s.screen === 'tracking', isApply: s.screen === 'apply',
@@ -1128,7 +1041,7 @@ class Component extends DCLogic {
       arrival: arrivals[s.dest] || 'Estimated once a courier is matched',
       exclusions: ['Perfume', 'Aerosols', 'Loose batteries', 'Food', 'Oversized goods'],
       steps: [
-        { n: '1', who: '', lead: 'You paste the product ', t: 'link', tail: '.', d: 'Farroute shows one delivery price and an estimated customs quote.' },
+        { n: '1', who: '', lead: 'Error (', t: 'in the blue', tail: '): Does not ship to your country', d: 'You receive an error message at checkout and Farroute provides you with a delivery price and customs estimate.' },
         { n: '2', who: '', lead: 'Farroute connects you with a ', t: 'local courier', tail: '.', d: 'Within 1 hour, you will be connected with a local courier.' },
         { n: '3', who: '', lead: 'The parcel is ', t: 'forwarded', tail: ' to you.', d: 'You receive a tracking code from the international courier of your choice.' },
         { n: '4', who: '', lead: 'You ', t: 'receive', tail: ' your order.', d: 'Customs in your country assesses duties on arrival.' }
