@@ -168,6 +168,10 @@
           var sat = (hi && S2.dl) ? 0.15 : 0.32, gw = (hi && S2.dl) ? 0.05 : 0.12;
           var gp = Math.max(0, gl - rl) * gw; lr += sat * (rl - Ll) - gp * 0.2 + 0.012; lg += sat * (gl - Ll) + gp; lb += sat * (bl - Ll) - gp * 0.4 - 0.012;
           var ld = (L - 0.1) / 0.45; ld = ld < 0 ? 0 : ld > 1 ? 1 : Math.pow(ld, 0.8); var sr = 0.76 + 0.19 * ld + 0.3 * (r - L), sg = 0.81 + 0.135 * ld + 0.3 * (g - L), sb = 0.835 + 0.065 * ld + 0.3 * (b - L);
+          // A lake's water colour cannot come from the relief layer, which shows
+          // dry ground at that spot, so it would render pale grey. Lakes take a
+          // fixed water colour instead, matching the sea.
+          if (wet) { sr += (0.70 - sr) * wet; sg += (0.77 - sg) * wet; sb += (0.845 - sb) * wet; }
           var e = ey; var cr = sr + (lr - sr) * m, cg = sg + (lg - sg) * m, cb = sb + (lb - sb) * m;
           od[o4] = 255 * cr * e + BG[0] * (1 - e); od[o4 + 1] = 255 * cg * e + BG[1] * (1 - e); od[o4 + 2] = 255 * cb * e + BG[2] * (1 - e); od[o4 + 3] = 255;
         }
