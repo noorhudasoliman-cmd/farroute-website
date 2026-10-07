@@ -155,7 +155,7 @@
             // in this imagery, so without this they came out as dark ground.
             // Water is dark and blue leaning, woodland is dark and green
             // leaning, and that is what separates the two here.
-            var dk = (0.34 - Ll) / 0.14, bu = (bl - gl) * 10 + 0.25;
+            var dk = (0.26 - Ll) / 0.12, bu = (bl - gl) * 14 - 0.1;
             wet = (dk < 0 ? 0 : dk > 1 ? 1 : dk) * (bu < 0 ? 0 : bu > 1 ? 1 : bu);
           }
           var A = MA ? MA[o4 + 3] / 255 : 0.5, dm = Math.max(r, g) - b, m;
