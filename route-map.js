@@ -442,6 +442,10 @@
         if (this._stop) this._stop();
         this._idleKey = ik;
         this._idle(proj, w, h, reduce, P(this._f));
+        // The animated map clears the element as it sets up, so the licence
+        // credit has to go back afterwards here too. Without this the credit was
+        // absent from the home page, which is where the map is seen most.
+        if (this._cred) this.appendChild(this._cred);
         return;
       }
       if (this._stop) { this._stop(); this._stop = null; this._idleKey = null; }
