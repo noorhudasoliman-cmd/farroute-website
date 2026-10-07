@@ -82,8 +82,25 @@
         cr.style.cssText = 'position:absolute;right:7px;bottom:6px;z-index:6;font:10px/1.4 Archivo,system-ui,sans-serif;color:#5E574E;background:rgba(251,246,238,.78);padding:3px 8px;border-radius:8px;max-width:94%;text-align:right';
         cr.innerHTML = 'Land imagery EOxCloudless by EOX IT Services GmbH, contains modified Copernicus Sentinel data 2016, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener" style="color:#2E5AAC">CC BY 4.0</a>, colour modified. Relief NASA GIBS.';
         this._cred = cr;
+        // The home page map is taller than the window, so anchoring the credit
+        // to the foot of the element put it below the fold where a visitor
+        // never saw it. Keep it against the bottom edge of whatever part of the
+        // map is actually on screen.
+        var selfC = this, pend = 0;
+        var fit = function () {
+          pend = 0;
+          var r = selfC.getBoundingClientRect();
+          if (r.height <= 0) return;
+          var hidden = r.bottom - Math.min(r.bottom, window.innerHeight || r.bottom);
+          cr.style.bottom = (6 + Math.max(0, hidden)) + 'px';
+        };
+        this._fit = function () { if (!pend) pend = requestAnimationFrame(fit); };
+        addEventListener('scroll', this._fit, { passive: true });
+        addEventListener('resize', this._fit, { passive: true });
+        this._fit();
       }
       this.appendChild(this._cred);
+      if (this._fit) this._fit();
       var self = this;
       if (!this._ro) { this._ro = new ResizeObserver(function () { self.render(); }); this._ro.observe(this); }
       var go = function () {
@@ -445,7 +462,7 @@
         // The animated map clears the element as it sets up, so the licence
         // credit has to go back afterwards here too. Without this the credit was
         // absent from the home page, which is where the map is seen most.
-        if (this._cred) this.appendChild(this._cred);
+        if (this._cred) { this.appendChild(this._cred); if (this._fit) this._fit(); }
         return;
       }
       if (this._stop) { this._stop(); this._stop = null; this._idleKey = null; }
@@ -556,7 +573,7 @@
         });
       }
       // innerHTML above clears the element, so the licence credit is put back.
-      if (this._cred) this.appendChild(this._cred);
+      if (this._cred) { this.appendChild(this._cred); if (this._fit) this._fit(); }
     }
   }
   customElements.define('route-map', RouteMap);
