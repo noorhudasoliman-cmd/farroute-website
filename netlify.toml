@@ -2,12 +2,30 @@
 #
 # index.html is currently the design reference from the October handoff, not a
 # production build. The handoff README calls for recreating these screens in a
-# real codebase. One thing must still change before launch on December 15,
-# 2026: the map tiles have to be pre-rendered and self-hosted rather than
-# fetched from Wikimedia and NASA at runtime.
+# real codebase.
 [build]
   publish = "."
   command = ""
+
+# Land imagery proxy.
+#
+# The map draws land detail from the EOX s2cloudless 2016 mosaic, which is
+# CC BY 4.0 and so may be used commercially and recoloured, unlike the 2018
+# and later layers which are non-commercial. Requests go through this site
+# rather than straight to EOX, so visitors never hit their free rate-limited
+# service directly and responses can be cached at our own edge.
+#
+# Attribution is required and is rendered in the corner of the map itself.
+[[redirects]]
+  from = "/sat"
+  to = "https://tiles.maps.eox.at/wms"
+  status = 200
+  force = true
+
+[[headers]]
+  for = "/sat"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, immutable"
 
 [[headers]]
   for = "/*"

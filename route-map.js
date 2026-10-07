@@ -75,6 +75,15 @@
     static get observedAttributes() { return ['stops', 'at', 'mode', 'highlight']; }
     connectedCallback() {
       this.style.display = 'block'; this.style.width = '100%'; this.style.height = '100%'; this.style.position = 'relative';
+      // CC BY 4.0 requires the credit to be visible wherever the imagery is
+      // shown, to name the licence, and to state that the imagery was changed.
+      if (!this._cred) {
+        var cr = document.createElement('div');
+        cr.style.cssText = 'position:absolute;right:7px;bottom:6px;z-index:6;font:10px/1.4 Archivo,system-ui,sans-serif;color:#5E574E;background:rgba(251,246,238,.78);padding:3px 8px;border-radius:8px;max-width:94%;text-align:right';
+        cr.innerHTML = 'Land imagery EOxCloudless by EOX IT Services GmbH, contains modified Copernicus Sentinel data 2016, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener" style="color:#2E5AAC">CC BY 4.0</a>, colour modified. Relief NASA GIBS.';
+        this._cred = cr;
+      }
+      this.appendChild(this._cred);
       var self = this;
       if (!this._ro) { this._ro = new ResizeObserver(function () { self.render(); }); this._ro.observe(this); }
       var go = function () {
@@ -121,9 +130,9 @@
           var o4 = row + x * 4, lam = ok ? ((x + 0.5) / dpr - x0) / k : 999;
           if (ok) lam = ((lam + 180) % 360 + 360) % 360 - 180;
           if (!ok) { od[o4] = BG[0]; od[o4 + 1] = BG[1]; od[o4 + 2] = BG[2]; od[o4 + 3] = 255; continue; }
-          var cw, cd, v0, v1, fv, u;
+          var cw, cd, v0, v1, fv, u, hi = false;
           var lamH = (inH && S2.lon1 > 180 && lam < S2.lon0) ? lam + 360 : lam;
-          if (inH && lamH >= S2.lon0 && lamH <= S2.lon1) { cw = S2.w; cd = S2.d; v0 = hv0; v1 = hv1; fv = hfv; u = (lamH - S2.lon0) / (S2.lon1 - S2.lon0) * (cw - 1); }
+          if (inH && lamH >= S2.lon0 && lamH <= S2.lon1) { cw = S2.w; cd = S2.d; v0 = hv0; v1 = hv1; fv = hfv; u = (lamH - S2.lon0) / (S2.lon1 - S2.lon0) * (cw - 1); hi = true; }
           else { cw = sw; cd = sd; v0 = gv0; v1 = gv1; fv = gfv; u = (lam + 180) / 360 * (sw - 1); }
           var u0 = Math.floor(u), fu = u - u0, u1 = Math.min(u0 + 1, cw - 1);
           var i00 = (v0 * cw + u0) * 4, i10 = (v0 * cw + u1) * 4, i01 = (v1 * cw + u0) * 4, i11 = (v1 * cw + u1) * 4;
@@ -132,13 +141,24 @@
           var g = (cd[i00 + 1] * w00 + cd[i10 + 1] * w10 + cd[i01 + 1] * w01 + cd[i11 + 1] * w11) / 255;
           var b = (cd[i00 + 2] * w00 + cd[i10 + 2] * w10 + cd[i01 + 2] * w01 + cd[i11 + 2] * w11) / 255;
           var L = 0.3 * r + 0.55 * g + 0.15 * b;
+          // Land colour comes from the Sentinel-2 tile where one is loaded.
+          // That imagery is darker than the relief layer, so it is lifted to
+          // sit in the same tonal range before the brand grading runs.
+          var rl = r, gl = g, bl = b, Ll = L;
+          if (hi && S2.dl) {
+            var q = S2.dl, GN = 1.85;
+            rl = Math.min(1, (q[i00] * w00 + q[i10] * w10 + q[i01] * w01 + q[i11] * w11) / 255 * GN);
+            gl = Math.min(1, (q[i00 + 1] * w00 + q[i10 + 1] * w10 + q[i01 + 1] * w01 + q[i11 + 1] * w11) / 255 * GN);
+            bl = Math.min(1, (q[i00 + 2] * w00 + q[i10 + 2] * w10 + q[i01 + 2] * w01 + q[i11 + 2] * w11) / 255 * GN);
+            Ll = 0.3 * rl + 0.55 * gl + 0.15 * bl;
+          }
           var A = MA ? MA[o4 + 3] / 255 : 0.5, dm = Math.max(r, g) - b, m;
           if (A < 0.12) m = 0; else if (A > 0.88) m = 1; else { m = 12 * dm + 0.15; m = m < 0 ? 0 : m > 1 ? 1 : m; }
-          var t = Math.min(1, L * 1.3), lr, lg, lb, f;
+          var t = Math.min(1, Ll * 1.3), lr, lg, lb, f;
           if (t < 0.4) { f = t / 0.4; lr = 0.235 + 0.25 * f; lg = 0.18 + 0.21 * f; lb = 0.145 + 0.165 * f; }
           else if (t < 0.75) { f = (t - 0.4) / 0.35; lr = 0.485 + 0.27 * f; lg = 0.39 + 0.285 * f; lb = 0.31 + 0.26 * f; }
           else { f = (t - 0.75) / 0.25; lr = 0.755 + 0.2 * f; lg = 0.675 + 0.247 * f; lb = 0.57 + 0.293 * f; }
-          var gp = Math.max(0, g - r) * 0.12; lr += 0.32 * (r - L) - gp * 0.2 + 0.012; lg += 0.32 * (g - L) + gp; lb += 0.32 * (b - L) - gp * 0.4 - 0.012;
+          var gp = Math.max(0, gl - rl) * 0.12; lr += 0.32 * (rl - Ll) - gp * 0.2 + 0.012; lg += 0.32 * (gl - Ll) + gp; lb += 0.32 * (bl - Ll) - gp * 0.4 - 0.012;
           var ld = (L - 0.1) / 0.45; ld = ld < 0 ? 0 : ld > 1 ? 1 : Math.pow(ld, 0.8); var sr = 0.76 + 0.19 * ld + 0.3 * (r - L), sg = 0.81 + 0.135 * ld + 0.3 * (g - L), sb = 0.835 + 0.065 * ld + 0.3 * (b - L);
           var e = ey; var cr = sr + (lr - sr) * m, cg = sg + (lg - sg) * m, cb = sb + (lb - sb) * m;
           od[o4] = 255 * cr * e + BG[0] * (1 - e); od[o4 + 1] = 255 * cg * e + BG[1] * (1 - e); od[o4 + 2] = 255 * cb * e + BG[2] * (1 - e); od[o4 + 3] = 255;
@@ -177,33 +197,49 @@
 
       // The imagery service cannot serve a box that crosses 180, so a wrapped
       // frame is fetched as two boxes and stitched side by side into one tile.
-      var tile = function (a, b, wpx) {
+      // Two sources, because neither one alone is right. The relief layer is the
+      // only one that carries the seafloor, and Sentinel-2 cannot see underwater
+      // at all: over open ocean it reads almost black. So the sea keeps the
+      // relief layer and only the land is raised to Sentinel-2 detail.
+      var SEA = function (a, b, wpx) { return 'https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&LAYERS=BlueMarble_ShadedRelief_Bathymetry&SRS=EPSG:4326&FORMAT=image/jpeg&BBOX=' + [a, lat0, b, lat1].join(',') + '&WIDTH=' + wpx + '&HEIGHT=' + PH; };
+      // Proxied through this site so visitors never hit the imagery service
+      // directly and the responses can be cached at our own edge.
+      var LAND = function (a, b, wpx) { return '/sat?service=WMS&version=1.1.1&request=GetMap&layers=s2cloudless&srs=EPSG:4326&format=image/jpeg&bbox=' + [a, lat0, b, lat1].join(',') + '&width=' + wpx + '&height=' + PH; };
+      var grab = function (url) {
         return new Promise(function (res) {
           var im = new Image(); im.crossOrigin = 'anonymous'; im.decoding = 'async';
           im.onload = function () { res(im); }; im.onerror = function () { res(null); };
-          im.src = 'https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&LAYERS=BlueMarble_ShadedRelief_Bathymetry&SRS=EPSG:4326&FORMAT=image/jpeg&BBOX=' + [a, lat0, b, lat1].join(',') + '&WIDTH=' + wpx + '&HEIGHT=' + PH;
+          im.src = url;
         });
       };
-      var parts;
-      if (lon1 > 180) {
-        var leftDeg = 180 - lon0, rightDeg = lon1 - 180, span = lon1 - lon0;
-        var lw = Math.max(1, Math.round(PW * leftDeg / span)), rw = Math.max(1, PW - lw);
-        parts = Promise.all([tile(lon0, 180, lw), tile(-180, lon1 - 360, rw)]).then(function (ims) {
-          if (!ims[0] || !ims[1]) return null;
-          return { ims: ims, widths: [lw, rw] };
+      var layer = function (mk) {
+        var parts;
+        if (lon1 > 180) {
+          var leftDeg = 180 - lon0, span = lon1 - lon0;
+          var lw = Math.max(1, Math.round(PW * leftDeg / span)), rw = Math.max(1, PW - lw);
+          parts = Promise.all([grab(mk(lon0, 180, lw)), grab(mk(-180, lon1 - 360, rw))]).then(function (ims) {
+            return (ims[0] && ims[1]) ? { ims: ims, widths: [lw, rw] } : null;
+          });
+        } else {
+          parts = grab(mk(lon0, lon1, PW)).then(function (im) { return im ? { ims: [im], widths: [PW] } : null; });
+        }
+        return parts.then(function (got) {
+          if (!got) return null;
+          try {
+            var totalW = got.widths.reduce(function (a, b) { return a + b; }, 0);
+            var cv = document.createElement('canvas'); cv.width = totalW; cv.height = got.ims[0].naturalHeight;
+            var x = cv.getContext('2d'), at = 0;
+            for (var i = 0; i < got.ims.length; i++) { x.drawImage(got.ims[i], at, 0, got.widths[i], cv.height); at += got.widths[i]; }
+            return { w: cv.width, h: cv.height, d: x.getImageData(0, 0, cv.width, cv.height).data };
+          } catch (e) { return null; }
         });
-      } else {
-        parts = tile(lon0, lon1, PW).then(function (im) { return im ? { ims: [im], widths: [PW] } : null; });
-      }
-      var pr = parts.then(function (got) {
-        if (!got) return null;
-        try {
-          var totalW = got.widths.reduce(function (a, b) { return a + b; }, 0);
-          var cv = document.createElement('canvas'); cv.width = totalW; cv.height = got.ims[0].naturalHeight;
-          var x = cv.getContext('2d'), at = 0;
-          for (var i = 0; i < got.ims.length; i++) { x.drawImage(got.ims[i], at, 0, got.widths[i], cv.height); at += got.widths[i]; }
-          return { w: cv.width, h: cv.height, d: x.getImageData(0, 0, cv.width, cv.height).data, lon0: lon0, lon1: lon1, lat0: lat0, lat1: lat1 };
-        } catch (e) { return null; }
+      };
+      // A missing land tile is survivable: the map falls back to relief alone.
+      var pr = Promise.all([layer(SEA), layer(LAND)]).then(function (v) {
+        var sea = v[0], land = v[1];
+        if (!sea) return null;
+        var dl = (land && land.w === sea.w && land.h === sea.h) ? land.d : null;
+        return { w: sea.w, h: sea.h, d: sea.d, dl: dl, lon0: lon0, lon1: lon1, lat0: lat0, lat1: lat1 };
       });
       var keys = Object.keys(this._hiCache); if (keys.length > 6) delete this._hiCache[keys[0]];
       pr = Promise.all([pr, land50()]).then(function (v) { if (v[0]) v[0].land = v[1]; return v[0]; });
