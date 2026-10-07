@@ -521,7 +521,22 @@
       }
       this.innerHTML = o + '</svg>';
       var svg = this.firstChild; if (svg && svg.style) svg.style.position = 'relative';
-      if (raster) { var cv = this._paint(proj, w, h); this.insertBefore(cv, svg); }
+      if (raster) {
+        var cv = this._paint(proj, w, h); this.insertBefore(cv, svg);
+        // A still map used to draw from the low resolution world image alone, so
+        // a zoomed route never gained the detail the animated map already had.
+        // Fetch the tile for this view and repaint when it lands. A view wide
+        // enough to not need one is already rejected inside the fetch.
+        var self2 = this, tk = (this._rtok = (this._rtok || 0) + 1);
+        this._hiFetch(proj, w, h).then(function (S2) {
+          if (!S2 || tk !== self2._rtok || !self2.isConnected) return;
+          var old = self2.querySelector('canvas');
+          if (!old || !old.parentNode) return;
+          old.parentNode.replaceChild(self2._paint(proj, w, h, true, S2), old);
+        });
+      }
+      // innerHTML above clears the element, so the licence credit is put back.
+      if (this._cred) this.appendChild(this._cred);
     }
   }
   customElements.define('route-map', RouteMap);
