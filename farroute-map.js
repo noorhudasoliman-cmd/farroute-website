@@ -121,7 +121,7 @@
       }
     }
 
-    function makeLayer(url, max, attr) {
+    function makeLayer(url, max, attr, live) {
       var ret = (root.devicePixelRatio || 1) > 1.4, off = ret ? 1 : 0;
       var Layer = L.GridLayer.extend({
         createTile: function (c, done) {
@@ -162,16 +162,16 @@
       });
       Layer._off = off;
       // On retina screens, 128px tiles one zoom deeper so imagery is sharp at device resolution.
-      return new Layer({ tileSize: ret ? 128 : 256, maxNativeZoom: max - off, maxZoom: max + 2, noWrap: true, bounds: BOUNDS, keepBuffer: 4, attribution: attr, updateWhenZooming: false });
+      return new Layer({ tileSize: ret ? 128 : 256, maxNativeZoom: max - off, maxZoom: max + 2, noWrap: true, bounds: BOUNDS, keepBuffer: 4, attribution: attr, updateWhenZooming: !!live });
     }
 
     // One graded 1024px world image underneath, so no blank tiles show while zooming.
     function buildUnderlay() {
       var lyr = makeLayer(BLUE_MARBLE, 8, ''), off = lyr.constructor._off;
-      var big = document.createElement('canvas'); big.width = big.height = 1024;
+      var big = document.createElement('canvas'); big.width = big.height = 2048;
       var bx = big.getContext('2d'), jobs = [];
-      for (var y = 0; y < 4; y++) for (var x = 0; x < 4; x++) (function (x, y) {
-        jobs.push(new Promise(function (res) { lyr.createTile({ x: x, y: y, z: 2 - off }, function (e, cv) { bx.drawImage(cv, x * 256, y * 256); res(); }); }));
+      for (var y = 0; y < 8; y++) for (var x = 0; x < 8; x++) (function (x, y) {
+        jobs.push(new Promise(function (res) { lyr.createTile({ x: x, y: y, z: 3 - off }, function (e, cv) { bx.drawImage(cv, x * 256, y * 256); res(); }); }));
       })(x, y);
       var token = uTok = {};
       Promise.all(jobs).then(function () {
@@ -189,7 +189,7 @@
       if (under) { map.removeLayer(under); under = null; }
       buildUnderlay();
       // Zoomed out: Blue Marble only (no water outlines, no high-res photo).
-      base = makeLayer(BLUE_MARBLE, 8, 'NASA Blue Marble').addTo(map);
+      base = makeLayer(BLUE_MARBLE, 8, 'NASA Blue Marble', true).addTo(map);
       layer = makeLayer(s.url, s.max, s.attr + ', water outlines © Esri').addTo(map);
       // High-res photo fades in from zoom 4.2 to 5.8 (Esri) or 5.5 to 7.1 (Sentinel).
       var a = state.source === 'sentinel' ? 7.6 : 7.4;
@@ -253,6 +253,20 @@
         });
         // Never hold the camera for the whole preload. Whatever has arrived by
         // the cap is a head start; the rest keeps loading while the map moves.
+        // The wide part of a flight is carried by the world layer, and its tiles
+        // were arriving too late to be seen, leaving the stretched backdrop.
+        // They are coarse and few, so the whole approach band is fetched too.
+        for (var wz = Math.max(2, Math.round(z) - 7); wz <= Math.min(8, Math.round(z) - 2); wz++) {
+          var wp = map.project(L.latLng(c[0], c[1]), wz);
+          var wx = Math.floor(wp.x / 256), wy = Math.floor(wp.y / 256);
+          var wrx = Math.ceil(sz.x / 256 / 2) + 1, wry = Math.ceil(sz.y / 256 / 2) + 1;
+          for (var bx2 = wx - wrx; bx2 <= wx + wrx; bx2++) {
+            for (var by2 = wy - wry; by2 <= wy + wry; by2++) {
+              if (bx2 < 0 || by2 < 0) continue;
+              jobs.push(load(BLUE_MARBLE.replace('{z}', wz).replace('{x}', bx2).replace('{y}', by2)));
+            }
+          }
+        }
         return Promise.race([Promise.all(jobs), new Promise(function (r) { setTimeout(r, cap); })]);
       },
       ready: function (cb) {
