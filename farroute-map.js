@@ -193,14 +193,32 @@
       layer = makeLayer(s.url, s.max, s.attr + ', water outlines © Esri').addTo(map);
       // High-res photo fades in from zoom 4.2 to 5.8 (Esri) or 5.5 to 7.1 (Sentinel).
       var a = state.source === 'sentinel' ? 7.6 : 7.4;
+      // A half built photo level shows as a hard rectangular seam, where tiles
+      // from the level being left sit against tiles from the level being
+      // entered. So the photo stays hidden while the camera is moving and is
+      // revealed only once it has finished drawing. The world layer, coarse but
+      // always whole, carries the movement by itself.
+      var moving = false, reveal = null;
       onZoom = function () {
         var z = map.getZoom(), o = Math.max(0, Math.min(1, (z - a) / 1.6));
-        if (o <= 0) { if (map.hasLayer(layer)) map.removeLayer(layer); }
-        else { if (!map.hasLayer(layer)) layer.addTo(map); layer.setOpacity(o); }
-        // Once the photo is opaque the world image underneath cannot be seen,
-        // so it is taken off the map rather than left fetching tiles.
+        if (o <= 0) { if (map.hasLayer(layer)) map.removeLayer(layer); return; }
+        if (!map.hasLayer(layer)) layer.addTo(map);
+        var el = layer.getContainer();
+        if (el) el.style.transition = 'opacity .45s ease';
+        layer.setOpacity(moving ? 0 : o);
       };
-      map.on('zoom', onZoom); onZoom();
+      map.on('zoom', onZoom);
+      map.on('movestart zoomstart', function () {
+        moving = true; if (reveal) { clearTimeout(reveal); reveal = null; } onZoom();
+      });
+      map.on('moveend zoomend', function () {
+        if (!layer) return;
+        var show = function () { if (reveal) { clearTimeout(reveal); reveal = null; } moving = false; onZoom(); };
+        layer.once('load', show);
+        // Never leave the photo hidden because a tile failed to report.
+        reveal = setTimeout(show, 2400);
+      });
+      onZoom();
       map.setMaxZoom(s.max + 2);
     }
 
