@@ -39,6 +39,13 @@
     });
   }
 
+  // Used by the preload, where a tile that does not arrive must not be mistaken
+  // for one that did. Tries twice, then reports the failure.
+  function loadStrict(u) {
+    return load(u).then(function (r) { return r || load(u); })
+      .then(function (r) { if (!r) throw new Error('tile'); return r; });
+  }
+
   function createFarrouteMap(el, opts) {
     var L = root.L;
     if (!L) throw new Error('Leaflet must be loaded before farroute-map.js');
@@ -175,10 +182,10 @@
     // One graded 1024px world image underneath, so no blank tiles show while zooming.
     function buildUnderlay() {
       var lyr = makeLayer(BLUE_MARBLE, 8, ''), off = lyr.constructor._off;
-      var big = document.createElement('canvas'); big.width = big.height = 2048;
+      var big = document.createElement('canvas'); big.width = big.height = 4096;
       var bx = big.getContext('2d'), jobs = [];
-      for (var y = 0; y < 8; y++) for (var x = 0; x < 8; x++) (function (x, y) {
-        jobs.push(new Promise(function (res) { lyr.createTile({ x: x, y: y, z: 3 - off }, function (e, cv) { bx.drawImage(cv, x * 256, y * 256); res(); }); }));
+      for (var y = 0; y < 16; y++) for (var x = 0; x < 16; x++) (function (x, y) {
+        jobs.push(new Promise(function (res) { lyr.createTile({ x: x, y: y, z: 4 - off }, function (e, cv) { bx.drawImage(cv, x * 256, y * 256); res(); }); }));
       })(x, y);
       var token = uTok = {};
       Promise.all(jobs).then(function () {
@@ -209,7 +216,12 @@
       // revealed only once it has finished drawing. The world layer, coarse but
       // always whole, carries the movement by itself.
       onZoom = function () {
-        var z = map.getZoom(), o = Math.max(0, Math.min(1, (z - a) / 1.6));
+        // The photo used to take 1.6 zoom levels to become opaque, finishing at
+        // zoom 9. Between zoom 8 and 9 it was therefore part transparent over a
+        // layer already magnified past its own detail, and that blend is what
+        // read as soft. It is preloaded, so it has no reason to ease in: it is
+        // fully opaque by zoom 8, while the layer beneath is still sharp.
+        var z = map.getZoom(), o = Math.max(0, Math.min(1, (z - a) / 0.6));
         if (o <= 0) { if (map.hasLayer(layer)) map.removeLayer(layer); return; }
         if (!map.hasLayer(layer)) layer.addTo(map);
         layer.setOpacity(o);
@@ -266,27 +278,41 @@
           for (var x = cx - rx; x <= cx + rx; x++) {
             for (var y = cy - ry; y <= cy + ry; y++) {
               if (y < 0 || x < 0) continue;
-              jobs.push(load(src.url.replace('{z}', pz).replace('{x}', x).replace('{y}', y)));
-              jobs.push(load(MASK + Math.min(pz, 16) + '/' + (y >> Math.max(0, pz - 16)) + '/' + (x >> Math.max(0, pz - 16))));
+              jobs.push(loadStrict(src.url.replace('{z}', pz).replace('{x}', x).replace('{y}', y)));
+              jobs.push(loadStrict(MASK + Math.min(pz, 16) + '/' + (y >> Math.max(0, pz - 16)) + '/' + (x >> Math.max(0, pz - 16))));
             }
           }
         });
         // Never hold the camera for the whole preload. Whatever has arrived by
         // the cap is a head start; the rest keeps loading while the map moves.
-        // The wide part of a flight is carried by the world layer, and its tiles
-        // were arriving too late to be seen, leaving the stretched backdrop.
-        // They are coarse and few, so the whole approach band is fetched too.
-        for (var wz = Math.max(2, Math.round(z) - 7); wz <= Math.min(8, Math.round(z) - 2); wz++) {
-          var wp = map.project(L.latLng(c[0], c[1]), wz);
-          var wx = Math.floor(wp.x / 256), wy = Math.floor(wp.y / 256);
-          var wrx = Math.ceil(sz.x / 256 / 2) + 1, wry = Math.ceil(sz.y / 256 / 2) + 1;
-          for (var bx2 = wx - wrx; bx2 <= wx + wrx; bx2++) {
-            for (var by2 = wy - wry; by2 <= wy + wry; by2++) {
-              if (bx2 < 0 || by2 < 0) continue;
-              jobs.push(load(BLUE_MARBLE.replace('{z}', wz).replace('{x}', bx2).replace('{y}', by2)));
+        // The wide part of a flight is carried by the world layer, and preloading
+        // it only around the destination left the path itself bare: the camera
+        // crossed ground whose tiles had never been asked for, and fell back to
+        // the stretched backdrop. Points along the route are seeded as well, so
+        // every frame between here and there has real tiles behind it.
+        var here = map.getCenter(), seeds = [[c[0], c[1]]];
+        for (var f = 1; f <= 6; f++) {
+          var t = f / 7;
+          seeds.push([here.lat + (c[0] - here.lat) * t, here.lng + (c[1] - here.lng) * t]);
+        }
+        var wrx = Math.ceil(sz.x / 256 / 2) + 1, wry = Math.ceil(sz.y / 256 / 2) + 1;
+        seeds.forEach(function (pt, idx) {
+          // The destination gets the full band; the points in between only need
+          // the wide levels the camera actually passes through over them.
+          var lo = idx === 0 ? Math.max(2, Math.round(z) - 7) : 4;
+          var hi = idx === 0 ? Math.min(8, Math.round(z) - 2) : 8;
+          for (var wz = lo; wz <= hi; wz++) {
+            var wp = map.project(L.latLng(pt[0], pt[1]), wz);
+            var wx = Math.floor(wp.x / 256), wy = Math.floor(wp.y / 256);
+            var r2 = idx === 0 ? 1 : 0;
+            for (var bx2 = wx - wrx - r2; bx2 <= wx + wrx + r2; bx2++) {
+              for (var by2 = wy - wry - r2; by2 <= wy + wry + r2; by2++) {
+                if (bx2 < 0 || by2 < 0) continue;
+                jobs.push(loadStrict(BLUE_MARBLE.replace('{z}', wz).replace('{x}', bx2).replace('{y}', by2)));
+              }
             }
           }
-        }
+        });
         // A move is only safe once every tile it will show has been fetched, so
         // the caller waits for all of it. An unfinished preload means no flight.
         return Promise.all(jobs);
