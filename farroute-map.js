@@ -187,9 +187,12 @@
       if (base) map.removeLayer(base);
       if (onZoom) map.off('zoom', onZoom);
       if (under) { map.removeLayer(under); under = null; }
-      buildUnderlay();
       // Zoomed out: Blue Marble only (no water outlines, no high-res photo).
       base = makeLayer(BLUE_MARBLE, 8, 'NASA Blue Marble', true).addTo(map);
+      // The backdrop carries the middle of a flight and is not needed to show
+      // the opening view, so it is built once the map is already on screen.
+      base.once('load', function () { setTimeout(buildUnderlay, 60); });
+      setTimeout(function () { if (!under) buildUnderlay(); }, 6000);
       layer = makeLayer(s.url, s.max, s.attr + ', water outlines © Esri').addTo(map);
       // High-res photo fades in from zoom 4.2 to 5.8 (Esri) or 5.5 to 7.1 (Sentinel).
       var a = state.source === 'sentinel' ? 7.6 : 7.4;

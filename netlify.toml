@@ -24,3 +24,11 @@
   for = "/"
   [headers.values]
     Cache-Control = "no-store, no-cache, must-revalidate, max-age=0"
+
+# Scripts change with the page that loads them. A browser holding an old one
+# against a new page is how a map ends up blank for one person and fine for
+# everyone else, so these revalidate every time too.
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "no-cache, must-revalidate, max-age=0"
