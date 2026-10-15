@@ -776,6 +776,7 @@ class Component extends DCLogic {
       var el = document.getElementById('fmap');
       if (!el || self._fm) return;
       self._fm = createFarrouteMap(el, { source: 'esri', gradeStrength: 0.7 });
+      window.__FM = self._fm;
       self.tour();
     };
     if (window.createFarrouteMap) return start();
@@ -811,7 +812,7 @@ class Component extends DCLogic {
         self._tour = setTimeout(hop, 8200);
       });
     };
-    self._tour = setTimeout(hop, 2400);
+    self._tour = setTimeout(hop, 1100);
   }
   google() {
     if (!GOOGLE_CLIENT_ID) return;

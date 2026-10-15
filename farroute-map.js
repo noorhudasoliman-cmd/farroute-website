@@ -192,7 +192,7 @@
       base = makeLayer(BLUE_MARBLE, 8, 'NASA Blue Marble').addTo(map);
       layer = makeLayer(s.url, s.max, s.attr + ', water outlines © Esri').addTo(map);
       // High-res photo fades in from zoom 4.2 to 5.8 (Esri) or 5.5 to 7.1 (Sentinel).
-      var a = state.source === 'sentinel' ? 5.5 : 4.2;
+      var a = state.source === 'sentinel' ? 7.6 : 7.4;
       onZoom = function () {
         var z = map.getZoom(), o = Math.max(0, Math.min(1, (z - a) / 1.6));
         if (o <= 0) { if (map.hasLayer(layer)) map.removeLayer(layer); }
@@ -236,12 +236,12 @@
         if (!layer || !map) return Promise.resolve();
         var ret = (root.devicePixelRatio || 1) > 1.4, off = ret ? 1 : 0, ts = ret ? 128 : 256;
         var sz = map.getSize(), src = (SOURCES[state.source] || SOURCES.esri);
-        var jobs = [];
-        [Math.round(z) - 2, Math.round(z) - 1, Math.round(z)].forEach(function (tz) {
+        var jobs = [], cap = (opts && opts.warmCap) || 1100;
+        [Math.round(z) - 3, Math.round(z) - 2, Math.round(z) - 1, Math.round(z)].forEach(function (tz) {
           if (tz < 1) return;
           var pt = map.project(L.latLng(c[0], c[1]), tz);
           var cx = Math.floor(pt.x / ts), cy = Math.floor(pt.y / ts);
-          var rx = Math.ceil(sz.x / ts / 2) + 1, ry = Math.ceil(sz.y / ts / 2) + 1;
+          var rx = Math.ceil(sz.x / ts / 2), ry = Math.ceil(sz.y / ts / 2);
           var pz = Math.min(tz + off, src.max);
           for (var x = cx - rx; x <= cx + rx; x++) {
             for (var y = cy - ry; y <= cy + ry; y++) {
@@ -251,7 +251,9 @@
             }
           }
         });
-        return Promise.all(jobs);
+        // Never hold the camera for the whole preload. Whatever has arrived by
+        // the cap is a head start; the rest keeps loading while the map moves.
+        return Promise.race([Promise.all(jobs), new Promise(function (r) { setTimeout(r, cap); })]);
       },
       ready: function (cb) {
         if (!layer) return cb();
