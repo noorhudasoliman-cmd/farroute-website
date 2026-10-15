@@ -208,7 +208,10 @@
     map = L.map(el, {
       zoomSnap: 0, zoomDelta: 0.5, wheelPxPerZoomLevel: 90,
       maxBounds: BOUNDS, maxBoundsViscosity: 1,
-      worldCopyJump: false, attributionControl: true, zoomControl: true
+      worldCopyJump: false, attributionControl: true, zoomControl: false,
+      dragging: false, scrollWheelZoom: false, doubleClickZoom: false,
+      touchZoom: false, boxZoom: false, keyboard: false, tap: false,
+      inertia: false
     });
     map.attributionControl.setPrefix(false);
     map.setView(START, fitMin(), { animate: false });
@@ -225,6 +228,31 @@
 
     return {
       map: map,
+      // Fetches the tiles a destination will need before the camera starts
+      // moving. The browser then serves them from its own cache on arrival, so
+      // the picture is complete as the flight lands rather than filling in
+      // square by square afterwards.
+      warm: function (c, z) {
+        if (!layer || !map) return Promise.resolve();
+        var ret = (root.devicePixelRatio || 1) > 1.4, off = ret ? 1 : 0, ts = ret ? 128 : 256;
+        var sz = map.getSize(), src = (SOURCES[state.source] || SOURCES.esri);
+        var jobs = [];
+        [Math.round(z) - 2, Math.round(z) - 1, Math.round(z)].forEach(function (tz) {
+          if (tz < 1) return;
+          var pt = map.project(L.latLng(c[0], c[1]), tz);
+          var cx = Math.floor(pt.x / ts), cy = Math.floor(pt.y / ts);
+          var rx = Math.ceil(sz.x / ts / 2) + 1, ry = Math.ceil(sz.y / ts / 2) + 1;
+          var pz = Math.min(tz + off, src.max);
+          for (var x = cx - rx; x <= cx + rx; x++) {
+            for (var y = cy - ry; y <= cy + ry; y++) {
+              if (y < 0 || x < 0) continue;
+              jobs.push(load(src.url.replace('{z}', pz).replace('{x}', x).replace('{y}', y)));
+              jobs.push(load(MASK + Math.min(pz, 16) + '/' + (y >> Math.max(0, pz - 16)) + '/' + (x >> Math.max(0, pz - 16))));
+            }
+          }
+        });
+        return Promise.all(jobs);
+      },
       ready: function (cb) {
         if (!layer) return cb();
         var done = false, fin = function () { if (done) return; done = true; layer.off('load', fin); cb(); };

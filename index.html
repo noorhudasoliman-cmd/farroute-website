@@ -789,40 +789,29 @@ class Component extends DCLogic {
 
   // Moves between places so loading can be judged across the world rather than
   // from one lucky view. Each stop is picked at random, never twice in a row.
-  //
-  // Flying between two distant views meant crossing every zoom level in
-  // between, where the only thing behind the photo is a world image stretched
-  // far past its resolution. Tiles then arrived one square at a time over a
-  // brown field. So the map fades down, jumps straight to the next place, waits
-  // for the photo to finish drawing, and fades back up. Nothing part-drawn is
-  // ever on screen, and no tile is fetched for a level merely passed through.
+  // The camera travels there, it does not cut.
   tour() {
     var self = this, last = -1;
     var SPOTS = [
-      [45.468, 10.607, 15.5], [-1.29, 36.82, 12.5], [35.69, 139.70, 13], [40.71, -74.00, 13.5],
-      [-33.86, 151.21, 13], [25.20, 55.27, 13], [19.43, -99.13, 12.5], [59.33, 18.07, 13],
-      [-22.91, -43.17, 12.5], [1.35, 103.82, 13], [30.04, 31.24, 12.5], [41.90, 12.50, 14],
-      [55.75, 37.62, 12.5], [-34.60, -58.38, 12.5], [6.52, 3.38, 12.5], [37.98, 23.73, 13.5]
+      [45.44, 10.75, 11.4], [-1.29, 36.82, 11.4], [35.68, 139.75, 11.2], [40.71, -74.00, 11.4],
+      [-33.86, 151.21, 11.2], [25.20, 55.27, 11.4], [19.43, -99.13, 11.2], [59.33, 18.07, 11.4],
+      [-22.91, -43.17, 11.2], [1.35, 103.82, 11.6], [30.04, 31.24, 11.4], [41.90, 12.50, 11.6],
+      [55.75, 37.62, 11.2], [-34.60, -58.38, 11.2], [6.52, 3.38, 11.4], [37.98, 23.73, 11.6]
     ];
-    var el = function () { return document.getElementById('fmap'); };
     var hop = function () {
-      var n = el();
-      if (!self._fm || !n) return;
+      if (!self._fm) return;
       var i = last; while (i === last) i = Math.floor(Math.random() * SPOTS.length);
       last = i;
       var s = SPOTS[i];
-      n.style.transition = 'opacity .32s ease';
-      n.style.opacity = '0';
-      self._tour = setTimeout(function () {
+      // Load where we are going first, then fly. The camera arrives on a
+      // picture that is already there instead of one that fills in behind it.
+      self._fm.warm([s[0], s[1]], s[2]).then(function () {
         if (!self._fm) return;
-        self._fm.map.setView([s[0], s[1]], s[2], { animate: false });
-        self._fm.ready(function () {
-          var m = el(); if (m) m.style.opacity = '1';
-          self._tour = setTimeout(hop, 6400);
-        });
-      }, 340);
+        self._fm.map.flyTo([s[0], s[1]], s[2], { duration: 2.4, easeLinearity: 0.22 });
+        self._tour = setTimeout(hop, 8200);
+      });
     };
-    self._tour = setTimeout(hop, 2600);
+    self._tour = setTimeout(hop, 2400);
   }
   google() {
     if (!GOOGLE_CLIENT_ID) return;
