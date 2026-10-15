@@ -1023,7 +1023,7 @@ class Component extends DCLogic {
       faqs: faqDefs.map((f, i) => ({ q: f[0], a: f[1], open: s.faq === i, sign: s.faq === i ? '\u2212' : '+', toggle: () => this.setState({ faq: s.faq === i ? -1 : i }) })),
       footerCols: [
         { h: 'Customers', links: [['Order an item', 'landing'], ['Track an order', 'tracking'], ['What can travel', 'rules'], ['Contact us', 'contact']].map(([t, k]) => ({ t, go: this.go(k) })) },
-        { h: 'Couriers', links: [['Apply', 'apply'], ['Courier pay', 'earnings'], ['Appeals', 'apply'], ['Courier help', 'apply']].map(([t, k]) => ({ t, go: this.go(k) })) },
+        { h: 'Couriers', links: [['Apply', 'apply'], ['Courier pay', 'apply'], ['Appeals', 'apply'], ['Courier help', 'apply']].map(([t, k]) => ({ t, go: this.go(k) })) },
         { h: 'Farroute', links: [['About', 'landing'], ['FAQ', 'rules'], ['Download soon', 'account']].map(([t, k]) => ({ t, go: this.go(k) })) }
       ],
       goTop: () => { this.setState({ screen: 'landing', heroTab: 'order' }); window.scrollTo({ top: 0, behavior: 'smooth' }); },
