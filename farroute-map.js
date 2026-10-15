@@ -65,7 +65,12 @@
 
     // Minimum zoom = the whole world exactly fills the container width.
     function fitMin() {
-      var z = Math.log2(el.clientWidth / 256);
+      // A detached or hidden element reports no width, and log2 of zero is
+      // negative infinity, which turns the zoom and then every coordinate into
+      // NaN. That happens the moment the page navigates away from the map.
+      var w = el.clientWidth;
+      if (!(w > 0)) return map.getZoom() || 0;
+      var z = Math.log2(w / 256);
       map.setMinZoom(z);
       return z;
     }
@@ -227,6 +232,7 @@
     map.on('dragstart zoomstart', function () { if (!auto) moved = true; });
     setSource();
     ro = new ResizeObserver(function () {
+      if (!map || !el.clientWidth || !el.clientHeight) return;
       map.invalidateSize();
       var m = fitMin(); auto = true;
       if (!moved) map.setView(START, m, { animate: false });
@@ -242,7 +248,10 @@
       // the picture is complete as the flight lands rather than filling in
       // square by square afterwards.
       warm: function (c, z) {
-        if (!layer || !map) return Promise.resolve();
+        // A preload still in flight when the map is torn down would project
+        // against a map that no longer has a size, which yields NaN coordinates.
+        if (!layer || !map || !map._loaded) return Promise.resolve();
+        if (map.getSize().x < 10 || map.getSize().y < 10) return Promise.resolve();
         var ret = (root.devicePixelRatio || 1) > 1.4, off = ret ? 1 : 0, ts = ret ? 128 : 256;
         var sz = map.getSize(), src = (SOURCES[state.source] || SOURCES.esri);
         var jobs = [];
