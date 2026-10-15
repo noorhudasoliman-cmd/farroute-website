@@ -845,7 +845,12 @@ class Component extends DCLogic {
         self._tour = setTimeout(hop, 2500);
       });
     };
-    self._tour = setTimeout(hop, 2600);
+    // Nothing flies until the map has its backdrop and the world is held at the
+    // wide levels, because those carry the parts of a flight no preload reaches.
+    self._fm.settled().then(function () {
+      if (!self._fm || gen !== self._gen) return;
+      self._tour = setTimeout(hop, 900);
+    });
   }
   google() {
     if (!GOOGLE_CLIENT_ID) return;

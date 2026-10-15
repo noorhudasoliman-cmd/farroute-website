@@ -195,6 +195,30 @@
       });
     }
 
+    // The wide middle of a flight was still soft over open ocean, because the
+    // path is seeded along a straight line while the camera's widest point sits
+    // off it. Rather than chase the curve, the whole world is held at the wide
+    // levels: 336 coarse tiles, fetched once after the map is already up. After
+    // that no wide frame anywhere depends on the network.
+    var seeded = false, wideDone = null, wideSignal = null;
+    wideDone = new Promise(function (r) { wideSignal = r; });
+    function seedWide() {
+      if (seeded) return; seeded = true;
+      // Every level the camera can occupy must be held by something sharp, or
+      // the blur simply moves to whichever level is not. 2 to 5 covers the wide
+      // part; the photo takes over from 6.4 and is preloaded per flight.
+      var zs = [2, 3, 4, 5], i = 0;
+      var step = function () {
+        if (i >= zs.length) return;
+        var z = zs[i++], n = 1 << z, jobs = [];
+        for (var x = 0; x < n; x++) for (var y = 0; y < n; y++) {
+          jobs.push(load(BLUE_MARBLE.replace('{z}', z).replace('{x}', x).replace('{y}', y)));
+        }
+        Promise.all(jobs).then(function () { if (i >= zs.length) wideSignal(); else setTimeout(step, 120); });
+      };
+      step();
+    }
+
     function setSource() {
       var s = SOURCES[state.source] || SOURCES.esri;
       if (layer) map.removeLayer(layer);
@@ -205,11 +229,16 @@
       base = makeLayer(BLUE_MARBLE, 8, 'NASA Blue Marble', true).addTo(map);
       // The backdrop carries the middle of a flight and is not needed to show
       // the opening view, so it is built once the map is already on screen.
-      base.once('load', function () { setTimeout(buildUnderlay, 60); });
+      base.once('load', function () { setTimeout(buildUnderlay, 60); seedWide(); });
       setTimeout(function () { if (!under) buildUnderlay(); }, 6000);
       layer = makeLayer(s.url, s.max, s.attr + ', water outlines © Esri').addTo(map);
       // High-res photo fades in from zoom 4.2 to 5.8 (Esri) or 5.5 to 7.1 (Sentinel).
-      var a = state.source === 'sentinel' ? 7.6 : 7.4;
+      // The photo takes over just above where the world is held globally, so no
+      // level is left to a layer that has to be magnified to fill it.
+      // The photo waits until the camera is close enough that its tiles have
+      // been preloaded for this flight. Below that the world layer carries it,
+      // held globally to zoom 5 and seeded along the route above that.
+      var a = state.source === 'sentinel' ? 6.6 : 6.4;
       // A half built photo level shows as a hard rectangular seam, where tiles
       // from the level being left sit against tiles from the level being
       // entered. So the photo stays hidden while the camera is moving and is
@@ -221,7 +250,11 @@
         // layer already magnified past its own detail, and that blend is what
         // read as soft. It is preloaded, so it has no reason to ease in: it is
         // fully opaque by zoom 8, while the layer beneath is still sharp.
-        var z = map.getZoom(), o = Math.max(0, Math.min(1, (z - a) / 0.6));
+        // Blending the photo over the layer beneath softens every edge in the
+        // frame while it is part transparent. Both are preloaded and their
+        // grading matches, so the photo is simply on or off: no blend, no band
+        // of softness on the way in.
+        var z = map.getZoom(), o = z >= a ? 1 : 0;
         if (o <= 0) { if (map.hasLayer(layer)) map.removeLayer(layer); return; }
         if (!map.hasLayer(layer)) layer.addTo(map);
         layer.setOpacity(o);
@@ -259,6 +292,18 @@
       // moving. The browser then serves them from its own cache on arrival, so
       // the picture is complete as the flight lands rather than filling in
       // square by square afterwards.
+      // Resolves once the backdrop is drawn and the world is held at the wide
+      // levels. Flying before then means the widest part of the flight has
+      // nothing behind it.
+      settled: function () {
+        return Promise.all([
+          wideDone,
+          new Promise(function (r) {
+            var t = 0, w = function () { if (under || t++ > 60) return r(); setTimeout(w, 250); };
+            w();
+          })
+        ]);
+      },
       warm: function (c, z) {
         // A preload still in flight when the map is torn down would project
         // against a map that no longer has a size, which yields NaN coordinates.
@@ -267,7 +312,7 @@
         var ret = (root.devicePixelRatio || 1) > 1.4, off = ret ? 1 : 0, ts = ret ? 128 : 256;
         var sz = map.getSize(), src = (SOURCES[state.source] || SOURCES.esri);
         var jobs = [];
-        [7, 8, 9, 10, 11, 12, 13, 14, 15].filter(function (tz) { return tz <= Math.round(z); }).forEach(function (tz) {
+        [6, 7, 8, 9, 10, 11, 12, 13, 14, 15].filter(function (tz) { return tz <= Math.round(z); }).forEach(function (tz) {
           if (tz < 1) return;
           var pt = map.project(L.latLng(c[0], c[1]), tz);
           var cx = Math.floor(pt.x / ts), cy = Math.floor(pt.y / ts);
@@ -291,8 +336,8 @@
         // the stretched backdrop. Points along the route are seeded as well, so
         // every frame between here and there has real tiles behind it.
         var here = map.getCenter(), seeds = [[c[0], c[1]]];
-        for (var f = 1; f <= 6; f++) {
-          var t = f / 7;
+        for (var f = 1; f <= 4; f++) {
+          var t = f / 5;
           seeds.push([here.lat + (c[0] - here.lat) * t, here.lng + (c[1] - here.lng) * t]);
         }
         var wrx = Math.ceil(sz.x / 256 / 2) + 1, wry = Math.ceil(sz.y / 256 / 2) + 1;
@@ -304,7 +349,10 @@
           for (var wz = lo; wz <= hi; wz++) {
             var wp = map.project(L.latLng(pt[0], pt[1]), wz);
             var wx = Math.floor(wp.x / 256), wy = Math.floor(wp.y / 256);
-            var r2 = idx === 0 ? 1 : 0;
+            // Levels 5 to 8 are where a flight spends most of its wide time and
+            // the world is only held globally to 4, so they are taken generously:
+            // the tiles are coarse and there are few of them.
+            var r2 = (wz >= 5 && wz <= 8 ? 2 : 0) + (idx === 0 ? 1 : 0);
             for (var bx2 = wx - wrx - r2; bx2 <= wx + wrx + r2; bx2++) {
               for (var by2 = wy - wry - r2; by2 <= wy + wry + r2; by2++) {
                 if (bx2 < 0 || by2 < 0) continue;
