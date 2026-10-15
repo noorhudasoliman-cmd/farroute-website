@@ -162,7 +162,7 @@
       });
       Layer._off = off;
       // On retina screens, 128px tiles one zoom deeper so imagery is sharp at device resolution.
-      return new Layer({ tileSize: ret ? 128 : 256, maxNativeZoom: max - off, maxZoom: max + 2, noWrap: true, bounds: BOUNDS, keepBuffer: 2, attribution: attr, updateWhenZooming: false, updateWhenIdle: true });
+      return new Layer({ tileSize: ret ? 128 : 256, maxNativeZoom: max - off, maxZoom: max + 2, noWrap: true, bounds: BOUNDS, keepBuffer: 4, attribution: attr, updateWhenZooming: false });
     }
 
     // One graded 1024px world image underneath, so no blank tiles show while zooming.
@@ -199,8 +199,6 @@
         else { if (!map.hasLayer(layer)) layer.addTo(map); layer.setOpacity(o); }
         // Once the photo is opaque the world image underneath cannot be seen,
         // so it is taken off the map rather than left fetching tiles.
-        if (o >= 1) { if (map.hasLayer(base)) map.removeLayer(base); }
-        else if (!map.hasLayer(base)) { base.addTo(map); base.getContainer() && (base.getContainer().style.zIndex = 1); }
       };
       map.on('zoom', onZoom); onZoom();
       map.setMaxZoom(s.max + 2);
@@ -227,6 +225,12 @@
 
     return {
       map: map,
+      ready: function (cb) {
+        if (!layer) return cb();
+        var done = false, fin = function () { if (done) return; done = true; layer.off('load', fin); cb(); };
+        layer.on('load', fin);
+        setTimeout(fin, 2600);
+      },
       fly: function (c, z) {
         if (!c) return map.flyTo(START, map.getMinZoom(), { duration: 1.4 });
         map.flyTo(c, z, { duration: 1.6 });
