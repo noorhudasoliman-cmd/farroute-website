@@ -250,7 +250,9 @@
           if (tz < 1) return;
           var pt = map.project(L.latLng(c[0], c[1]), tz);
           var cx = Math.floor(pt.x / ts), cy = Math.floor(pt.y / ts);
-          var rx = Math.ceil(sz.x / ts / 2), ry = Math.ceil(sz.y / ts / 2);
+          // Leaflet keeps a ring of tiles beyond the viewport, so preloading only
+          // what is on screen left that ring to arrive late and show soft.
+          var rx = Math.ceil(sz.x / ts / 2) + 2, ry = Math.ceil(sz.y / ts / 2) + 2;
           var pz = Math.min(tz + off, src.max);
           for (var x = cx - rx; x <= cx + rx; x++) {
             for (var y = cy - ry; y <= cy + ry; y++) {
