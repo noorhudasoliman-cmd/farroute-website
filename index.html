@@ -821,17 +821,21 @@ class Component extends DCLogic {
     var hop = function () {
       if (!self._fm) return;
       var i = last; while (i === last) i = Math.floor(Math.random() * SPOTS.length);
-      last = i;
       var s = SPOTS[i];
-      // Load where we are going first, then fly. The camera arrives on a
-      // picture that is already there instead of one that fills in behind it.
+      // Every tile the approach will show is fetched first and waited for. If
+      // that does not finish, the camera does not move, because a flight into
+      // tiles that have not arrived is what shows a magnified blur.
       self._fm.warm([s[0], s[1]], s[2]).then(function () {
         if (!self._fm) return;
-        self._fm.map.flyTo([s[0], s[1]], s[2], { duration: 2.4, easeLinearity: 0.22 });
-        self._tour = setTimeout(hop, 8200);
+        last = i;
+        self._fm.map.flyTo([s[0], s[1]], s[2], { duration: 2.6, easeLinearity: 0.22 });
+        self._tour = setTimeout(hop, 9000);
+      }).catch(function () {
+        // Leave the current view alone and try somewhere else shortly.
+        self._tour = setTimeout(hop, 2500);
       });
     };
-    self._tour = setTimeout(hop, 1100);
+    self._tour = setTimeout(hop, 2600);
   }
   google() {
     if (!GOOGLE_CLIENT_ID) return;

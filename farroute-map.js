@@ -162,7 +162,9 @@
       });
       Layer._off = off;
       // On retina screens, 128px tiles one zoom deeper so imagery is sharp at device resolution.
-      return new Layer({ tileSize: ret ? 128 : 256, maxNativeZoom: max - off, maxZoom: max + 2, noWrap: true, bounds: BOUNDS, keepBuffer: 4, attribution: attr, updateWhenZooming: !!live });
+      return new Layer({ tileSize: ret ? 128 : 256, maxNativeZoom: max - off, maxZoom: max + 2, noWrap: true, bounds: BOUNDS, keepBuffer: 4, attribution: attr });  // every level is preloaded before a
+      // move, so drawing each one as the camera passes costs nothing and keeps
+      // the picture continuous instead of snapping at the end.
     }
 
     // One graded 1024px world image underneath, so no blank tiles show while zooming.
@@ -201,27 +203,13 @@
       // entered. So the photo stays hidden while the camera is moving and is
       // revealed only once it has finished drawing. The world layer, coarse but
       // always whole, carries the movement by itself.
-      var moving = false, reveal = null;
       onZoom = function () {
         var z = map.getZoom(), o = Math.max(0, Math.min(1, (z - a) / 1.6));
         if (o <= 0) { if (map.hasLayer(layer)) map.removeLayer(layer); return; }
         if (!map.hasLayer(layer)) layer.addTo(map);
-        var el = layer.getContainer();
-        if (el) el.style.transition = 'opacity .45s ease';
-        layer.setOpacity(moving ? 0 : o);
+        layer.setOpacity(o);
       };
-      map.on('zoom', onZoom);
-      map.on('movestart zoomstart', function () {
-        moving = true; if (reveal) { clearTimeout(reveal); reveal = null; } onZoom();
-      });
-      map.on('moveend zoomend', function () {
-        if (!layer) return;
-        var show = function () { if (reveal) { clearTimeout(reveal); reveal = null; } moving = false; onZoom(); };
-        layer.once('load', show);
-        // Never leave the photo hidden because a tile failed to report.
-        reveal = setTimeout(show, 2400);
-      });
-      onZoom();
+      map.on('zoom', onZoom); onZoom();
       map.setMaxZoom(s.max + 2);
     }
 
@@ -257,8 +245,8 @@
         if (!layer || !map) return Promise.resolve();
         var ret = (root.devicePixelRatio || 1) > 1.4, off = ret ? 1 : 0, ts = ret ? 128 : 256;
         var sz = map.getSize(), src = (SOURCES[state.source] || SOURCES.esri);
-        var jobs = [], cap = (opts && opts.warmCap) || 1100;
-        [Math.round(z) - 3, Math.round(z) - 2, Math.round(z) - 1, Math.round(z)].forEach(function (tz) {
+        var jobs = [];
+        [7, 8, 9, 10, 11, 12, 13, 14, 15].filter(function (tz) { return tz <= Math.round(z); }).forEach(function (tz) {
           if (tz < 1) return;
           var pt = map.project(L.latLng(c[0], c[1]), tz);
           var cx = Math.floor(pt.x / ts), cy = Math.floor(pt.y / ts);
@@ -288,7 +276,9 @@
             }
           }
         }
-        return Promise.race([Promise.all(jobs), new Promise(function (r) { setTimeout(r, cap); })]);
+        // A move is only safe once every tile it will show has been fetched, so
+        // the caller waits for all of it. An unfinished preload means no flight.
+        return Promise.all(jobs);
       },
       ready: function (cb) {
         if (!layer) return cb();
