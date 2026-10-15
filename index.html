@@ -18,10 +18,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@87.5,400;87.5,600;87.5,700;100,400;100,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 body{margin:0;--bg:var(--card);--paper:#F4EBDC;--card:#FBF6EE;--ink:#2B211B;--muted:#5E574E;--line:#DED1BD;--route:#C9A274;--routeInk:#2E5AAC;--kraft:#C9A274;--ok:#2F6B4A;--okBg:#E4ECDF;--sea:#E7DECF;--seaLight:#F2EBDF;--land:#FBF7F0;--landEdge:#DFD3C1;--landHi:#EBDDC6;background:var(--paper);color:var(--ink);font-family:Archivo,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 body[data-theme=dark]{--paper:#2B211B;--card:#211F1D;--ink:#F4EBDC;--muted:#B3A893;--line:#38332E;--route:#C9A274;--routeInk:#8FAEE6;--kraft:#4A3D2C;--ok:#8FCFA8;--okBg:#1E2E24;--sea:#1C1A18;--seaLight:#24211E;--land:#2A2724;--landEdge:#3A3530;--landHi:#3D3326}
 *{box-sizing:border-box}
+.leaflet-container{background:#C2D6E8;font-family:Archivo,system-ui,sans-serif}
+.leaflet-control-attribution{font-size:10px}
+.leaflet-tile-container img.leaflet-tile{image-rendering:auto;backface-visibility:hidden}
 a{color:var(--ink);text-decoration-color:var(--route);text-underline-offset:3px}a:hover{color:var(--routeInk)}
 input,select,button,textarea{font:inherit;color:inherit}
 </style>
@@ -80,16 +84,7 @@ input,select,button,textarea{font:inherit;color:inherit}
     <sc-if value="{{ isLanding }}" hint-placeholder-val="{{ true }}">
       <section data-screen-label="Place order" style="display:flex;flex-direction:column;background:var(--card)">
         <div style="position:relative;width:100%;aspect-ratio:2.2 / 1;max-height:46vh;background:#FBF6EE;color:#2B211B;overflow:hidden;border-bottom:1px solid var(--line)">
-          <sc-if value="{{ showMaps }}" hint-placeholder-val="{{ true }}">
-            <div style="position:absolute;inset:0">
-            <x-import component-from-global-scope="route-map" from="./route-map.js" stops="{{ landingStops }}" mode="{{ landingMode }}" highlight="{{ landingHl }}" style="position:absolute;inset:0" hint-size="100%,100%"></x-import>
-            </div>
-          </sc-if>
-          <sc-if value="{{ noMaps }}" hint-placeholder-val="{{ false }}">
-            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:24px;text-align:center"><span style="font-weight:700;font-size:20px">{{ routeText }}</span><span style="font-size:13px;color:var(--muted)">Data saver is on, so the map is not loaded.</span></div>
-          </sc-if>
-          <sc-if value="{{ hasLink }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;top:16px;right:16px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-weight:600;font-size:15px;box-shadow:0 4px 14px rgba(43,33,27,.08)">{{ routeChip }}</div></sc-if>
-          
+          <div id="fmap" style="position:absolute;inset:0"></div>
         </div>
 
         <div style="width:100%;max-width:760px;margin:0 auto;box-sizing:border-box;background:var(--card);padding:26px clamp(20px,4vw,48px) 40px;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center">
@@ -763,7 +758,55 @@ const GOOGLE_CLIENT_ID = '';
 
 class Component extends DCLogic {
   state = { screen: this.props.startScreen || 'landing', link: '', dest: '', heroTab: 'order', size: 0, faq: 0, sizeManual: null, trackStage: 8, adminRange: 'Month', appDecisions: {}, assigned: {}, assignPick: {}, jobIdx: 0, step: 1, reason: '', appealSent: false, completed: false, applied: false, now: Date.now() };
-  componentDidMount() { this.theme(); this._tick = setInterval(() => this.setState({ now: Date.now() }), 1000); this.google(); }
+  componentDidMount() { this.theme(); this._tick = setInterval(() => this.setState({ now: Date.now() }), 1000); this.google(); this.heroMap(); }
+  componentWillUnmount() { clearInterval(this._tick); clearTimeout(this._tour); this._fm && this._fm.destroy(); }
+
+  // The satellite map on the home page. Leaflet and the map file load after the
+  // page is interactive so neither blocks the text or the countdown.
+  heroMap() {
+    var self = this;
+    var need = function (tag, attrs) {
+      return new Promise(function (res, rej) {
+        var e = document.createElement(tag);
+        Object.keys(attrs).forEach(function (k) { e[k] = attrs[k]; });
+        e.onload = res; e.onerror = rej; document.head.appendChild(e);
+      });
+    };
+    var start = function () {
+      var el = document.getElementById('fmap');
+      if (!el || self._fm) return;
+      self._fm = createFarrouteMap(el, { source: 'esri', gradeStrength: 0.7 });
+      self.tour();
+    };
+    if (window.createFarrouteMap) return start();
+    var go = function () {
+      (window.L ? Promise.resolve() : need('script', { src: 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', async: false }))
+        .then(function () { return need('script', { src: './farroute-map.js', async: false }); })
+        .then(start).catch(function () {});
+    };
+    if (window.requestIdleCallback) requestIdleCallback(go, { timeout: 1200 }); else setTimeout(go, 300);
+  }
+
+  // Moves between places so loading can be judged across the world rather than
+  // from one lucky view. Each stop is picked at random, never twice in a row.
+  tour() {
+    var self = this, last = -1;
+    var SPOTS = [
+      [45.468, 10.607, 15.5], [-1.29, 36.82, 12.5], [35.69, 139.70, 13], [40.71, -74.00, 13.5],
+      [-33.86, 151.21, 13], [25.20, 55.27, 13], [19.43, -99.13, 12.5], [59.33, 18.07, 13],
+      [-22.91, -43.17, 12.5], [1.35, 103.82, 13], [30.04, 31.24, 12.5], [41.90, 12.50, 14],
+      [55.75, 37.62, 12.5], [-34.60, -58.38, 12.5], [6.52, 3.38, 12.5], [37.98, 23.73, 13.5]
+    ];
+    var hop = function () {
+      if (!self._fm) return;
+      var i = last; while (i === last) i = Math.floor(Math.random() * SPOTS.length);
+      last = i;
+      var s = SPOTS[i];
+      self._fm.fly([s[0], s[1]], s[2]);
+      self._tour = setTimeout(hop, 7000);
+    };
+    self._tour = setTimeout(hop, 2200);
+  }
   google() {
     if (!GOOGLE_CLIENT_ID) return;
     const draw = () => {
