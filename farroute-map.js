@@ -29,6 +29,11 @@
   var MASK = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/';
   var BOUNDS = [[-85.05, -180], [85.05, 180]];
   var START = [22, 10];
+  // A tall frame crops the world top and bottom rather than the sides, and
+  // centring on 22 north then fills the lower half with Antarctica while
+  // cutting the north off. A portrait frame opens higher so the inhabited
+  // world sits in the middle. A wide frame is unchanged.
+  var START_TALL = [38, 10];
   var LAND_STOPS = ['3A2C22', '5E4936', '84694E', 'A68866', 'C1A47F', 'D5BE9B', 'E4D4B7', 'EFE5D2', 'F8F3EA'];
 
   function load(u) {
@@ -71,13 +76,26 @@
     }
 
     // Minimum zoom = the whole world exactly fills the container width.
+    function startFor() {
+      return (el.clientHeight > el.clientWidth * 0.9) ? START_TALL : START;
+    }
+
     function fitMin() {
       // A detached or hidden element reports no width, and log2 of zero is
       // negative infinity, which turns the zoom and then every coordinate into
       // NaN. That happens the moment the page navigates away from the map.
-      var w = el.clientWidth;
+      var w = el.clientWidth, h = el.clientHeight;
       if (!(w > 0)) return map.getZoom() || 0;
-      var z = Math.log2(w / 256);
+      // Sizing the world to the width alone leaves empty bands above and below
+      // whenever the frame is taller than it is wide, which is what a phone
+      // gives. Taking whichever side needs more means the world covers the
+      // frame and is cropped instead, with no gap.
+      var z = Math.max(Math.log2(w / 256), h > 0 ? Math.log2(h / 256) : 0);
+      // When the world exactly fills a tall frame there is no room to pan, so
+      // the centre is clamped to the equator and Mercator's full range is
+      // forced into view, which puts Antarctica across the bottom. A little
+      // more zoom gives room to sit higher and crops the poles out.
+      if (h > w * 0.9) z += 0.55;
       map.setMinZoom(z);
       return z;
     }
@@ -273,14 +291,14 @@
       inertia: false
     });
     map.attributionControl.setPrefix(false);
-    map.setView(START, fitMin(), { animate: false });
+    map.setView(startFor(), fitMin(), { animate: false });
     map.on('dragstart zoomstart', function () { if (!auto) moved = true; });
     setSource();
     ro = new ResizeObserver(function () {
       if (!map || !el.clientWidth || !el.clientHeight) return;
       map.invalidateSize();
       var m = fitMin(); auto = true;
-      if (!moved) map.setView(START, m, { animate: false });
+      if (!moved) map.setView(startFor(), m, { animate: false });
       else if (map.getZoom() < m) map.setZoom(m);
       auto = false;
     });
@@ -372,7 +390,7 @@
         setTimeout(fin, 2600);
       },
       fly: function (c, z) {
-        if (!c) return map.flyTo(START, map.getMinZoom(), { duration: 1.4 });
+        if (!c) return map.flyTo(startFor(), map.getMinZoom(), { duration: 1.4 });
         map.flyTo(c, z, { duration: 1.6 });
       },
       set: function (patch) {

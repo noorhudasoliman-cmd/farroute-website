@@ -36,12 +36,21 @@ body[data-theme=dark]{--paper:#2B211B;--card:#211F1D;--ink:#F4EBDC;--muted:#B3A8
    horizontally from one icon towards the next is pointing at nothing. It is
    taken out rather than left pointing off the side of the screen. */
 @media (max-width:640px){
-  header > div{height:auto !important;flex-wrap:wrap;padding-top:10px;padding-bottom:6px;gap:6px !important}
-  header nav{flex:1 0 100% !important;justify-content:center !important;overflow:visible !important;gap:2px !important}
-  header nav button{font-size:13.5px !important;padding:3px 7px 0 !important;white-space:nowrap}
+  /* The wordmark sits under the mark so the whole header fits one row, with the
+     menu beside it on the same level rather than pushed to a second row. */
+  header > div{height:auto !important;padding-top:7px;padding-bottom:0;gap:10px !important;align-items:center !important}
+  header > div > button:first-child{flex-direction:column !important;gap:1px !important;align-items:center !important}
+  header > div > button:first-child svg{width:38px !important;height:25px !important}
+  header > div > button:first-child span{font-size:14px !important;letter-spacing:-0.01em !important}
+  header nav{justify-content:flex-end !important;overflow:visible !important;gap:0 !important;align-items:center !important}
+  header nav button{font-size:12.5px !important;padding:0 6px !important;border-bottom-width:0 !important;
+    border-top:3px solid transparent !important;white-space:nowrap}
   .fr-leg{display:none !important}
   /* the imagery credit was rendering at body size on a phone */
   .leaflet-control-attribution{font-size:9px !important;padding:0 4px !important;line-height:1.5 !important}
+  /* a taller map, so the button sits lower and the steps stay off the first screen */
+  .fr-hero{aspect-ratio:0.78 / 1 !important;max-height:62vh !important}
+  .fr-pitch{padding-top:20px !important;padding-bottom:26px !important;gap:12px !important}
 }
 @media (prefers-reduced-motion:reduce){.fr-run{animation:none;opacity:1;left:calc(50% - 17px)}.fr-route{animation:none;opacity:1;width:100%}.fr-tip{animation:none;opacity:1;left:calc(100% - 6px)}}
 .leaflet-container{background:#C2D6E8;font-family:Archivo,system-ui,sans-serif}
@@ -104,11 +113,11 @@ input,select,button,textarea{font:inherit;color:inherit}
 
     <sc-if value="{{ isLanding }}" hint-placeholder-val="{{ true }}">
       <section data-screen-label="Place order" style="display:flex;flex-direction:column;background:var(--card)">
-        <div style="position:relative;width:100%;aspect-ratio:2.0 / 1;max-height:56vh;background:#FBF6EE;color:#2B211B;overflow:hidden;border-bottom:1px solid var(--line)">
+        <div class="fr-hero" style="position:relative;width:100%;aspect-ratio:2.0 / 1;max-height:56vh;background:#FBF6EE;color:#2B211B;overflow:hidden;border-bottom:1px solid var(--line)">
           <div id="fmap" style="position:absolute;inset:0"></div>
         </div>
 
-        <div style="width:100%;max-width:760px;margin:0 auto;box-sizing:border-box;background:var(--card);padding:26px clamp(20px,4vw,48px) 40px;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center">
+        <div class="fr-pitch" style="width:100%;max-width:760px;margin:0 auto;box-sizing:border-box;background:var(--card);padding:26px clamp(20px,4vw,48px) 40px;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center">
           <h1 style="margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(36px,6.4vw,64px);line-height:.98;letter-spacing:-0.03em">December 15, 2026</h1>
           <span style="font-size:clamp(15px,1.9vw,18px);line-height:1.4;color:var(--muted);max-width:26em">We create routes, you order anywhere.</span>
           <sc-if value="{{ preLaunch }}" hint-placeholder-val="{{ true }}">
