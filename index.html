@@ -32,13 +32,14 @@ body[data-theme=dark]{--paper:#2B211B;--card:#211F1D;--ink:#F4EBDC;--muted:#B3A8
   transition:opacity .45s ease,transform .45s ease;pointer-events:none;
   font-family:ui-monospace,Menlo,Consolas,monospace;color:#2B211B}
 #frlabel.on{opacity:1;transform:none}
+/* Both ends of a route sit on the brand's cream, drawn in its espresso. */
+.frpin{display:flex;align-items:center;justify-content:center;width:30px;height:30px;
+  border-radius:50%;background:#F4EBDC;border:2px solid #2B211B;
+  box-shadow:0 2px 7px rgba(43,33,27,.28)}
 #frlabel .hd{display:flex;align-items:center;gap:9px;background:#2B211B;color:#F4EBDC;padding:9px 11px}
-#frlabel .mark{width:34px;height:34px;flex-shrink:0;border-radius:6px;background:#FBF6EE;
-  object-fit:contain;padding:4px}
-#frlabel .mark.fallback{display:flex;align-items:center;justify-content:center;padding:0;background:#F4EBDC}
 #frlabel .names{min-width:0;display:flex;flex-direction:column;gap:1px}
 #frlabel .brand{font-family:Archivo,system-ui,sans-serif;font-weight:700;font-stretch:87.5%;
-  font-size:17px;line-height:1.1;letter-spacing:-0.01em}
+  font-size:19px;line-height:1.1;letter-spacing:-0.01em}
 #frlabel .prod{font-family:Archivo,system-ui,sans-serif;font-size:12px;line-height:1.3;color:#DED1BD}
 #frlabel .bd{padding:9px 11px 10px;display:flex;flex-direction:column;gap:7px}
 #frlabel .leg{display:flex;gap:7px;align-items:baseline;flex-wrap:wrap}
@@ -48,11 +49,9 @@ body[data-theme=dark]{--paper:#2B211B;--card:#211F1D;--ink:#F4EBDC;--muted:#B3A8
 #frlabel .svc{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
   font-family:Archivo,system-ui,sans-serif;font-size:12.5px;color:#5E574E}
 #frlabel .svc b{font-weight:700;color:#2B211B;white-space:nowrap}
-#frlabel .ft{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:1px}
-#frlabel .stamp{border:1.5px solid #2E5AAC;color:#2E5AAC;border-radius:3px;padding:2px 6px;
-  font-size:9px;letter-spacing:.1em;transform:rotate(-2deg)}
-#frlabel .bars{height:17px;flex:1;background-image:repeating-linear-gradient(90deg,
-  #2B211B 0 2px,transparent 2px 4px,#2B211B 4px 5px,transparent 5px 9px,#2B211B 9px 12px,transparent 12px 14px);opacity:.75}
+#frlabel .ft{display:flex;align-items:center;justify-content:flex-start;gap:8px;padding-top:2px}
+#frlabel .stamp{border:1.5px solid #2E5AAC;color:#2E5AAC;border-radius:3px;padding:3px 9px;
+  font-size:9.5px;letter-spacing:.1em}
 @media (max-width:640px){#frlabel{left:10px;right:10px;bottom:10px;width:auto}
   #frlabel .v{font-size:15px}}
 @keyframes fr-run{0%{left:-46px;opacity:0}2%{opacity:1}31.5%{opacity:1}33.333%{left:calc(100% - 22px);opacity:0}100%{left:calc(100% - 22px);opacity:0}}
@@ -89,7 +88,7 @@ body[data-theme=dark]{--paper:#2B211B;--card:#211F1D;--ink:#F4EBDC;--muted:#B3A8
   .fr-pitch{padding-top:20px !important;padding-bottom:26px !important;gap:12px !important}
 }
 @media (prefers-reduced-motion:reduce){.fr-run{animation:none;opacity:1;left:calc(50% - 22px)}.fr-route{animation:none;opacity:1;width:100%}.fr-tip{animation:none;opacity:1;left:calc(100% - 6px)}}
-.leaflet-container{background:#C2D6E8;font-family:Archivo,system-ui,sans-serif}
+.leaflet-container{background:#BACFE4;font-family:Archivo,system-ui,sans-serif}
 .leaflet-control-attribution{font-size:10px}
 .leaflet-tile-container img.leaflet-tile{image-rendering:auto;backface-visibility:hidden}
 a{color:var(--ink);text-decoration-color:var(--route);text-underline-offset:3px}a:hover{color:var(--routeInk)}
@@ -187,14 +186,14 @@ input,select,button,textarea{font:inherit;color:inherit}
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,404px),1fr));gap:32px 24px">
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:32px 24px">
               <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px">
-              <div style="position:relative;align-self:stretch;display:flex;justify-content:center"><span style="width:52px;height:52px;border-radius:50%;border:1px solid var(--line);background:var(--paper);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" style="width:26px;height:26px;fill:none;stroke:var(--ink);stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"></path><path d="M12 9.2v4.2"></path><path d="M12 17.1h.01"></path></svg></span><div class="fr-leg" style="position:absolute;top:50%;left:calc(50% + 26px);width:calc(100% - 26px);transform:translateY(-50%);height:42px;pointer-events:none"><span class="fr-route" style="position:absolute;left:0;top:calc(50% + 11px);height:2px;background:var(--routeInk);border-radius:2px;animation-delay:0s"></span><svg viewBox="0 0 12 12" class="fr-tip" style="position:absolute;top:calc(50% + 6px);width:12px;height:12px;fill:none;stroke:var(--routeInk);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;animation-delay:0s"><path d="M3.5 1.5 8.5 6l-5 4.5"></path></svg><svg viewBox="0 0 72 48" class="fr-run" style="position:absolute;top:calc(50% - 9px);width:45px;height:30px;transform:translateY(-50%);animation-delay:0s"><use href="#pbx"></use></svg></div></div>
+              <div style="position:relative;align-self:stretch;display:flex;justify-content:center"><span style="position:relative;z-index:2;width:52px;height:52px;border-radius:50%;border:1px solid var(--line);background:var(--paper);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" style="width:26px;height:26px;fill:none;stroke:var(--ink);stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"></path><path d="M12 9.2v4.2"></path><path d="M12 17.1h.01"></path></svg></span><div class="fr-leg" style="z-index:1;position:absolute;top:50%;left:calc(50% + 26px);width:calc(100% - 26px);transform:translateY(-50%);height:42px;pointer-events:none"><span class="fr-route" style="position:absolute;left:0;top:calc(50% + 11px);height:2px;background:var(--routeInk);border-radius:2px;animation-delay:0s"></span><svg viewBox="0 0 12 12" class="fr-tip" style="position:absolute;top:calc(50% + 6px);width:12px;height:12px;fill:none;stroke:var(--routeInk);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;animation-delay:0s"><path d="M3.5 1.5 8.5 6l-5 4.5"></path></svg><svg viewBox="0 0 72 48" class="fr-run" style="position:absolute;top:calc(50% - 9px);width:45px;height:30px;transform:translateY(-50%);animation-delay:0s"><use href="#pbx"></use></svg></div></div>
               <div style="display:flex;flex-direction:column;gap:8px">
                 <span style="font-weight:600;font-size:20px;line-height:1.2;color:var(--ink);text-wrap:pretty"><span style="color:var(--routeInk)">Error</span>: Does not ship to your country</span>
                 <span style="font-size:15px;line-height:1.5;color:var(--muted);text-wrap:pretty">You receive an error message at checkout and Farroute provides you with a delivery price and customs estimate.</span>
               </div>
             </div>
               <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px">
-              <div style="position:relative;align-self:stretch;display:flex;justify-content:center"><span style="width:52px;height:52px;border-radius:50%;border:1px solid var(--line);background:var(--paper);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" style="width:40px;height:40px"><path d="M8.5 6.7C8.5 1.9 15.5 1.9 15.5 6.7z" style="fill:var(--ink)"></path><circle cx="12" cy="4.6" r=".9" style="fill:var(--paper)"></circle><path d="M8.2 6.5Q12 5.8 15.8 6.5Q15.2 8.7 12 8.8Q8.8 8.7 8.2 6.5z" style="fill:var(--ink);stroke:var(--paper);stroke-width:.6"></path><path d="M9.1 8.4c.3 2.1 1.4 3.3 2.9 3.3s2.6-1.2 2.9-3.3" style="fill:none;stroke:var(--ink);stroke-width:.8;stroke-linecap:round"></path><path d="M2.8 22v-4a5.6 5.6 0 0 1 5.6-5.6h7.2a5.6 5.6 0 0 1 5.6 5.6v4z" style="fill:var(--ink)"></path><path d="M11.3 12.4h1.4l-.2 2.2h-1z" style="fill:var(--paper)"></path><path d="M12 13.2l4.6 2.3-4.6 2.3-4.6-2.3z" style="fill:var(--paper);stroke:var(--ink);stroke-width:1;stroke-linejoin:round"></path><path d="M7.4 15.5v4.4l4.6 2.3 4.6-2.3v-4.4" style="fill:var(--paper);stroke:var(--ink);stroke-width:1;stroke-linejoin:round"></path><path d="M7.4 15.5l4.6 2.3 4.6-2.3M12 17.8v4.4" style="fill:none;stroke:var(--ink);stroke-width:1;stroke-linejoin:round"></path></svg></span><div class="fr-leg" style="position:absolute;top:50%;left:calc(50% + 26px);width:calc(100% - 26px);transform:translateY(-50%);height:42px;pointer-events:none"><span class="fr-route" style="position:absolute;left:0;top:calc(50% + 11px);height:2px;background:var(--routeInk);border-radius:2px;animation-delay:4.2s"></span><svg viewBox="0 0 12 12" class="fr-tip" style="position:absolute;top:calc(50% + 6px);width:12px;height:12px;fill:none;stroke:var(--routeInk);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;animation-delay:4.2s"><path d="M3.5 1.5 8.5 6l-5 4.5"></path></svg><svg viewBox="0 0 72 48" class="fr-run" style="position:absolute;top:calc(50% - 9px);width:45px;height:30px;transform:translateY(-50%);animation-delay:4.2s"><use href="#pbx"></use></svg></div></div>
+              <div style="position:relative;align-self:stretch;display:flex;justify-content:center"><span style="position:relative;z-index:2;width:52px;height:52px;border-radius:50%;border:1px solid var(--line);background:var(--paper);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" style="width:40px;height:40px"><path d="M8.5 6.7C8.5 1.9 15.5 1.9 15.5 6.7z" style="fill:var(--ink)"></path><circle cx="12" cy="4.6" r=".9" style="fill:var(--paper)"></circle><path d="M8.2 6.5Q12 5.8 15.8 6.5Q15.2 8.7 12 8.8Q8.8 8.7 8.2 6.5z" style="fill:var(--ink);stroke:var(--paper);stroke-width:.6"></path><path d="M9.1 8.4c.3 2.1 1.4 3.3 2.9 3.3s2.6-1.2 2.9-3.3" style="fill:none;stroke:var(--ink);stroke-width:.8;stroke-linecap:round"></path><path d="M2.8 22v-4a5.6 5.6 0 0 1 5.6-5.6h7.2a5.6 5.6 0 0 1 5.6 5.6v4z" style="fill:var(--ink)"></path><path d="M11.3 12.4h1.4l-.2 2.2h-1z" style="fill:var(--paper)"></path><path d="M12 13.2l4.6 2.3-4.6 2.3-4.6-2.3z" style="fill:var(--paper);stroke:var(--ink);stroke-width:1;stroke-linejoin:round"></path><path d="M7.4 15.5v4.4l4.6 2.3 4.6-2.3v-4.4" style="fill:var(--paper);stroke:var(--ink);stroke-width:1;stroke-linejoin:round"></path><path d="M7.4 15.5l4.6 2.3 4.6-2.3M12 17.8v4.4" style="fill:none;stroke:var(--ink);stroke-width:1;stroke-linejoin:round"></path></svg></span><div class="fr-leg" style="z-index:1;position:absolute;top:50%;left:calc(50% + 26px);width:calc(100% - 26px);transform:translateY(-50%);height:42px;pointer-events:none"><span class="fr-route" style="position:absolute;left:0;top:calc(50% + 11px);height:2px;background:var(--routeInk);border-radius:2px;animation-delay:4.2s"></span><svg viewBox="0 0 12 12" class="fr-tip" style="position:absolute;top:calc(50% + 6px);width:12px;height:12px;fill:none;stroke:var(--routeInk);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;animation-delay:4.2s"><path d="M3.5 1.5 8.5 6l-5 4.5"></path></svg><svg viewBox="0 0 72 48" class="fr-run" style="position:absolute;top:calc(50% - 9px);width:45px;height:30px;transform:translateY(-50%);animation-delay:4.2s"><use href="#pbx"></use></svg></div></div>
               <div style="display:flex;flex-direction:column;gap:8px">
                 <span style="font-weight:600;font-size:20px;line-height:1.2;color:var(--ink);text-wrap:pretty">Farroute connects you with a <span style="color:var(--routeInk)">local courier</span>.</span>
                 <span style="font-size:15px;line-height:1.5;color:var(--muted);text-wrap:pretty">Within 1 hour, you will be connected with a local courier.</span>
@@ -203,14 +202,14 @@ input,select,button,textarea{font:inherit;color:inherit}
             </div>
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:32px 24px">
               <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px">
-              <div style="position:relative;align-self:stretch;display:flex;justify-content:center"><span style="width:52px;height:52px;border-radius:50%;border:1px solid var(--line);background:var(--paper);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" style="width:26px;height:26px;fill:none;stroke:var(--ink);stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round"><path d="M21 3 10.5 13.5"></path><path d="M21 3l-6.5 18-4-7.5L3 9.5 21 3z"></path></svg></span><div class="fr-leg" style="position:absolute;top:50%;left:calc(50% + 26px);width:calc(100% - 26px);transform:translateY(-50%);height:42px;pointer-events:none"><span class="fr-route" style="position:absolute;left:0;top:calc(50% + 11px);height:2px;background:var(--routeInk);border-radius:2px;animation-delay:8.4s"></span><svg viewBox="0 0 12 12" class="fr-tip" style="position:absolute;top:calc(50% + 6px);width:12px;height:12px;fill:none;stroke:var(--routeInk);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;animation-delay:8.4s"><path d="M3.5 1.5 8.5 6l-5 4.5"></path></svg><svg viewBox="0 0 72 48" class="fr-run" style="position:absolute;top:calc(50% - 9px);width:45px;height:30px;transform:translateY(-50%);animation-delay:8.4s"><use href="#pbx"></use></svg></div></div>
+              <div style="position:relative;align-self:stretch;display:flex;justify-content:center"><span style="position:relative;z-index:2;width:52px;height:52px;border-radius:50%;border:1px solid var(--line);background:var(--paper);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" style="width:26px;height:26px;fill:none;stroke:var(--ink);stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round"><path d="M21 3 10.5 13.5"></path><path d="M21 3l-6.5 18-4-7.5L3 9.5 21 3z"></path></svg></span><div class="fr-leg" style="z-index:1;position:absolute;top:50%;left:calc(50% + 26px);width:calc(100% - 26px);transform:translateY(-50%);height:42px;pointer-events:none"><span class="fr-route" style="position:absolute;left:0;top:calc(50% + 11px);height:2px;background:var(--routeInk);border-radius:2px;animation-delay:8.4s"></span><svg viewBox="0 0 12 12" class="fr-tip" style="position:absolute;top:calc(50% + 6px);width:12px;height:12px;fill:none;stroke:var(--routeInk);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;animation-delay:8.4s"><path d="M3.5 1.5 8.5 6l-5 4.5"></path></svg><svg viewBox="0 0 72 48" class="fr-run" style="position:absolute;top:calc(50% - 9px);width:45px;height:30px;transform:translateY(-50%);animation-delay:8.4s"><use href="#pbx"></use></svg></div></div>
               <div style="display:flex;flex-direction:column;gap:8px">
                 <span style="font-weight:600;font-size:20px;line-height:1.2;color:var(--ink);text-wrap:pretty">The parcel is <span style="color:var(--routeInk)">forwarded</span> to you.</span>
                 <span style="font-size:15px;line-height:1.5;color:var(--muted);text-wrap:pretty">You receive a tracking code from the international courier of your choice.</span>
               </div>
             </div>
               <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px">
-              <div style="position:relative;align-self:stretch;display:flex;justify-content:center"><span style="width:52px;height:52px;border-radius:50%;border:1px solid var(--line);background:var(--paper);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" style="width:26px;height:26px;fill:none;stroke:var(--ink);stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round"><path d="M3.5 10.5 12 3.5l8.5 7"></path><path d="M5.5 9v11h13V9"></path><path d="M10 20v-5.5h4V20"></path></svg></span></div>
+              <div style="position:relative;align-self:stretch;display:flex;justify-content:center"><span style="position:relative;z-index:2;width:52px;height:52px;border-radius:50%;border:1px solid var(--line);background:var(--paper);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" style="width:26px;height:26px;fill:none;stroke:var(--ink);stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round"><path d="M3.5 10.5 12 3.5l8.5 7"></path><path d="M5.5 9v11h13V9"></path><path d="M10 20v-5.5h4V20"></path></svg></span></div>
               <div style="display:flex;flex-direction:column;gap:8px">
                 <span style="font-weight:600;font-size:20px;line-height:1.2;color:var(--ink);text-wrap:pretty">You <span style="color:var(--routeInk)">receive</span> your order.</span>
                 <span style="font-size:15px;line-height:1.5;color:var(--muted);text-wrap:pretty">Customs in your country assesses duties on arrival.</span>
@@ -902,10 +901,22 @@ class Component extends DCLogic {
     var lab = document.getElementById('frlabel');
     var order = [], at = 0;
     var reshuffle = function () {
-      order = R.map(function (_, i) { return i; });
-      for (var i = order.length - 1; i > 0; i--) {
+      var pool = R.map(function (_, i) { return i; });
+      for (var i = pool.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
-        var t = order[i]; order[i] = order[j]; order[j] = t;
+        var t = pool[i]; pool[i] = pool[j]; pool[j] = t;
+      }
+      order = [];
+      while (pool.length) {
+        var prev = order.length ? R[order[order.length - 1]] : null;
+        var pick = 0;
+        if (prev) {
+          for (var k = 0; k < pool.length; k++) {
+            var cand = R[pool[k]];
+            if (cand.f !== prev.f && cand.t !== prev.t) { pick = k; break; }
+          }
+        }
+        order.push(pool.splice(pick, 1)[0]);
       }
       at = 0;
     };
@@ -928,7 +939,7 @@ class Component extends DCLogic {
 
     var pin = function (kind) {
       var art = kind === 'home'
-        ? '<svg viewBox="0 0 24 24" width="17" height="17" style="fill:none;stroke:#FBF6EE;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round"><path d="M3.6 10.4 12 3.8l8.4 6.6"></path><path d="M5.6 11.9V20h12.8v-8.1"></path><path d="M9.9 20v-5.2h4.2V20"></path></svg>'
+        ? '<svg viewBox="0 0 24 24" width="17" height="17" style="fill:none;stroke:#2B211B;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M3.6 10.4 12 3.8l8.4 6.6"></path><path d="M5.6 11.9V20h12.8v-8.1"></path><path d="M9.9 20v-5.2h4.2V20"></path></svg>'
         : '<svg viewBox="0 0 72 48" width="22" height="15"><use href="#pbx"></use></svg>';
       return L.divIcon({ className: '', iconSize: [30, 30], iconAnchor: [15, 15],
         html: '<span class="frpin ' + (kind === 'home' ? 'home' : 'pack') + '">' + art + '</span>' });
@@ -975,9 +986,6 @@ class Component extends DCLogic {
       lab.innerHTML =
         // The product is what is on offer, so it carries the dark bar.
         '<div class="hd">' +
-          (r.d ? '<img class="mark" alt="" loading="lazy" src="https://www.google.com/s2/favicons?sz=64&domain=' +
-                 encodeURIComponent(r.d) + '" onerror="this.className=\'mark fallback\';this.removeAttribute(\'src\')">'
-               : '<span class="mark fallback"><svg viewBox="0 0 72 48" width="30" height="20"><use href="#pbx"></use></svg></span>') +
           '<span class="names"><span class="brand">' + esc(r.b) + '</span>' +
             '<span class="prod">' + esc(r.p) + '</span></span>' +
         '</div>' +
@@ -986,10 +994,9 @@ class Component extends DCLogic {
             '<span class="arr">to</span><span class="v">' + esc(r.t) + '</span></div>' +
           '<div class="rule"></div>' +
           '<div class="svc"><span>Arrives to your courier</span><b>3 to 4 days</b></div>' +
-          '<div class="svc"><span>DHL Express onward</span><b>' + esc(r.dhl) + '</b></div>' +
-          '<div class="svc"><span>USPS Express onward</span><b>' + esc(r.usps) + '</b></div>' +
-          '<div class="ft"><span class="bars"></span>' +
-            '<span class="stamp">ROUTE CREATED</span></div>' +
+          '<div class="svc"><span>Onward by USPS</span><b>' + esc(r.usps) + '</b></div>' +
+          '<div class="svc"><span>Onward by DHL Express</span><b>' + esc(r.dhl) + '</b></div>' +
+          '<div class="ft"><span class="stamp">ROUTE CREATED</span></div>' +
         '</div>';
       lab.classList.add('on');
     };
@@ -997,19 +1004,39 @@ class Component extends DCLogic {
     var step = function (fn, ms) { self._tour = setTimeout(function () {
       if (!self._fm || gen !== self._gen) return; fn(); }, ms); };
 
+    // The world is only so wide at a given zoom. If the frame is wider than
+    // what is left either side of the centre, the edge of the map shows as a
+    // bare strip, so the centre is pulled back until the frame is covered.
+    var inWorld = function (c, z) {
+      var sz = map.getSize();
+      var worldPx = 256 * Math.pow(2, z);
+      var halfLng = Math.max(0, (worldPx - sz.x) / 2) / worldPx * 360;
+      var lng = Math.max(-180 + (180 - halfLng), Math.min(180 - (180 - halfLng), c.lng));
+      if (halfLng <= 0) lng = 0;
+      var n = map.unproject(map.project(L.latLng(85.05, 0), z).add([0, sz.y / 2]), z).lat;
+      var s2 = map.unproject(map.project(L.latLng(-85.05, 0), z).subtract([0, sz.y / 2]), z).lat;
+      var lat = Math.max(Math.min(s2, n), Math.min(Math.max(s2, n), c.lat));
+      return L.latLng(lat, lng);
+    };
+
     var hop = function () {
       if (!self._fm || gen !== self._gen) return;
       if (at >= order.length) reshuffle();
       var r = R[order[at++]];
       var bounds = L.latLngBounds([r.fp, r.tp]).pad(0.3);
       var z = Math.min(map.getBoundsZoom(bounds), 6);
-      var c = bounds.getCenter();
+      var c = inWorld(bounds.getCenter(), z);
       self._fm.warm([c.lat, c.lng], z).then(function () {
         if (!self._fm || gen !== self._gen) return;
         map.flyTo([c.lat, c.lng], z, { duration: 1.8, easeLinearity: 0.25 });
         // the order lands first, then the route is drawn between its two ends
         step(function () { label(r); }, 1700);
-        step(function () { draw(r); }, 2050);
+        map.once('moveend', function () {
+          if (!self._fm || gen !== self._gen) return;
+          setTimeout(function () {
+            if (!self._fm || gen !== self._gen) return; draw(r);
+          }, 260);
+        });
         // hold on the finished route, then clear it before leaving
         step(function () {
           if (lab) lab.classList.remove('on');
