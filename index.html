@@ -688,8 +688,8 @@ input,select,button,textarea{font:inherit;color:inherit}
       <section data-screen-label="Create account" style="max-width:520px;margin:0 auto;padding:48px 20px 64px;display:flex;flex-direction:column;gap:18px">
         <div style="display:flex;flex-direction:column;gap:8px">
           <span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--routeInk)">Opens December 15, 2026</span>
-          <h1 style="margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(34px,6vw,48px);line-height:1;letter-spacing:-0.02em">Create your account</h1>
-          <p style="margin:0;font-size:16px;line-height:1.5;color:var(--muted)">An account saves your delivery address. Farroute emails you on December 15 when orders open.</p>
+          <h1 style="margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(34px,6vw,48px);line-height:1;letter-spacing:-0.02em">{{ acHeading }}</h1>
+          <p style="margin:0;font-size:16px;line-height:1.5;color:var(--muted)">{{ acSub }}</p>
         </div>
         <div style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:14px">
           <sc-if value="{{ accountOpen }}" hint-placeholder-val="{{ true }}">
@@ -704,17 +704,17 @@ input,select,button,textarea{font:inherit;color:inherit}
               </button>
             </div>
             <sc-if value="{{ isPersonal }}" hint-placeholder-val="{{ true }}">
-              <input placeholder="Full name" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
+              <input placeholder="Full name" value="{{ acName }}" onChange="{{ onAcName }}" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
             </sc-if>
             <sc-if value="{{ isBusiness }}" hint-placeholder-val="{{ false }}">
-              <input placeholder="Your name" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
-              <input placeholder="Business name" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
+              <input placeholder="Your name" value="{{ acName }}" onChange="{{ onAcName }}" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
+              <input placeholder="Business name" value="{{ acBiz }}" onChange="{{ onAcBiz }}" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
             </sc-if>
-            <input placeholder="Email" type="email" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
+            <input placeholder="Email" type="email" value="{{ acEmail }}" onChange="{{ onAcEmail }}" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
             <select value="{{ dest }}" onChange="{{ onDest }}" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 12px;background:var(--paper);font-size:16px">
               <option value="">{{ destLabel }}</option><sc-for list="{{ destinations }}" as="d" hint-placeholder-count="6"><option value="{{ d }}">{{ d }}</option></sc-for>
             </select>
-            <input placeholder="Create a password" type="password" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
+            <input placeholder="Create a password" type="password" value="{{ acPass }}" onChange="{{ onAcPass }}" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
             <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;padding:2px 0">
               <input type="checkbox" checked="{{ remindMe }}" onChange="{{ onRemindMe }}" style="width:18px;height:18px;margin-top:2px;accent-color:#2E5AAC;cursor:pointer"></input>
               <span style="font-size:15px;line-height:1.45">Remind me on launch day, December 15, 2026.</span>
@@ -723,11 +723,10 @@ input,select,button,textarea{font:inherit;color:inherit}
               <div style="display:flex;align-items:center;gap:12px;padding:2px 0"><span style="height:1px;background:var(--line);flex:1"></span><span style="font-size:13px;color:var(--muted)">or</span><span style="height:1px;background:var(--line);flex:1"></span></div>
               <div id="g-signin" style="display:flex;justify-content:center;min-height:44px"></div>
             </sc-if>
+            <sc-if value="{{ acMissing }}"><span style="font-size:14px;line-height:1.45;color:var(--routeInk)">{{ acMissingText }}</span></sc-if>
             <button onClick="{{ submitAccount }}" style="height:56px;border:0;border-radius:10px;background:#2B211B;color:#F4EBDC;font-weight:700;font-size:17px;cursor:pointer" style-hover="background:#2E5AAC">Create account</button>
           </sc-if>
           <sc-if value="{{ accountDone }}" hint-placeholder-val="{{ false }}">
-            <span style="font-weight:700;font-size:20px">Account created</span>
-            <span style="font-size:15px;line-height:1.5;color:var(--muted)">Farroute emails you on December 15, 2026, when orders open.</span>
             <button onClick="{{ goLanding }}" style="height:52px;border:1.5px solid var(--ink);border-radius:10px;background:transparent;color:var(--ink);font-weight:600;cursor:pointer">Back to the home page</button>
           </sc-if>
         </div>
@@ -1216,11 +1215,20 @@ class Component extends DCLogic {
         cdSecs: pad2(Math.floor(left / 1000) % 60),
         preLaunch: left > 0,
         remindMe: s.remindMe !== false,
+        acName: s.acName || '', acBiz: s.acBiz || '', acEmail: s.acEmail || '', acPass: s.acPass || '',
+        onAcName: e => this.setState({ acName: e.target.value, acMissing: false }),
+        onAcBiz: e => this.setState({ acBiz: e.target.value, acMissing: false }),
+        onAcEmail: e => this.setState({ acEmail: e.target.value, acMissing: false }),
+        onAcPass: e => this.setState({ acPass: e.target.value, acMissing: false }),
+        acHeading: s.accountDone ? 'Account Created' : 'Create your account',
+        acSub: s.accountDone ? 'Route anything.'
+          : 'An account saves your delivery address. Farroute emails you on December 15 when orders open.',
+        acMissing: !!s.acMissing, acMissingText: s.acMissingText || '',
         isPersonal: (s.acctType || 'personal') === 'personal',
         isBusiness: s.acctType === 'business',
         destLabel: s.acctType === 'business' ? 'Country you ship to' : 'Deliver to',
-        pickPersonal: () => this.setState({ acctType: 'personal' }),
-        pickBusiness: () => this.setState({ acctType: 'business' }),
+        pickPersonal: () => this.setState({ acctType: 'personal', acMissing: false }),
+        pickBusiness: () => this.setState({ acctType: 'business', acMissing: false }),
         personalEdge: (s.acctType || 'personal') === 'personal' ? '#2E5AAC' : 'var(--line)',
         personalBg: (s.acctType || 'personal') === 'personal' ? 'var(--paper)' : 'transparent',
         personalInk: (s.acctType || 'personal') === 'personal' ? '#2E5AAC' : 'var(--ink)',
@@ -1363,7 +1371,23 @@ class Component extends DCLogic {
       onReason: e => this.setState({ reason: e.target.value }),
       submitOrder: e => { e.preventDefault(); if (!hit) this.go('quote')(); },
       submitApply: () => this.setState({ applied: true }),
-      goLanding: this.go('landing'), goRules: this.go('rules'), goAccount: this.go('account'), submitAccount: () => this.setState({ accountDone: true }), goQuote: this.go('quote'), goTracking: this.go('tracking'), goApply: this.go('apply'),
+      goLanding: this.go('landing'), goRules: this.go('rules'), goAccount: this.go('account'), submitAccount: () => {
+          const biz = s.acctType === 'business';
+          const need = [[s.acName, biz ? 'your name' : 'your full name']];
+          if (biz) need.push([s.acBiz, 'your business name']);
+          need.push([s.acEmail, 'your email'],
+                    [s.dest, biz ? 'the country you ship to' : 'a delivery country'],
+                    [s.acPass, 'a password']);
+          const missing = need.filter(n => !String(n[0] || '').trim()).map(n => n[1]);
+          const mail = String(s.acEmail || '');
+          if (!missing.length && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) missing.push('a valid email');
+          if (missing.length) {
+            const list = missing.length === 1 ? missing[0]
+              : missing.slice(0, -1).join(', ') + ' and ' + missing[missing.length - 1];
+            return this.setState({ acMissing: true, acMissingText: 'Please add ' + list + '.' });
+          }
+          this.setState({ accountDone: true, acMissing: false });
+        }, goQuote: this.go('quote'), goTracking: this.go('tracking'), goApply: this.go('apply'),
       goEarnings: this.go('earnings'), goJobs: this.go('jobs'),
       goHow: () => { this.setState({ screen: 'landing' }, () => { const el = document.getElementById('how'); if (el) window.scrollTo({ top: el.offsetTop - 12, behavior: 'smooth' }); }); },
       acceptJob: this.go('active', { step: 1, appealSent: false, reason: '' }),
