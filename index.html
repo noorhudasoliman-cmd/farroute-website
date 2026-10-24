@@ -23,6 +23,33 @@
 body{margin:0;--bg:var(--card);--paper:#F4EBDC;--card:#FBF6EE;--ink:#2B211B;--muted:#5E574E;--line:#DED1BD;--route:#C9A274;--routeInk:#2E5AAC;--kraft:#C9A274;--ok:#2F6B4A;--okBg:#E4ECDF;--sea:#E7DECF;--seaLight:#F2EBDF;--land:#FBF7F0;--landEdge:#DFD3C1;--landHi:#EBDDC6;background:var(--paper);color:var(--ink);font-family:Archivo,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 body[data-theme=dark]{--paper:#2B211B;--card:#211F1D;--ink:#F4EBDC;--muted:#B3A893;--line:#38332E;--route:#C9A274;--routeInk:#8FAEE6;--kraft:#4A3D2C;--ok:#8FCFA8;--okBg:#1E2E24;--sea:#1C1A18;--seaLight:#24211E;--land:#2A2724;--landEdge:#3A3530;--landHi:#3D3326}
 *{box-sizing:border-box}
+/* The route card is drawn as a shipping label: a cream stock with a dark rule,
+   a FROM block over a TO block, and a stamp saying the route does not exist
+   until Farroute opens it. */
+#frlabel{position:absolute;left:18px;bottom:18px;z-index:900;width:min(330px,calc(100% - 36px));
+  background:#FBF6EE;border:1.5px solid #2B211B;border-radius:4px;overflow:hidden;
+  box-shadow:0 6px 18px rgba(43,33,27,.18);opacity:0;transform:translateY(8px);
+  transition:opacity .45s ease,transform .45s ease;pointer-events:none;
+  font-family:ui-monospace,Menlo,Consolas,monospace;color:#2B211B}
+#frlabel.on{opacity:1;transform:none}
+#frlabel .hd{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  background:#2B211B;color:#F4EBDC;padding:5px 9px;font-size:10px;letter-spacing:.14em}
+#frlabel .bd{padding:9px 11px 10px;display:flex;flex-direction:column;gap:7px}
+#frlabel .leg{display:grid;grid-template-columns:34px 1fr;gap:8px;align-items:baseline}
+#frlabel .k{font-size:9px;letter-spacing:.12em;color:#5E574E}
+#frlabel .v{font-family:Archivo,system-ui,sans-serif;font-weight:700;font-size:16px;line-height:1.15;letter-spacing:-0.01em}
+#frlabel .rule{height:1px;background:#DED1BD}
+#frlabel .it{font-family:Archivo,system-ui,sans-serif;font-size:12.5px;line-height:1.35;color:#5E574E}
+#frlabel .it b{color:#2B211B;font-weight:700}
+#frlabel .gap{font-family:Archivo,system-ui,sans-serif;font-size:11.5px;line-height:1.35;
+  color:#2E5AAC;border-left:2px solid #2E5AAC;padding-left:7px}
+#frlabel .ft{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:1px}
+#frlabel .stamp{border:1.5px solid #2E5AAC;color:#2E5AAC;border-radius:3px;padding:2px 6px;
+  font-size:9px;letter-spacing:.1em;transform:rotate(-2deg)}
+#frlabel .bars{height:17px;flex:1;background-image:repeating-linear-gradient(90deg,
+  #2B211B 0 2px,transparent 2px 4px,#2B211B 4px 5px,transparent 5px 9px,#2B211B 9px 12px,transparent 12px 14px);opacity:.75}
+@media (max-width:640px){#frlabel{left:10px;right:10px;bottom:10px;width:auto}
+  #frlabel .v{font-size:15px}}
 @keyframes fr-run{0%{left:-46px;opacity:0}2%{opacity:1}31.5%{opacity:1}33.333%{left:calc(100% - 22px);opacity:0}100%{left:calc(100% - 22px);opacity:0}}
 @keyframes fr-route{0%{width:0;opacity:0}1.5%{opacity:1}16%{width:100%;opacity:1}31.5%{width:100%;opacity:1}33.333%{width:100%;opacity:0}100%{width:0;opacity:0}}
 @keyframes fr-tip{0%{left:-6px;opacity:0}1.5%{opacity:1}16%{left:calc(100% - 6px);opacity:1}19%{left:calc(100% - 6px);opacity:0}100%{left:calc(100% - 6px);opacity:0}}
@@ -131,6 +158,7 @@ input,select,button,textarea{font:inherit;color:inherit}
       <section data-screen-label="Place order" style="display:flex;flex-direction:column;background:var(--card)">
         <div class="fr-hero" style="position:relative;width:100%;aspect-ratio:2.0 / 1;max-height:56vh;background:#FBF6EE;color:#2B211B;overflow:hidden;border-bottom:1px solid var(--line)">
           <div id="fmap" style="position:absolute;inset:0"></div>
+          <div id="frlabel" aria-live="polite"></div>
         </div>
 
         <div class="fr-pitch" style="width:100%;max-width:760px;margin:0 auto;box-sizing:border-box;background:var(--card);padding:26px clamp(20px,4vw,48px) 40px;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center">
@@ -850,45 +878,90 @@ class Component extends DCLogic {
     var go = function () {
       (window.L ? Promise.resolve() : need('script', { src: 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', async: false }))
         .then(function () { return need('script', { src: './farroute-map.js', async: false }); })
+        .then(function () { return need('script', { src: './routes.js', async: false }); })
         .then(start).catch(function () {});
     };
     if (window.requestIdleCallback) requestIdleCallback(go, { timeout: 1200 }); else setTimeout(go, 300);
   }
 
-  // Moves between places so loading can be judged across the world rather than
-  // from one lucky view. Each stop is picked at random, never twice in a row.
-  // The camera travels there, it does not cut.
+  // Walks the researched shipping gaps. Each one is a real product, a real
+  // origin and a destination the seller does not serve, so every route drawn
+  // here is one that does not exist until Farroute opens it.
   tour() {
-    var self = this, last = -1, gen = (self._gen = (self._gen || 0) + 1);
-    var SPOTS = [
-      [45.44, 10.75, 11.4], [-1.29, 36.82, 11.4], [35.68, 139.75, 11.2], [40.71, -74.00, 11.4],
-      [-33.86, 151.21, 11.2], [25.20, 55.27, 11.4], [19.43, -99.13, 11.2], [59.33, 18.07, 11.4],
-      [-22.91, -43.17, 11.2], [1.35, 103.82, 11.6], [30.04, 31.24, 11.4], [41.90, 12.50, 11.6],
-      [55.75, 37.62, 11.2], [-34.60, -58.38, 11.2], [6.52, 3.38, 11.4], [37.98, 23.73, 11.6]
-    ];
+    var self = this, i = -1, gen = (self._gen = (self._gen || 0) + 1);
+    var R = window.FR_ROUTES || [];
+    if (!R.length) return;
+    var L = window.L, map = self._fm.map;
+    var lab = document.getElementById('frlabel');
+
+    var draw = function (r) {
+      if (self._layer) { try { map.removeLayer(self._layer); } catch (e) {} }
+      var g = L.layerGroup();
+      var a = L.latLng(r.fp[0], r.fp[1]), b = L.latLng(r.tp[0], r.tp[1]);
+      // A gentle arc, so a route reads as a path taken rather than a ruler line.
+      var pts = [], n = 48;
+      var lift = Math.min(1, a.distanceTo(b) / 17000000);
+      for (var k = 0; k <= n; k++) {
+        var t = k / n, s2 = Math.sin(Math.PI * t);
+        pts.push([a.lat + (b.lat - a.lat) * t + s2 * lift * 17,
+                  a.lng + (b.lng - a.lng) * t]);
+      }
+      L.polyline(pts, { color: '#FBF6EE', weight: 6, opacity: .9, lineCap: 'round' }).addTo(g);
+      L.polyline(pts, { color: '#2E5AAC', weight: 3, opacity: 1, lineCap: 'round',
+        dashArray: '1 9', className: 'fr-draw' }).addTo(g);
+      [[a, '#2B211B'], [b, '#2E5AAC']].forEach(function (e) {
+        L.circleMarker(e[0], { radius: 6, color: '#FBF6EE', weight: 2.5,
+          fillColor: e[1], fillOpacity: 1 }).addTo(g);
+      });
+      g.addTo(map); self._layer = g;
+    };
+
+    var label = function (r) {
+      if (!lab) return;
+      lab.innerHTML =
+        '<div class="hd"><span>FARROUTE</span><span>ROUTE ' +
+          String(r.n).padStart(3, '0') + ' OF ' + R.length + '</span></div>' +
+        '<div class="bd">' +
+          '<div class="leg"><span class="k">FROM</span><span class="v">' + esc(r.f) + '</span></div>' +
+          '<div class="rule"></div>' +
+          '<div class="leg"><span class="k">TO</span><span class="v">' + esc(r.t) + '</span></div>' +
+          '<div class="rule"></div>' +
+          '<div class="it"><b>' + esc(r.b) + '</b> ' + esc(r.p) + '</div>' +
+          '<div class="gap">The seller does not ship to ' + esc(r.t) +
+            '. Farroute creates this route.</div>' +
+          '<div class="ft"><span class="bars"></span>' +
+            '<span class="stamp">ROUTE CREATED</span></div>' +
+        '</div>';
+      lab.classList.add('on');
+    };
+    var esc = function (t) { return String(t).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+
     var hop = function () {
       if (!self._fm || gen !== self._gen) return;
-      var i = last; while (i === last) i = Math.floor(Math.random() * SPOTS.length);
-      var s = SPOTS[i];
-      // Every tile the approach will show is fetched first and waited for. If
-      // that does not finish, the camera does not move, because a flight into
-      // tiles that have not arrived is what shows a magnified blur.
-      self._fm.warm([s[0], s[1]], s[2]).then(function () {
+      i = (i + 1) % R.length;
+      var r = R[i];
+      var bounds = L.latLngBounds([r.fp, r.tp]).pad(0.35);
+      var z = Math.min(map.getBoundsZoom(bounds), 6.5);
+      var c = bounds.getCenter();
+      if (lab) lab.classList.remove('on');
+      self._fm.warm([c.lat, c.lng], z).then(function () {
         if (!self._fm || gen !== self._gen) return;
-        last = i;
-        self._fm.map.flyTo([s[0], s[1]], s[2], { duration: 2.6, easeLinearity: 0.22 });
-        self._tour = setTimeout(hop, 9000);
+        map.flyTo([c.lat, c.lng], z, { duration: 2.2, easeLinearity: 0.24 });
+        setTimeout(function () {
+          if (!self._fm || gen !== self._gen) return;
+          draw(r); label(r);
+        }, 1500);
+        self._tour = setTimeout(hop, 8600);
       }).catch(function () {
         if (gen !== self._gen) return;
-        // Leave the current view alone and try somewhere else shortly.
         self._tour = setTimeout(hop, 2500);
       });
     };
-    // Nothing flies until the map has its backdrop and the world is held at the
-    // wide levels, because those carry the parts of a flight no preload reaches.
+
     self._fm.settled().then(function () {
       if (!self._fm || gen !== self._gen) return;
-      self._tour = setTimeout(hop, 900);
+      self._tour = setTimeout(hop, 700);
     });
   }
   google() {
