@@ -40,7 +40,7 @@ body[data-theme=dark]{--paper:#2B211B;--card:#211F1D;--ink:#F4EBDC;--muted:#B3A8
 #frlabel .names{min-width:0;display:flex;flex-direction:column;gap:1px}
 #frlabel .brand{font-family:Archivo,system-ui,sans-serif;font-weight:700;font-stretch:87.5%;
   font-size:19px;line-height:1.1;letter-spacing:-0.01em}
-#frlabel .prod{font-family:Archivo,system-ui,sans-serif;font-size:12px;line-height:1.3;color:#DED1BD}
+#frlabel .prod{display:block;font-family:Archivo,system-ui,sans-serif;font-size:12px;line-height:1.35;color:#DED1BD;padding-left:7px;text-indent:-7px}
 #frlabel .bd{padding:9px 11px 10px;display:flex;flex-direction:column;gap:7px}
 #frlabel .leg{display:flex;gap:7px;align-items:baseline;flex-wrap:wrap}
 #frlabel .k,#frlabel .arr{font-size:9px;letter-spacing:.12em;color:#5E574E}
@@ -986,15 +986,18 @@ class Component extends DCLogic {
         // The product is what is on offer, so it carries the dark bar.
         '<div class="hd">' +
           '<span class="names"><span class="brand">' + esc(r.b) + '</span>' +
-            '<span class="prod">' + esc(r.p) + '</span></span>' +
+            // One item per line, so a label covering several products reads as
+            // a list rather than one long sentence.
+            (r.p || []).map(function (i) { return '<span class="prod">' + esc(i) + '</span>'; }).join('') +
+          '</span>' +
         '</div>' +
         '<div class="bd">' +
           '<div class="leg"><span class="k">FROM</span><span class="v">' + esc(r.f) + '</span>' +
             '<span class="arr">to</span><span class="v">' + esc(r.t) + '</span></div>' +
           '<div class="rule"></div>' +
           '<div class="svc"><span>Arrives to your courier</span><b>3 to 4 days</b></div>' +
-          '<div class="svc"><span>Onward by USPS</span><b>' + esc(r.usps) + '</b></div>' +
-          '<div class="svc"><span>Onward by DHL Express</span><b>' + esc(r.dhl) + '</b></div>' +
+          '<div class="svc"><span>USPS</span><b>' + esc(r.usps) + '</b></div>' +
+          '<div class="svc"><span>DHL Express</span><b>' + esc(r.dhl) + '</b></div>' +
           '<div class="ft"><span class="stamp">ROUTE CREATED</span></div>' +
         '</div>';
       lab.classList.add('on');
