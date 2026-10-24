@@ -179,7 +179,17 @@
       });
       Layer._off = off;
       // On retina screens, 128px tiles one zoom deeper so imagery is sharp at device resolution.
-      return new Layer({ tileSize: ret ? 128 : 256, maxNativeZoom: max - off, maxZoom: max + 2, noWrap: true, bounds: BOUNDS, keepBuffer: 4, attribution: attr });  // every level is preloaded before a
+      // updateWhenZooming is off because Leaflet's default rebuilds the whole
+      // grid every time the rounded zoom crosses an integer. A flight from the
+      // world view down to a route crossed five of them and asked for 904 tiles
+      // in mid air, and the load events alone cost the camera its frames. The
+      // level already on screen is scaled through the flight instead, and the
+      // real tiles are drawn once the camera stops, where they are cache hits
+      // from the preload. updateWhenIdle does the same for the pan: Leaflet
+      // otherwise rebuilds the grid every 200ms while the camera is in motion,
+      // and nothing here is dragged by hand, so there is no interaction to
+      // keep up with.
+      return new Layer({ tileSize: ret ? 128 : 256, maxNativeZoom: max - off, maxZoom: max + 2, noWrap: true, bounds: BOUNDS, keepBuffer: 4, updateWhenZooming: false, updateWhenIdle: true, attribution: attr });  // every level is preloaded before a
       // move, so drawing each one as the camera passes costs nothing and keeps
       // the picture continuous instead of snapping at the end.
     }
