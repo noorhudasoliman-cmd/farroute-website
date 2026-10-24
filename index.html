@@ -949,26 +949,25 @@ class Component extends DCLogic {
         var t = k / n, s2 = Math.sin(Math.PI * t);
         pts.push([a.lat + (b.lat - a.lat) * t + s2 * lift * 17, a.lng + (b.lng - a.lng) * t]);
       }
-      var line = L.polyline(pts, { color: '#2E5AAC', weight: 3, opacity: 1,
-        lineCap: 'round', dashArray: '1 9' }).addTo(g);
+      // The line is dotted from the first frame and grows along the path, so it
+      // reads as a route being laid down. Animating a dash offset instead would
+      // start solid and only turn dotted at the end, which looks like a glitch.
+      var line = L.polyline([pts[0], pts[0]], { color: '#2E5AAC', weight: 3,
+        opacity: 1, lineCap: 'round', dashArray: '1 9' }).addTo(g);
       L.marker(a, { icon: pin('pack'), interactive: false }).addTo(g);
       L.marker(b, { icon: pin('home'), interactive: false }).addTo(g);
       g.addTo(map); self._layer = g;
-      var el = line.getElement && line.getElement();
-      if (el && el.getTotalLength) {
-        var len = el.getTotalLength();
-        el.style.strokeDasharray = len + ' ' + len;
-        el.style.strokeDashoffset = len;
-        el.getBoundingClientRect();
-        el.style.transition = 'stroke-dashoffset 1.15s cubic-bezier(.5,0,.3,1)';
-        el.style.strokeDashoffset = '0';
-        setTimeout(function () {
-          if (!el.isConnected) return;
-          el.style.transition = 'none';
-          el.style.strokeDasharray = '1 9';
-          el.style.strokeDashoffset = '0';
-        }, 1200);
-      }
+      var t0 = 0, span = 1400, mine = g;
+      var grow = function (now) {
+        if (self._layer !== mine || gen !== self._gen) return;
+        if (!t0) t0 = now;
+        var f = Math.min(1, (now - t0) / span);
+        var e = f < .5 ? 2 * f * f : 1 - Math.pow(-2 * f + 2, 2) / 2;
+        var upto = Math.max(1, Math.round(e * (pts.length - 1)));
+        line.setLatLngs(pts.slice(0, upto + 1));
+        if (f < 1) requestAnimationFrame(grow);
+      };
+      requestAnimationFrame(grow);
     };
 
     var label = function (r) {
@@ -1009,15 +1008,15 @@ class Component extends DCLogic {
         if (!self._fm || gen !== self._gen) return;
         map.flyTo([c.lat, c.lng], z, { duration: 1.8, easeLinearity: 0.25 });
         // the order lands first, then the route is drawn between its two ends
-        step(function () { label(r); }, 1750);
-        step(function () { draw(r); }, 2150);
+        step(function () { label(r); }, 1700);
+        step(function () { draw(r); }, 2050);
         // hold on the finished route, then clear it before leaving
         step(function () {
           if (lab) lab.classList.remove('on');
           clear();
           map.flyTo(START_VIEW.c, START_VIEW.z, { duration: 1.2, easeLinearity: 0.3 });
           step(hop, 1450);
-        }, 5350);
+        }, 10200);
       }).catch(function () {
         if (gen !== self._gen) return;
         step(hop, 1200);
