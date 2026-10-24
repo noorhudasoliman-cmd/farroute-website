@@ -325,9 +325,10 @@
           // what is on screen left that ring to arrive late and show soft.
           var rx = Math.ceil(sz.x / ts / 2) + 2, ry = Math.ceil(sz.y / ts / 2) + 2;
           var pz = Math.min(tz + off, src.max);
+          var span = 1 << tz;
           for (var x = cx - rx; x <= cx + rx; x++) {
             for (var y = cy - ry; y <= cy + ry; y++) {
-              if (y < 0 || x < 0) continue;
+              if (x < 0 || y < 0 || x >= span || y >= span) continue;
               jobs.push(loadStrict(src.url.replace('{z}', pz).replace('{x}', x).replace('{y}', y)));
               jobs.push(loadStrict(MASK + Math.min(pz, 16) + '/' + (y >> Math.max(0, pz - 16)) + '/' + (x >> Math.max(0, pz - 16))));
             }
@@ -349,8 +350,13 @@
         seeds.forEach(function (pt, idx) {
           // The destination gets the full band; the points in between only need
           // the wide levels the camera actually passes through over them.
-          var lo = idx === 0 ? Math.max(2, Math.round(z) - 7) : 4;
-          var hi = idx === 0 ? Math.min(8, Math.round(z) - 2) : 8;
+          // Seeding a fixed band wasted most of its tiles when the camera was
+          // only going to a wide view. The band follows the target zoom now.
+          // Levels 2 to 5 are already held for the whole world, so seeding them
+          // again per route fetched the same tiles over and over.
+          var tz = Math.round(z);
+          var lo = Math.max(6, (idx === 0 ? tz - 7 : tz - 3));
+          var hi = Math.min(8, (idx === 0 ? tz - 2 : tz + 1));
           for (var wz = lo; wz <= hi; wz++) {
             var wp = map.project(L.latLng(pt[0], pt[1]), wz);
             var wx = Math.floor(wp.x / 256), wy = Math.floor(wp.y / 256);
@@ -358,10 +364,14 @@
             // the world is only held globally to 4, so they are taken generously:
             // the tiles are coarse and there are few of them.
             var r2 = (wz >= 5 && wz <= 8 ? 2 : 0) + (idx === 0 ? 1 : 0);
+            var wspan = 1 << wz;
             for (var bx2 = wx - wrx - r2; bx2 <= wx + wrx + r2; bx2++) {
               for (var by2 = wy - wry - r2; by2 <= wy + wry + r2; by2++) {
-                if (bx2 < 0 || by2 < 0) continue;
-                jobs.push(loadStrict(BLUE_MARBLE.replace('{z}', wz).replace('{x}', bx2).replace('{y}', by2)));
+                if (bx2 < 0 || by2 < 0 || bx2 >= wspan || by2 >= wspan) continue;
+                // The world layer is a backdrop with gaps of its own, so a tile
+                // it cannot serve must not fail the whole preload the way a
+                // missing photo tile should.
+                jobs.push(load(BLUE_MARBLE.replace('{z}', wz).replace('{x}', bx2).replace('{y}', by2)));
               }
             }
           }

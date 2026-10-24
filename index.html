@@ -26,7 +26,7 @@ body[data-theme=dark]{--paper:#2B211B;--card:#211F1D;--ink:#F4EBDC;--muted:#B3A8
 /* The route card is drawn as a shipping label: a cream stock with a dark rule,
    a FROM block over a TO block, and a stamp saying the route does not exist
    until Farroute opens it. */
-#frlabel{position:absolute;left:18px;bottom:18px;z-index:900;width:min(330px,calc(100% - 36px));
+#frlabel{position:absolute;left:18px;bottom:18px;z-index:900;width:min(360px,calc(100% - 36px));
   background:#FBF6EE;border:1.5px solid #2B211B;border-radius:4px;overflow:hidden;
   box-shadow:0 6px 18px rgba(43,33,27,.18);opacity:0;transform:translateY(8px);
   transition:opacity .45s ease,transform .45s ease;pointer-events:none;
@@ -35,9 +35,17 @@ body[data-theme=dark]{--paper:#2B211B;--card:#211F1D;--ink:#F4EBDC;--muted:#B3A8
 #frlabel .hd{display:flex;align-items:center;justify-content:space-between;gap:8px;
   background:#2B211B;color:#F4EBDC;padding:5px 9px;font-size:10px;letter-spacing:.14em}
 #frlabel .bd{padding:9px 11px 10px;display:flex;flex-direction:column;gap:7px}
-#frlabel .leg{display:grid;grid-template-columns:34px 1fr;gap:8px;align-items:baseline}
-#frlabel .k{font-size:9px;letter-spacing:.12em;color:#5E574E}
-#frlabel .v{font-family:Archivo,system-ui,sans-serif;font-weight:700;font-size:16px;line-height:1.15;letter-spacing:-0.01em}
+#frlabel .goods{display:flex;gap:10px;align-items:center}
+#frlabel .mark{width:40px;height:40px;flex-shrink:0;border-radius:7px;background:#F4EBDC;
+  border:1px solid #DED1BD;object-fit:contain;padding:4px}
+#frlabel .mark.fallback{display:flex;align-items:center;justify-content:center;padding:0}
+#frlabel .names{min-width:0}
+#frlabel .brand{font-family:Archivo,system-ui,sans-serif;font-weight:700;font-stretch:87.5%;
+  font-size:21px;line-height:1.05;letter-spacing:-0.02em}
+#frlabel .prod{font-family:Archivo,system-ui,sans-serif;font-size:13px;line-height:1.3;color:#5E574E;margin-top:2px}
+#frlabel .leg{display:flex;gap:7px;align-items:baseline;flex-wrap:wrap}
+#frlabel .k,#frlabel .arr{font-size:9px;letter-spacing:.12em;color:#5E574E}
+#frlabel .v{font-family:Archivo,system-ui,sans-serif;font-weight:700;font-size:14px;line-height:1.15;letter-spacing:-0.01em}
 #frlabel .rule{height:1px;background:#DED1BD}
 #frlabel .it{font-family:Archivo,system-ui,sans-serif;font-size:12.5px;line-height:1.35;color:#5E574E}
 #frlabel .it b{color:#2B211B;font-weight:700}
@@ -46,6 +54,9 @@ body[data-theme=dark]{--paper:#2B211B;--card:#211F1D;--ink:#F4EBDC;--muted:#B3A8
 #frlabel .ft{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:1px}
 #frlabel .stamp{border:1.5px solid #2E5AAC;color:#2E5AAC;border-radius:3px;padding:2px 6px;
   font-size:9px;letter-spacing:.1em;transform:rotate(-2deg)}
+.frpin{display:flex;align-items:center;justify-content:center;width:30px;height:30px;
+  border-radius:50%;background:#2B211B;box-shadow:0 2px 7px rgba(43,33,27,.3)}
+.frpin.pack{background:#FBF6EE;border:2px solid #2B211B}
 #frlabel .bars{height:17px;flex:1;background-image:repeating-linear-gradient(90deg,
   #2B211B 0 2px,transparent 2px 4px,#2B211B 4px 5px,transparent 5px 9px,#2B211B 9px 12px,transparent 12px 14px);opacity:.75}
 @media (max-width:640px){#frlabel{left:10px;right:10px;bottom:10px;width:auto}
@@ -884,84 +895,146 @@ class Component extends DCLogic {
     if (window.requestIdleCallback) requestIdleCallback(go, { timeout: 1200 }); else setTimeout(go, 300);
   }
 
-  // Walks the researched shipping gaps. Each one is a real product, a real
-  // origin and a destination the seller does not serve, so every route drawn
-  // here is one that does not exist until Farroute opens it.
+  // Walks the researched shipping gaps like a tracker: in on one route, hold,
+  // out to the world, a beat, then the next. Every entry is a real product, a
+  // real origin and a destination the seller does not serve, so each line drawn
+  // is a route that does not exist until Farroute opens it. Random order, and
+  // every entry is shown before any repeats.
   tour() {
-    var self = this, i = -1, gen = (self._gen = (self._gen || 0) + 1);
-    var R = window.FR_ROUTES || [];
+    var self = this, gen = (self._gen = (self._gen || 0) + 1);
+    var R = (window.FR_ROUTES || []).slice();
     if (!R.length) return;
     var L = window.L, map = self._fm.map;
     var lab = document.getElementById('frlabel');
+    var order = [], at = 0;
+    var reshuffle = function () {
+      order = R.map(function (_, i) { return i; });
+      for (var i = order.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = order[i]; order[i] = order[j]; order[j] = t;
+      }
+      at = 0;
+    };
+    reshuffle();
 
+    var esc = function (t) { return String(t).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+
+    // A label carries a tracking reference, not a position in a list. Showing
+    // one of a count would tell a visitor how many routes are on the sheet,
+    // which is nobody's business and is not the whole picture anyway.
+    var ref = function (r) {
+      var seed = 0, k = r.b + r.f + r.t + r.p;
+      for (var i = 0; i < k.length; i++) seed = (seed * 31 + k.charCodeAt(i)) >>> 0;
+      var A = 'ACDEFHJKLMNPRTVWXY349';
+      var pick = function (n) { var o = ''; for (var i = 0; i < n; i++) {
+        o += A[seed % A.length]; seed = (seed * 1103515245 + 12345) >>> 0; } return o; };
+      return 'FR ' + pick(3) + ' ' + pick(3) + ' ' + pick(3);
+    };
+
+    var pin = function (kind) {
+      var art = kind === 'home'
+        ? '<svg viewBox="0 0 24 24" width="17" height="17" style="fill:none;stroke:#FBF6EE;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round"><path d="M3.6 10.4 12 3.8l8.4 6.6"></path><path d="M5.6 11.9V20h12.8v-8.1"></path><path d="M9.9 20v-5.2h4.2V20"></path></svg>'
+        : '<svg viewBox="0 0 72 48" width="22" height="15"><use href="#pbx"></use></svg>';
+      return L.divIcon({ className: '', iconSize: [30, 30], iconAnchor: [15, 15],
+        html: '<span class="frpin ' + (kind === 'home' ? 'home' : 'pack') + '">' + art + '</span>' });
+    };
+
+    var clear = function () {
+      if (self._layer) { try { map.removeLayer(self._layer); } catch (e) {} self._layer = null; }
+    };
+
+    // The line is drawn on, rather than appearing whole, so a route reads as
+    // something being created.
     var draw = function (r) {
-      if (self._layer) { try { map.removeLayer(self._layer); } catch (e) {} }
+      clear();
       var g = L.layerGroup();
       var a = L.latLng(r.fp[0], r.fp[1]), b = L.latLng(r.tp[0], r.tp[1]);
-      // A gentle arc, so a route reads as a path taken rather than a ruler line.
-      var pts = [], n = 48;
-      var lift = Math.min(1, a.distanceTo(b) / 17000000);
+      var pts = [], n = 56, lift = Math.min(1, a.distanceTo(b) / 17000000);
       for (var k = 0; k <= n; k++) {
         var t = k / n, s2 = Math.sin(Math.PI * t);
-        pts.push([a.lat + (b.lat - a.lat) * t + s2 * lift * 17,
-                  a.lng + (b.lng - a.lng) * t]);
+        pts.push([a.lat + (b.lat - a.lat) * t + s2 * lift * 17, a.lng + (b.lng - a.lng) * t]);
       }
-      L.polyline(pts, { color: '#FBF6EE', weight: 6, opacity: .9, lineCap: 'round' }).addTo(g);
-      L.polyline(pts, { color: '#2E5AAC', weight: 3, opacity: 1, lineCap: 'round',
-        dashArray: '1 9', className: 'fr-draw' }).addTo(g);
-      [[a, '#2B211B'], [b, '#2E5AAC']].forEach(function (e) {
-        L.circleMarker(e[0], { radius: 6, color: '#FBF6EE', weight: 2.5,
-          fillColor: e[1], fillOpacity: 1 }).addTo(g);
-      });
+      var line = L.polyline(pts, { color: '#2E5AAC', weight: 3, opacity: 1,
+        lineCap: 'round', dashArray: '1 9' }).addTo(g);
+      L.marker(a, { icon: pin('pack'), interactive: false }).addTo(g);
+      L.marker(b, { icon: pin('home'), interactive: false }).addTo(g);
       g.addTo(map); self._layer = g;
+      var el = line.getElement && line.getElement();
+      if (el && el.getTotalLength) {
+        var len = el.getTotalLength();
+        el.style.strokeDasharray = len + ' ' + len;
+        el.style.strokeDashoffset = len;
+        el.getBoundingClientRect();
+        el.style.transition = 'stroke-dashoffset 1.15s cubic-bezier(.5,0,.3,1)';
+        el.style.strokeDashoffset = '0';
+        setTimeout(function () {
+          if (!el.isConnected) return;
+          el.style.transition = 'none';
+          el.style.strokeDasharray = '1 9';
+          el.style.strokeDashoffset = '0';
+        }, 1200);
+      }
     };
 
     var label = function (r) {
       if (!lab) return;
       lab.innerHTML =
-        '<div class="hd"><span>FARROUTE</span><span>ROUTE ' +
-          String(r.n).padStart(3, '0') + ' OF ' + R.length + '</span></div>' +
+        '<div class="hd"><span>FARROUTE</span><span>' + ref(r) + '</span></div>' +
         '<div class="bd">' +
-          '<div class="leg"><span class="k">FROM</span><span class="v">' + esc(r.f) + '</span></div>' +
+          '<div class="goods">' +
+            // A brand's own mark where the source proves the domain is theirs,
+            // and the Farroute parcel everywhere else. Never another company's.
+            (r.d ? '<img class="mark" alt="" loading="lazy" src="https://www.google.com/s2/favicons?sz=64&domain=' +
+                   encodeURIComponent(r.d) + '" onerror="this.className=\'mark fallback\';this.removeAttribute(\'src\')">'
+                 : '<span class="mark fallback"><svg viewBox="0 0 72 48" width="30" height="20"><use href="#pbx"></use></svg></span>') +
+            '<div class="names"><div class="brand">' + esc(r.b) + '</div>' +
+              '<div class="prod">' + esc(r.p) + '</div></div>' +
+          '</div>' +
           '<div class="rule"></div>' +
-          '<div class="leg"><span class="k">TO</span><span class="v">' + esc(r.t) + '</span></div>' +
-          '<div class="rule"></div>' +
-          '<div class="it"><b>' + esc(r.b) + '</b> ' + esc(r.p) + '</div>' +
-          '<div class="gap">The seller does not ship to ' + esc(r.t) +
-            '. Farroute creates this route.</div>' +
+          '<div class="leg"><span class="k">FROM</span><span class="v">' + esc(r.f) + '</span>' +
+            '<span class="arr">to</span><span class="v">' + esc(r.t) + '</span></div>' +
+          '<div class="gap">' + esc(r.t) + ' can now order this.</div>' +
           '<div class="ft"><span class="bars"></span>' +
-            '<span class="stamp">ROUTE CREATED</span></div>' +
+            '<span class="stamp">ROUTE NOW OPEN</span></div>' +
         '</div>';
       lab.classList.add('on');
     };
-    var esc = function (t) { return String(t).replace(/[&<>"]/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+
+    var step = function (fn, ms) { self._tour = setTimeout(function () {
+      if (!self._fm || gen !== self._gen) return; fn(); }, ms); };
 
     var hop = function () {
       if (!self._fm || gen !== self._gen) return;
-      i = (i + 1) % R.length;
-      var r = R[i];
-      var bounds = L.latLngBounds([r.fp, r.tp]).pad(0.35);
-      var z = Math.min(map.getBoundsZoom(bounds), 6.5);
+      if (at >= order.length) reshuffle();
+      var r = R[order[at++]];
+      var bounds = L.latLngBounds([r.fp, r.tp]).pad(0.3);
+      var z = Math.min(map.getBoundsZoom(bounds), 6);
       var c = bounds.getCenter();
-      if (lab) lab.classList.remove('on');
       self._fm.warm([c.lat, c.lng], z).then(function () {
         if (!self._fm || gen !== self._gen) return;
-        map.flyTo([c.lat, c.lng], z, { duration: 2.2, easeLinearity: 0.24 });
-        setTimeout(function () {
-          if (!self._fm || gen !== self._gen) return;
-          draw(r); label(r);
-        }, 1500);
-        self._tour = setTimeout(hop, 8600);
+        map.flyTo([c.lat, c.lng], z, { duration: 1.8, easeLinearity: 0.25 });
+        // the order lands first, then the route is drawn between its two ends
+        step(function () { label(r); }, 1750);
+        step(function () { draw(r); }, 2150);
+        // hold on the finished route, then clear it before leaving
+        step(function () {
+          if (lab) lab.classList.remove('on');
+          clear();
+          map.flyTo(START_VIEW.c, START_VIEW.z, { duration: 1.2, easeLinearity: 0.3 });
+          step(hop, 1450);
+        }, 5350);
       }).catch(function () {
         if (gen !== self._gen) return;
-        self._tour = setTimeout(hop, 2500);
+        step(hop, 1200);
       });
     };
 
+    var START_VIEW = { c: map.getCenter(), z: map.getMinZoom() };
     self._fm.settled().then(function () {
       if (!self._fm || gen !== self._gen) return;
-      self._tour = setTimeout(hop, 700);
+      START_VIEW = { c: map.getCenter(), z: map.getMinZoom() };
+      step(hop, 600);
     });
   }
   google() {
