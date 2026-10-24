@@ -32,31 +32,25 @@ body[data-theme=dark]{--paper:#2B211B;--card:#211F1D;--ink:#F4EBDC;--muted:#B3A8
   transition:opacity .45s ease,transform .45s ease;pointer-events:none;
   font-family:ui-monospace,Menlo,Consolas,monospace;color:#2B211B}
 #frlabel.on{opacity:1;transform:none}
-#frlabel .hd{display:flex;align-items:center;justify-content:space-between;gap:8px;
-  background:#2B211B;color:#F4EBDC;padding:5px 9px;font-size:10px;letter-spacing:.14em}
-#frlabel .bd{padding:9px 11px 10px;display:flex;flex-direction:column;gap:7px}
-#frlabel .goods{display:flex;gap:10px;align-items:center}
-#frlabel .mark{width:40px;height:40px;flex-shrink:0;border-radius:7px;background:#F4EBDC;
-  border:1px solid #DED1BD;object-fit:contain;padding:4px}
-#frlabel .mark.fallback{display:flex;align-items:center;justify-content:center;padding:0}
-#frlabel .names{min-width:0}
+#frlabel .hd{display:flex;align-items:center;gap:9px;background:#2B211B;color:#F4EBDC;padding:9px 11px}
+#frlabel .mark{width:34px;height:34px;flex-shrink:0;border-radius:6px;background:#FBF6EE;
+  object-fit:contain;padding:4px}
+#frlabel .mark.fallback{display:flex;align-items:center;justify-content:center;padding:0;background:#F4EBDC}
+#frlabel .names{min-width:0;display:flex;flex-direction:column;gap:1px}
 #frlabel .brand{font-family:Archivo,system-ui,sans-serif;font-weight:700;font-stretch:87.5%;
-  font-size:21px;line-height:1.05;letter-spacing:-0.02em}
-#frlabel .prod{font-family:Archivo,system-ui,sans-serif;font-size:13px;line-height:1.3;color:#5E574E;margin-top:2px}
+  font-size:17px;line-height:1.1;letter-spacing:-0.01em}
+#frlabel .prod{font-family:Archivo,system-ui,sans-serif;font-size:12px;line-height:1.3;color:#DED1BD}
+#frlabel .bd{padding:9px 11px 10px;display:flex;flex-direction:column;gap:7px}
 #frlabel .leg{display:flex;gap:7px;align-items:baseline;flex-wrap:wrap}
 #frlabel .k,#frlabel .arr{font-size:9px;letter-spacing:.12em;color:#5E574E}
 #frlabel .v{font-family:Archivo,system-ui,sans-serif;font-weight:700;font-size:14px;line-height:1.15;letter-spacing:-0.01em}
 #frlabel .rule{height:1px;background:#DED1BD}
-#frlabel .it{font-family:Archivo,system-ui,sans-serif;font-size:12.5px;line-height:1.35;color:#5E574E}
-#frlabel .it b{color:#2B211B;font-weight:700}
-#frlabel .gap{font-family:Archivo,system-ui,sans-serif;font-size:11.5px;line-height:1.35;
-  color:#2E5AAC;border-left:2px solid #2E5AAC;padding-left:7px}
+#frlabel .svc{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+  font-family:Archivo,system-ui,sans-serif;font-size:12.5px;color:#5E574E}
+#frlabel .svc b{font-weight:700;color:#2B211B;white-space:nowrap}
 #frlabel .ft{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:1px}
 #frlabel .stamp{border:1.5px solid #2E5AAC;color:#2E5AAC;border-radius:3px;padding:2px 6px;
   font-size:9px;letter-spacing:.1em;transform:rotate(-2deg)}
-.frpin{display:flex;align-items:center;justify-content:center;width:30px;height:30px;
-  border-radius:50%;background:#2B211B;box-shadow:0 2px 7px rgba(43,33,27,.3)}
-.frpin.pack{background:#FBF6EE;border:2px solid #2B211B}
 #frlabel .bars{height:17px;flex:1;background-image:repeating-linear-gradient(90deg,
   #2B211B 0 2px,transparent 2px 4px,#2B211B 4px 5px,transparent 5px 9px,#2B211B 9px 12px,transparent 12px 14px);opacity:.75}
 @media (max-width:640px){#frlabel{left:10px;right:10px;bottom:10px;width:auto}
@@ -980,23 +974,23 @@ class Component extends DCLogic {
     var label = function (r) {
       if (!lab) return;
       lab.innerHTML =
-        '<div class="hd"><span>FARROUTE</span><span>' + ref(r) + '</span></div>' +
+        // The product is what is on offer, so it carries the dark bar.
+        '<div class="hd">' +
+          (r.d ? '<img class="mark" alt="" loading="lazy" src="https://www.google.com/s2/favicons?sz=64&domain=' +
+                 encodeURIComponent(r.d) + '" onerror="this.className=\'mark fallback\';this.removeAttribute(\'src\')">'
+               : '<span class="mark fallback"><svg viewBox="0 0 72 48" width="30" height="20"><use href="#pbx"></use></svg></span>') +
+          '<span class="names"><span class="brand">' + esc(r.b) + '</span>' +
+            '<span class="prod">' + esc(r.p) + '</span></span>' +
+        '</div>' +
         '<div class="bd">' +
-          '<div class="goods">' +
-            // A brand's own mark where the source proves the domain is theirs,
-            // and the Farroute parcel everywhere else. Never another company's.
-            (r.d ? '<img class="mark" alt="" loading="lazy" src="https://www.google.com/s2/favicons?sz=64&domain=' +
-                   encodeURIComponent(r.d) + '" onerror="this.className=\'mark fallback\';this.removeAttribute(\'src\')">'
-                 : '<span class="mark fallback"><svg viewBox="0 0 72 48" width="30" height="20"><use href="#pbx"></use></svg></span>') +
-            '<div class="names"><div class="brand">' + esc(r.b) + '</div>' +
-              '<div class="prod">' + esc(r.p) + '</div></div>' +
-          '</div>' +
-          '<div class="rule"></div>' +
           '<div class="leg"><span class="k">FROM</span><span class="v">' + esc(r.f) + '</span>' +
             '<span class="arr">to</span><span class="v">' + esc(r.t) + '</span></div>' +
-          '<div class="gap">' + esc(r.t) + ' can now order this.</div>' +
+          '<div class="rule"></div>' +
+          '<div class="svc"><span>Arrives to your courier</span><b>3 to 4 days</b></div>' +
+          '<div class="svc"><span>DHL Express onward</span><b>' + esc(r.dhl) + '</b></div>' +
+          '<div class="svc"><span>USPS Express onward</span><b>' + esc(r.usps) + '</b></div>' +
           '<div class="ft"><span class="bars"></span>' +
-            '<span class="stamp">ROUTE NOW OPEN</span></div>' +
+            '<span class="stamp">ROUTE CREATED</span></div>' +
         '</div>';
       lab.classList.add('on');
     };
