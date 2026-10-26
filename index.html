@@ -29,66 +29,90 @@ body[data-theme=dark]{--paper:#2B211B;--card:#211F1D;--ink:#F4EBDC;--muted:#B3A8
 /* The product photograph stands on its own beside the label, so the pair reads
    as a product next to its routing rather than as a table. The label itself is
    kept narrow; the picture carries the weight. */
-/* The standing claim, fixed at the top of the map: the problem on the left,
-   then what Farroute does about it. It does not change as the examples cycle,
-   so it reads as what the product is for rather than as a per-route stamp. */
-#frclaim{position:absolute;left:18px;top:16px;z-index:900;display:flex;align-items:center;
-  gap:10px;flex-wrap:wrap;max-width:calc(100% - 36px);pointer-events:none;
-  font-family:Archivo,system-ui,sans-serif}
-#frclaim .bad,#frclaim .made{display:inline-flex;align-items:center;gap:7px;border-radius:999px;
-  padding:6px 13px;font-size:12px;font-weight:700;letter-spacing:.01em;
-  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
-#frclaim .bad{background:rgba(251,246,238,.82);color:#2B211B;border:1px solid rgba(43,33,27,.22)}
-#frclaim .mk{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;
-  border-radius:50%;background:#B4461F;color:#FBF6EE;font-size:11px;line-height:1}
-#frclaim .made{background:rgba(46,90,172,.90);color:#FFFFFF;border:1px solid rgba(46,90,172,.95)}
-#frclaim .arw{color:#2B211B;font-size:16px;line-height:1;opacity:.75;
-  text-shadow:0 1px 2px rgba(251,246,238,.9)}
-@media (max-width:640px){#frclaim{left:10px;top:10px;gap:7px}
-  #frclaim .bad,#frclaim .made{font-size:11px;padding:5px 10px}}
-#frpair{position:absolute;left:18px;bottom:18px;z-index:900;display:flex;align-items:center;gap:14px;
-  width:min(430px,calc(100% - 36px));opacity:0;transform:translateY(8px);
+/* The standing claim, fixed at the top of the map: the problem stated plainly
+   in red with its error mark, then what Farroute does about it in blue. No
+   enclosing pill, so the words carry it and the blue reads as the answer. */
+/* The download button carries a blue glow that breathes, and a shine that
+   crosses it every few seconds, so the one thing to press looks live. */
+.fr-dl{position:relative;overflow:hidden;isolation:isolate;height:60px;border:0;border-radius:12px;
+  background:#2B211B;color:#F4EBDC;font-family:Archivo,system-ui,sans-serif;font-weight:700;
+  font-stretch:87.5%;font-size:20px;padding:0 36px;cursor:pointer;
+  box-shadow:0 0 0 0 rgba(46,90,172,.55),0 6px 18px rgba(43,33,27,.18);
+  animation:fr-dl-glow 2.8s ease-in-out infinite}
+.fr-dl::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(105deg,transparent 38%,rgba(96,150,255,.00) 44%,
+    rgba(120,170,255,.55) 50%,rgba(96,150,255,.00) 56%,transparent 62%);
+  transform:translateX(-120%);animation:fr-dl-shine 3.6s ease-in-out infinite}
+.fr-dl:hover{background:#2E5AAC}
+@keyframes fr-dl-glow{
+  0%,100%{box-shadow:0 0 0 0 rgba(46,90,172,.42),0 6px 18px rgba(43,33,27,.18)}
+  50%{box-shadow:0 0 22px 4px rgba(46,90,172,.50),0 6px 18px rgba(43,33,27,.18)}}
+@keyframes fr-dl-shine{0%{transform:translateX(-120%)}
+  55%{transform:translateX(120%)}100%{transform:translateX(120%)}}
+@media (prefers-reduced-motion:reduce){
+  .fr-dl{animation:none;box-shadow:0 0 16px 2px rgba(46,90,172,.40),0 6px 18px rgba(43,33,27,.18)}
+  .fr-dl::after{animation:none;opacity:0}}
+#frclaim{position:absolute;left:18px;top:14px;z-index:900;display:flex;align-items:center;
+  gap:9px;flex-wrap:wrap;max-width:calc(100% - 36px);pointer-events:none;
+  font-family:Archivo,system-ui,sans-serif;
+  text-shadow:0 1px 3px rgba(251,246,238,.95),0 0 10px rgba(251,246,238,.85)}
+#frclaim .bad{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;
+  color:#C8371A;letter-spacing:.005em}
+#frclaim .mk{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;
+  border-radius:50%;background:#C8371A;color:#FBF6EE;font-size:12px;font-weight:700;line-height:1;
+  text-shadow:none;flex:0 0 auto}
+#frclaim .arw{color:#5E574E;font-size:15px;line-height:1;opacity:.8}
+#frclaim .made{font-size:15px;font-weight:700;color:#2E5AAC;letter-spacing:-0.005em}
+@media (max-width:640px){#frclaim{left:10px;top:9px;gap:6px}
+  #frclaim .bad{font-size:11.5px}#frclaim .made{font-size:13px}
+  #frclaim .mk{width:15px;height:15px;font-size:11px}}
+#frpair{position:absolute;left:18px;bottom:18px;z-index:900;display:flex;align-items:center;gap:12px;
+  width:auto;max-width:calc(100% - 36px);opacity:0;transform:translateY(8px);
   transition:opacity .45s ease,transform .45s ease;pointer-events:none}
 #frpair.on{opacity:1;transform:none}
-#frshot{flex:0 0 136px;width:136px;height:136px;background:#FFFFFF;border-radius:14px;
+#frshot{flex:0 0 132px;width:132px;height:132px;background:#FFFFFF;border-radius:13px;
   box-shadow:0 10px 26px rgba(43,33,27,.30),0 1px 3px rgba(43,33,27,.20);
   display:flex;align-items:center;justify-content:center;padding:6px;box-sizing:border-box}
 #frshot img{max-width:100%;max-height:100%;object-fit:contain;display:block}
-/* The card sits over the map, so it is kept light: a tinted pane the map reads
-   through, with the text still at full strength. The photograph stays on solid
-   white, because a product needs a clean ground to be read against. */
-#frlabel{flex:1 1 auto;min-width:0;background:rgba(251,246,238,.80);
-  -webkit-backdrop-filter:blur(14px) saturate(1.15);backdrop-filter:blur(14px) saturate(1.15);
-  border:1px solid rgba(43,33,27,.28);border-radius:7px;overflow:hidden;
-  box-shadow:0 4px 14px rgba(43,33,27,.12);color:#2B211B;
+/* The card is kept lighter and shorter than the photograph beside it, so the
+   product and the map stay the things you look at. */
+#frlabel{flex:0 1 auto;min-width:0;max-width:252px;background:rgba(251,246,238,.56);
+  -webkit-backdrop-filter:blur(18px) saturate(1.2);backdrop-filter:blur(18px) saturate(1.2);
+  border:1px solid rgba(43,33,27,.18);border-radius:8px;overflow:hidden;
+  box-shadow:0 3px 10px rgba(43,33,27,.10);color:#2B211B;
   font-family:Archivo,system-ui,sans-serif}
-@supports not (backdrop-filter:blur(4px)){#frlabel{background:rgba(251,246,238,.93)}}
+@supports not (backdrop-filter:blur(4px)){#frlabel{background:rgba(251,246,238,.86)}}
 /* Both ends of a route sit on the brand's cream, drawn in its espresso. */
 .frpin{display:flex;align-items:center;justify-content:center;width:30px;height:30px;
   border-radius:50%;background:#F4EBDC;border:2px solid #2B211B;
   box-shadow:0 2px 7px rgba(43,33,27,.28)}
-#frlabel .route{background:rgba(43,33,27,.82);color:#F7EFE2;padding:7px 11px;display:flex;
-  align-items:center;justify-content:center;gap:9px;font-size:10.5px;letter-spacing:.1em;
+#frlabel .route{background:rgba(43,33,27,.74);color:#F7EFE2;padding:5px 9px;display:flex;
+  align-items:center;justify-content:center;gap:7px;font-size:9px;letter-spacing:.09em;
   text-transform:uppercase;font-weight:600;text-align:center}
 #frlabel .route .cty{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #frlabel .route .to{flex:0 0 auto;opacity:.55;font-size:12px;line-height:1}
-#frlabel .bd{padding:10px 12px 11px;display:flex;flex-direction:column;gap:8px}
-#frlabel .brand{display:block;font-size:10px;letter-spacing:.13em;text-transform:uppercase;
-  color:#8A7E70;font-weight:600;line-height:1}
-#frlabel .prod{display:block;font-size:15px;line-height:1.25;font-weight:700;
-  letter-spacing:-0.01em;color:#2B211B;margin-top:4px}
+#frlabel .bd{padding:7px 10px 8px;display:flex;flex-direction:column;gap:5px}
+#frlabel .brand{display:block;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:#857A6C;font-weight:600;line-height:1}
+#frlabel .prod{display:block;font-size:12.5px;line-height:1.2;font-weight:700;
+  letter-spacing:-0.01em;color:#2B211B;margin-top:2px}
 #frlabel .brandonly{font-size:16px;font-weight:700;letter-spacing:-0.01em;color:#2B211B;
   text-transform:none;margin-top:0}
 #frlabel .rule{height:1px;background:rgba(43,33,27,.14)}
-#frlabel .svc{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
-  font-size:11.5px;color:#6B6158}
+#frlabel .svc{display:flex;align-items:baseline;justify-content:space-between;gap:8px;
+  font-size:9.5px;line-height:1.3;color:#6B6158}
 #frlabel .svc b{font-weight:700;color:#2B211B;white-space:nowrap}
 #frlabel .stamp{align-self:flex-start;border:1.5px solid #2E5AAC;color:#2E5AAC;border-radius:3px;
   padding:3px 9px;font-size:9.5px;font-weight:700;letter-spacing:.11em}
 @media (max-width:640px){
-  #frpair{left:10px;right:10px;bottom:10px;width:auto;gap:10px}
-  #frshot{flex:0 0 96px;width:96px;height:96px;border-radius:11px}
-  #frlabel .prod{font-size:14px}
+  #frpair{left:10px;bottom:10px;gap:8px;max-width:calc(100% - 20px)}
+  #frshot{flex:0 0 112px;width:112px;height:112px;border-radius:11px;padding:5px}
+  #frlabel{max-width:none;flex:1 1 auto}
+  #frlabel .route{font-size:7.5px;padding:4px 7px;gap:5px}
+  #frlabel .brand{font-size:7.5px}
+  #frlabel .prod{font-size:11px;margin-top:1px}
+  #frlabel .svc{font-size:8.5px;line-height:1.25}
+  #frlabel .bd{padding:5px 8px 6px;gap:3px}
 }
 /* The parcel and its arrowhead travel inside a full width track. The track
    carries the distance as a transform and each piece carries its own small
@@ -251,7 +275,7 @@ input,select,button,textarea{font:inherit;color:inherit}
       <section data-screen-label="Place order" style="display:flex;flex-direction:column;background:var(--card)">
         <div class="fr-hero" style="position:relative;width:100%;aspect-ratio:2.0 / 1;max-height:56vh;background:#FBF6EE;color:#2B211B;overflow:hidden;border-bottom:1px solid var(--line)">
           <div id="fmap" style="position:absolute;inset:0"></div>
-          <div id="frclaim" aria-hidden="true"><span class="bad"><span class="mk">!</span>Does not ship to your country</span><span class="arw">&#8594;</span><span class="made">Route created</span></div>
+          <div id="frclaim" aria-hidden="true"><span class="bad"><span class="mk">!</span>Does not ship to your country</span><span class="arw">&#8594;</span><span class="made">Route Created</span></div>
           <div id="frpair" aria-live="polite"><span id="frshot"></span><div id="frlabel"></div></div>
         </div>
 
@@ -260,13 +284,13 @@ input,select,button,textarea{font:inherit;color:inherit}
           <span style="font-size:clamp(15px,1.9vw,18px);line-height:1.4;color:var(--muted);max-width:26em">We create routes, you order anywhere.</span>
           <sc-if value="{{ preLaunch }}" hint-placeholder-val="{{ true }}">
             <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-              <div style="min-width:78px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-weight:700;font-stretch:87.5%;font-size:34px;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">{{ cdDays }}</span><span style="font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Days</span></div>
-              <div style="min-width:78px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-weight:700;font-stretch:87.5%;font-size:34px;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">{{ cdHours }}</span><span style="font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Hours</span></div>
-              <div style="min-width:78px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-weight:700;font-stretch:87.5%;font-size:34px;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">{{ cdMins }}</span><span style="font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Minutes</span></div>
-              <div style="min-width:78px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-weight:700;font-stretch:87.5%;font-size:34px;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">{{ cdSecs }}</span><span style="font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Seconds</span></div>
+              <div style="min-width:70px;padding:4px 6px;display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-weight:700;font-stretch:87.5%;font-size:34px;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">{{ cdDays }}</span><span style="font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Days</span></div>
+              <div style="min-width:70px;padding:4px 6px;display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-weight:700;font-stretch:87.5%;font-size:34px;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">{{ cdHours }}</span><span style="font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Hours</span></div>
+              <div style="min-width:70px;padding:4px 6px;display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-weight:700;font-stretch:87.5%;font-size:34px;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">{{ cdMins }}</span><span style="font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Minutes</span></div>
+              <div style="min-width:70px;padding:4px 6px;display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-weight:700;font-stretch:87.5%;font-size:34px;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">{{ cdSecs }}</span><span style="font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Seconds</span></div>
             </div>
           </sc-if>
-          <button onClick="{{ goDownload }}" style="height:60px;border:0;border-radius:12px;background:#2B211B;color:#F4EBDC;font-weight:700;font-stretch:87.5%;font-size:20px;padding:0 36px;cursor:pointer" style-hover="background:#2E5AAC">{{ downloadLabel }}</button>
+          <button class="fr-dl" onClick="{{ goDownload }}">{{ downloadLabel }}</button>
         </div>
 
       </section>
@@ -1132,9 +1156,14 @@ class Component extends DCLogic {
       var c = inWorld(bounds.getCenter(), z);
       self._fm.warm([c.lat, c.lng], z).then(function () {
         if (!self._fm || gen !== self._gen) return;
-        map.flyTo([c.lat, c.lng], z, { duration: 1.8, easeLinearity: 0.25 });
+        map.flyTo([c.lat, c.lng], z, { duration: 1.5, easeLinearity: 0.25 });
+        // once the camera is most of the way there its zoom is near the final
+        // one, so a single tile build here is cheap and lands the last of the
+        // flight on real tiles rather than a scaled up coarser level
+        step(function () { self._fm && self._fm.refresh(); }, 520);
+        step(function () { self._fm && self._fm.refresh(); }, 1080);
         // the order lands first, then the route is drawn between its two ends
-        step(function () { label(r); }, 1700);
+        step(function () { label(r); }, 1450);
         map.once('moveend', function () {
           if (!self._fm || gen !== self._gen) return;
           setTimeout(function () {
@@ -1145,8 +1174,8 @@ class Component extends DCLogic {
         step(function () {
           if (pair) pair.classList.remove('on');
           clear();
-          map.flyTo(START_VIEW.c, START_VIEW.z, { duration: 1.2, easeLinearity: 0.3 });
-          step(hop, 1450);
+          map.flyTo(START_VIEW.c, START_VIEW.z, { duration: 1.0, easeLinearity: 0.3 });
+          step(hop, 1250);
         }, 10200);
       }).catch(function () {
         if (gen !== self._gen) return;

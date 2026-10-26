@@ -408,6 +408,18 @@
         firstWarm = false;
         return capped(Promise.all(jobs), cap);
       },
+      // One tile build part way through a flight, taken once the camera is
+      // already near its final zoom so the tile range is small. Rebuilding on
+      // every frame is what made the camera stutter; never rebuilding left the
+      // picture scaled up from a coarser level, which reads as grain. This is
+      // the single update in between, and the tiles are already in the browser
+      // cache from the preload, so they appear almost at once.
+      refresh: function () {
+        if (!map) return;
+        [base, layer].forEach(function (ly) {
+          if (ly && ly._map && ly._onMoveEnd) { try { ly._onMoveEnd(); } catch (e) {} }
+        });
+      },
       ready: function (cb) {
         if (!layer) return cb();
         var done = false, fin = function () { if (done) return; done = true; layer.off('load', fin); cb(); };
