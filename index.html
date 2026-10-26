@@ -61,10 +61,14 @@ body[data-theme=dark]{--paper:#2B211B;--card:#211F1D;--ink:#F4EBDC;--muted:#B3A8
 #frclaim .mk{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;
   border-radius:50%;background:#C8371A;color:#FBF6EE;font-size:12px;font-weight:700;line-height:1;
   text-shadow:none;flex:0 0 auto}
-#frclaim .arw{color:#5E574E;font-size:15px;line-height:1;opacity:.8}
-#frclaim .made{font-size:15px;font-weight:700;color:#2E5AAC;letter-spacing:-0.005em}
+#frclaim .arw{color:#F4EBDC;font-size:17px;line-height:1;font-weight:700;
+  text-shadow:0 0 3px rgba(43,33,27,.85),0 1px 3px rgba(43,33,27,.65)}
+#frclaim .made{display:inline-flex;align-items:center;font-size:13.5px;font-weight:700;
+  color:#FFFFFF;letter-spacing:.005em;background:#2E5AAC;border-radius:999px;
+  padding:6px 14px;text-shadow:none;box-shadow:0 2px 8px rgba(43,33,27,.28)}
 @media (max-width:640px){#frclaim{left:10px;top:9px;gap:6px}
-  #frclaim .bad{font-size:11.5px}#frclaim .made{font-size:13px}
+  #frclaim .bad{font-size:11.5px}
+  #frclaim .made{font-size:11.5px;padding:5px 11px}
   #frclaim .mk{width:15px;height:15px;font-size:11px}}
 #frpair{position:absolute;left:18px;bottom:18px;z-index:900;display:flex;align-items:center;gap:12px;
   width:auto;max-width:calc(100% - 36px);opacity:0;transform:translateY(8px);
