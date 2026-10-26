@@ -46,6 +46,17 @@
       .then(function (r) { if (!r) throw new Error('tile'); return r; });
   }
 
+  // Waiting makes the first view better, but only up to a point. Past the cap
+  // the picture is good enough to fly on and the rest keeps loading behind it,
+  // which matters on a phone where the full seed can take minutes.
+  function capped(p, ms) {
+    return new Promise(function (res) {
+      var done = false, fin = function () { if (!done) { done = true; res(); } };
+      setTimeout(fin, ms);
+      Promise.resolve(p).then(fin, fin);
+    });
+  }
+
   function createFarrouteMap(el, opts) {
     var L = root.L;
     if (!L) throw new Error('Leaflet must be loaded before farroute-map.js');
@@ -215,7 +226,7 @@
     // off it. Rather than chase the curve, the whole world is held at the wide
     // levels: 336 coarse tiles, fetched once after the map is already up. After
     // that no wide frame anywhere depends on the network.
-    var seeded = false, wideDone = null, wideSignal = null;
+    var seeded = false, wideDone = null, wideSignal = null, firstWarm = true;
     wideDone = new Promise(function (r) { wideSignal = r; });
     function seedWide() {
       if (seeded) return; seeded = true;
@@ -310,14 +321,17 @@
       // Resolves once the backdrop is drawn and the world is held at the wide
       // levels. Flying before then means the widest part of the flight has
       // nothing behind it.
+      // The backdrop and the wide cover improve the first flight, they do not
+      // gate it. On a slow connection the full seed is over a thousand tiles,
+      // and blocking on it left the map sitting still for minutes.
       settled: function () {
-        return Promise.all([
+        return capped(Promise.all([
           wideDone,
           new Promise(function (r) {
-            var t = 0, w = function () { if (under || t++ > 60) return r(); setTimeout(w, 250); };
+            var t = 0, w = function () { if (under || t++ > 60) return r(); setTimeout(w, 120); };
             w();
           })
-        ]);
+        ]), 350);
       },
       warm: function (c, z) {
         // A preload still in flight when the map is torn down would project
@@ -386,9 +400,13 @@
             }
           }
         });
-        // A move is only safe once every tile it will show has been fetched, so
-        // the caller waits for all of it. An unfinished preload means no flight.
-        return Promise.all(jobs);
+        // Whatever has arrived by the cap is a head start, not a precondition.
+        // The rest keeps loading while the camera moves, and the world layer and
+        // the backdrop carry anything that has not landed yet. The first flight
+        // gets a shorter cap so the page starts showing routes promptly.
+        var cap = firstWarm ? 400 : 3500;
+        firstWarm = false;
+        return capped(Promise.all(jobs), cap);
       },
       ready: function (cb) {
         if (!layer) return cb();
