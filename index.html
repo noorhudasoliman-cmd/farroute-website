@@ -26,34 +26,47 @@ body[data-theme=dark]{--paper:#2B211B;--card:#211F1D;--ink:#F4EBDC;--muted:#B3A8
 /* The route card is drawn as a shipping label: a cream stock with a dark rule,
    a FROM block over a TO block, and a stamp saying the route does not exist
    until Farroute opens it. */
-#frlabel{position:absolute;left:18px;bottom:18px;z-index:900;width:min(360px,calc(100% - 36px));
-  background:#FBF6EE;border:1.5px solid #2B211B;border-radius:4px;overflow:hidden;
-  box-shadow:0 6px 18px rgba(43,33,27,.18);opacity:0;transform:translateY(8px);
-  transition:opacity .45s ease,transform .45s ease;pointer-events:none;
-  font-family:ui-monospace,Menlo,Consolas,monospace;color:#2B211B}
-#frlabel.on{opacity:1;transform:none}
+/* The product photograph stands on its own beside the label, so the pair reads
+   as a product next to its routing rather than as a table. The label itself is
+   kept narrow; the picture carries the weight. */
+#frpair{position:absolute;left:18px;bottom:18px;z-index:900;display:flex;align-items:center;gap:14px;
+  width:min(430px,calc(100% - 36px));opacity:0;transform:translateY(8px);
+  transition:opacity .45s ease,transform .45s ease;pointer-events:none}
+#frpair.on{opacity:1;transform:none}
+#frshot{flex:0 0 136px;width:136px;height:136px;background:#FFFFFF;border-radius:14px;
+  box-shadow:0 8px 22px rgba(43,33,27,.26),0 1px 3px rgba(43,33,27,.18);
+  display:flex;align-items:center;justify-content:center;padding:6px;box-sizing:border-box}
+#frshot img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+#frlabel{flex:1 1 auto;min-width:0;background:#FBF6EE;border:1.5px solid #2B211B;border-radius:5px;
+  overflow:hidden;box-shadow:0 6px 18px rgba(43,33,27,.18);color:#2B211B;
+  font-family:Archivo,system-ui,sans-serif}
 /* Both ends of a route sit on the brand's cream, drawn in its espresso. */
 .frpin{display:flex;align-items:center;justify-content:center;width:30px;height:30px;
   border-radius:50%;background:#F4EBDC;border:2px solid #2B211B;
   box-shadow:0 2px 7px rgba(43,33,27,.28)}
-#frlabel .hd{display:flex;align-items:center;gap:9px;background:#2B211B;color:#F4EBDC;padding:9px 11px}
-#frlabel .names{min-width:0;display:flex;flex-direction:column;gap:1px}
-#frlabel .brand{font-family:Archivo,system-ui,sans-serif;font-weight:700;font-stretch:87.5%;
-  font-size:19px;line-height:1.1;letter-spacing:-0.01em}
-#frlabel .prod{display:block;font-family:Archivo,system-ui,sans-serif;font-size:12px;line-height:1.35;color:#DED1BD;padding-left:7px;text-indent:-7px}
-#frlabel .bd{padding:9px 11px 10px;display:flex;flex-direction:column;gap:7px}
-#frlabel .leg{display:flex;gap:7px;align-items:baseline;flex-wrap:wrap}
-#frlabel .k,#frlabel .arr{font-size:9px;letter-spacing:.12em;color:#5E574E}
-#frlabel .v{font-family:Archivo,system-ui,sans-serif;font-weight:700;font-size:14px;line-height:1.15;letter-spacing:-0.01em}
-#frlabel .rule{height:1px;background:#DED1BD}
+#frlabel .route{background:#2B211B;color:#F4EBDC;padding:8px 11px;display:flex;align-items:center;
+  justify-content:flex-end;gap:8px;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  font-weight:600}
+#frlabel .route .cty{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#frlabel .route .to{flex:0 0 auto;opacity:.55;font-size:12px;line-height:1}
+#frlabel .bd{padding:10px 12px 11px;display:flex;flex-direction:column;gap:8px}
+#frlabel .brand{display:block;font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+  color:#8A7E70;font-weight:600;line-height:1}
+#frlabel .prod{display:block;font-size:15px;line-height:1.25;font-weight:700;
+  letter-spacing:-0.01em;color:#2B211B;margin-top:4px}
+#frlabel .brandonly{font-size:16px;font-weight:700;letter-spacing:-0.01em;color:#2B211B;
+  text-transform:none;margin-top:0}
+#frlabel .rule{height:1px;background:#E6DAC6}
 #frlabel .svc{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
-  font-family:Archivo,system-ui,sans-serif;font-size:12.5px;color:#5E574E}
+  font-size:11.5px;color:#6B6158}
 #frlabel .svc b{font-weight:700;color:#2B211B;white-space:nowrap}
-#frlabel .ft{display:flex;align-items:center;justify-content:flex-start;gap:8px;padding-top:2px}
-#frlabel .stamp{border:1.5px solid #2E5AAC;color:#2E5AAC;border-radius:3px;padding:3px 9px;
-  font-size:9.5px;letter-spacing:.1em}
-@media (max-width:640px){#frlabel{left:10px;right:10px;bottom:10px;width:auto}
-  #frlabel .v{font-size:15px}}
+#frlabel .stamp{align-self:flex-start;border:1.5px solid #2E5AAC;color:#2E5AAC;border-radius:3px;
+  padding:3px 9px;font-size:9.5px;font-weight:700;letter-spacing:.11em}
+@media (max-width:640px){
+  #frpair{left:10px;right:10px;bottom:10px;width:auto;gap:10px}
+  #frshot{flex:0 0 96px;width:96px;height:96px;border-radius:11px}
+  #frlabel .prod{font-size:14px}
+}
 /* The parcel and its arrowhead travel inside a full width track. The track
    carries the distance as a transform and each piece carries its own small
    offset, so nothing here touches left or width. Animating those recalculated
@@ -172,7 +185,7 @@ input,select,button,textarea{font:inherit;color:inherit}
       <section data-screen-label="Place order" style="display:flex;flex-direction:column;background:var(--card)">
         <div class="fr-hero" style="position:relative;width:100%;aspect-ratio:2.0 / 1;max-height:56vh;background:#FBF6EE;color:#2B211B;overflow:hidden;border-bottom:1px solid var(--line)">
           <div id="fmap" style="position:absolute;inset:0"></div>
-          <div id="frlabel" aria-live="polite"></div>
+          <div id="frpair" aria-live="polite"><span id="frshot"></span><div id="frlabel"></div></div>
         </div>
 
         <div class="fr-pitch" style="width:100%;max-width:760px;margin:0 auto;box-sizing:border-box;background:var(--card);padding:26px clamp(20px,4vw,48px) 40px;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center">
@@ -990,27 +1003,29 @@ class Component extends DCLogic {
       requestAnimationFrame(grow);
     };
 
+    var pair = document.getElementById('frpair');
+    var shot = document.getElementById('frshot');
     var label = function (r) {
       if (!lab) return;
+      // The photograph sits outside the card and carries the weight; the card
+      // states the route, then names what is travelling.
+      if (shot) shot.innerHTML = r.img
+        ? '<img src="' + esc(r.img) + '" alt="" loading="lazy" decoding="async">' : '';
       lab.innerHTML =
-        // The product is what is on offer, so it carries the dark bar.
-        '<div class="hd">' +
-          '<span class="names"><span class="brand">' + esc(r.b) + '</span>' +
-            // One item per line, so a label covering several products reads as
-            // a list rather than one long sentence.
-            (r.p || []).map(function (i) { return '<span class="prod">' + esc(i) + '</span>'; }).join('') +
-          '</span>' +
-        '</div>' +
+        '<div class="route"><span class="cty">' + esc(r.f) + '</span>' +
+          '<span class="to">&#8594;</span><span class="cty">' + esc(r.t) + '</span></div>' +
         '<div class="bd">' +
-          '<div class="leg"><span class="k">FROM</span><span class="v">' + esc(r.f) + '</span>' +
-            '<span class="arr">to</span><span class="v">' + esc(r.t) + '</span></div>' +
+          '<div>' + (r.p
+            ? '<span class="brand">' + esc(r.b) + '</span>' +
+              '<span class="prod">' + esc(r.p) + '</span>'
+            : '<span class="brand brandonly">' + esc(r.b) + '</span>') + '</div>' +
           '<div class="rule"></div>' +
           '<div class="svc"><span>Arrives to your courier</span><b>3 to 4 days</b></div>' +
           '<div class="svc"><span>USPS</span><b>' + esc(r.usps) + '</b></div>' +
           '<div class="svc"><span>DHL Express</span><b>' + esc(r.dhl) + '</b></div>' +
-          '<div class="ft"><span class="stamp">ROUTE CREATED</span></div>' +
+          '<span class="stamp">ROUTE CREATED</span>' +
         '</div>';
-      lab.classList.add('on');
+      if (pair) pair.classList.add('on');
     };
 
     var step = function (fn, ms) { self._tour = setTimeout(function () {
@@ -1051,7 +1066,7 @@ class Component extends DCLogic {
         });
         // hold on the finished route, then clear it before leaving
         step(function () {
-          if (lab) lab.classList.remove('on');
+          if (pair) pair.classList.remove('on');
           clear();
           map.flyTo(START_VIEW.c, START_VIEW.z, { duration: 1.2, easeLinearity: 0.3 });
           step(hop, 1450);
