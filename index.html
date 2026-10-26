@@ -602,14 +602,6 @@ input,select,button,textarea{font:inherit;color:inherit}
           <span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--routeInk)">Couriers</span>
           <h1 style="margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(36px,6vw,56px);line-height:1;letter-spacing:-0.02em">Start your own forwarding business</h1>
           <p style="margin:0;font-size:17px;line-height:1.5;color:var(--muted)">We enable you to earn commission every time a customer orders their package to your home or designated address. You receive a prepaid packing slip. Bring it to DHL or USPS within 1 to 3 days and ship it to the customer. Once the customer receives their order, you receive your pay.</p>
-          <div style="display:flex;flex-direction:column;gap:12px">
-            <sc-for list="{{ courierFacts }}" as="f" hint-placeholder-count="4">
-              <div style="display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start">
-                <span style="font-family:ui-monospace,Menlo,monospace;font-size:13px;color:var(--routeInk);padding-top:2px">{{ f.n }}</span>
-                <span style="font-size:15px;line-height:1.5">{{ f.t }}</span>
-              </div>
-            </sc-for>
-          </div>
         </div>
         <div style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:14px">
           <sc-if value="{{ notApplied }}" hint-placeholder-val="{{ true }}">
@@ -1488,12 +1480,6 @@ class Component extends DCLogic {
         { n: '2', who: '', lead: 'Farroute connects you with a ', t: 'local courier', tail: '.', d: 'Within 1 hour, you will be connected with a local courier.' },
         { n: '3', who: '', lead: 'The parcel is ', t: 'forwarded', tail: ' to you.', d: 'You receive a tracking code from the international courier of your choice.' },
         { n: '4', who: '', lead: 'You ', t: 'receive', tail: ' your order.', d: 'Customs in your country assesses duties on arrival.' }
-      ],
-      courierFacts: [
-        { n: '01', t: 'See every job in full before accepting. Item, declared value, destination, pay and dispatch date.' },
-        { n: '02', t: 'Every part of the pay is named. Courier fee, packaging and transport allowances.' },
-        { n: '03', t: 'Pick only the jobs you want. No quotas and no acceptance targets.' },
-        { n: '04', t: 'Weekly payouts every Friday to a bank account in your country.' }
       ],
       history: [
         { item: 'Camera lens hood, 67 mm', meta: 'FR-2190 · Lima, Peru · Sep 21', amount: 'US$19.80', status: 'Pending' },
