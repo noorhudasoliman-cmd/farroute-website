@@ -603,7 +603,12 @@ input,select,button,textarea{font:inherit;color:inherit}
         <div style="display:flex;flex-direction:column;gap:18px">
           <span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--routeInk)">Couriers</span>
           <h1 style="margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(36px,6vw,56px);line-height:1;letter-spacing:-0.02em">Start your own forwarding business</h1>
-          <p style="margin:0;font-size:17px;line-height:1.5;color:var(--muted)">We enable you to earn commission every time a customer orders their package to your home or designated address. You receive a prepaid packing slip. Bring it to DHL or USPS within 1 to 3 days and ship it to the customer. Once the customer receives their order, you receive your pay.</p>
+          <p style="margin:0;font-size:17px;line-height:1.5;color:var(--muted)">We enable you to earn commission every time a customer orders their package to your home or designated address.</p>
+          <ol style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px">
+            <li style="display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:baseline"><span style="font-weight:700;font-stretch:87.5%;font-size:17px;color:#2E5AAC;font-variant-numeric:tabular-nums">1.</span><span style="font-size:16px;line-height:1.5">You receive a prepaid packing slip.</span></li>
+            <li style="display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:baseline"><span style="font-weight:700;font-stretch:87.5%;font-size:17px;color:#2E5AAC;font-variant-numeric:tabular-nums">2.</span><span style="font-size:16px;line-height:1.5">Bring it to DHL or USPS within 1 to 3 days and ship it to the customer.</span></li>
+            <li style="display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:baseline"><span style="font-weight:700;font-stretch:87.5%;font-size:17px;color:#2E5AAC;font-variant-numeric:tabular-nums">3.</span><span style="font-size:16px;line-height:1.5">Once the customer receives their order, you receive your pay.</span></li>
+          </ol>
         </div>
         <div style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:14px">
           <sc-if value="{{ notApplied }}" hint-placeholder-val="{{ true }}">
