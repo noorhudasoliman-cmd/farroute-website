@@ -1126,14 +1126,96 @@ class Component extends DCLogic {
       return L.latLng(lat, lng);
     };
 
+    // Where the camera goes for a route, and how close. The claim sits across
+    // the top of the map and the photograph and card across the bottom, so both
+    // bands are measured and taken out of the frame before the route is fitted
+    // to what is actually left between them. Exposed so a test can check every
+    // route's framing without flying each one.
+    var frame = function (r) {
+      var bounds = L.latLngBounds([r.fp, r.tp]).pad(0.12);
+      var claimEl = document.getElementById('frclaim');
+      var sz = map.getSize();
+      var topPad = (claimEl ? claimEl.offsetHeight : 0) + 24;
+      var botPad = (pair ? pair.offsetHeight : 0) + 24;
+      var room = sz.y - topPad - botPad;
+      if (room < sz.y * 0.34) {
+        var over = sz.y * 0.34 - room, half = over / 2;
+        topPad = Math.max(0, topPad - half); botPad = Math.max(0, botPad - half);
+      }
+      var cz = map._getBoundsCenterZoom(bounds, {
+        paddingTopLeft: L.point(0, topPad), paddingBottomRight: L.point(0, botPad) });
+      var z = Math.min(cz.zoom, 6);
+      var c = inWorld(cz.center, Math.max(map.getMinZoom(), z - 0.75));
+      // Clamping the centre to keep the world covering the frame can pull it off
+      // the route. Where that happens, back the zoom off until the ends are
+      // inside the band again rather than leaving them off screen.
+      var sz2 = map.getSize(), PIN = 17;
+      var mapEl = map.getContainer(), mb = mapEl.getBoundingClientRect();
+      var rect = function (id) {
+        var e = document.getElementById(id);
+        if (!e || !e.offsetWidth) return null;
+        var q = e.getBoundingClientRect();
+        return { l: q.left - mb.left, t: q.top - mb.top,
+                 r: q.right - mb.left, b: q.bottom - mb.top };
+      };
+      var boxes = [rect('frclaim'), rect('frpair')].filter(Boolean);
+      var clear = function (x, y) {
+        return boxes.every(function (bx) {
+          return x + PIN <= bx.l || x - PIN >= bx.r ||
+                 y + PIN <= bx.t || y - PIN >= bx.b;
+        });
+      };
+      var fits = function (cc, zz) {
+        var o = map.project(cc, zz);
+        return [r.fp, r.tp].every(function (pt) {
+          var q = map.project(L.latLng(pt[0], pt[1]), zz);
+          var x = q.x - o.x + sz2.x / 2, y = q.y - o.y + sz2.y / 2;
+          return x > PIN && x < sz2.x - PIN && y > PIN && y < sz2.y - PIN && clear(x, y);
+        });
+      };
+      // Easing the zoom alone cannot move a pin out of a band at the widest
+      // view, but there is usually slack left in the frame. Slide the camera
+      // within what inWorld allows so the ends clear the claim and the card.
+      var slide = function (cc, zz) {
+        var o = map.project(cc, zz);
+        var yl = 1e9, yh = -1e9, xl = 1e9, xh = -1e9;
+        [r.fp, r.tp].forEach(function (pt) {
+          var q = map.project(L.latLng(pt[0], pt[1]), zz);
+          var x = q.x - o.x + sz2.x / 2, y = q.y - o.y + sz2.y / 2;
+          if (y < yl) yl = y; if (y > yh) yh = y;
+          if (x < xl) xl = x; if (x > xh) xh = x;
+        });
+        var dy = 0, dx = 0;
+        if (yl < topPad + PIN) dy = (topPad + PIN) - yl;
+        else if (yh > sz2.y - botPad - PIN) dy = (sz2.y - botPad - PIN) - yh;
+        if (xl < PIN) dx = PIN - xl;
+        else if (xh > sz2.x - PIN) dx = (sz2.x - PIN) - xh;
+        if (!dx && !dy) return cc;
+        var moved = map.unproject(L.point(o.x - dx, o.y - dy), zz);
+        return inWorld(moved, Math.max(map.getMinZoom(), zz - 0.75));
+      };
+      var guard = 0;
+      c = slide(c, z);
+      while (!fits(c, z) && z > map.getMinZoom() + 0.001 && guard++ < 48) {
+        z = Math.max(map.getMinZoom(), z - 0.1);
+        c = slide(inWorld(cz.center, Math.max(map.getMinZoom(), z - 0.75)), z);
+      }
+      return { c: c, z: z, topPad: topPad, botPad: botPad, ok: fits(c, z) };
+    };
+    self._frame = frame;
+    window.__FR_FRAME = frame;
+
     var hop = function () {
       if (!self._fm || gen !== self._gen) return;
       if (at >= order.length) reshuffle();
       var r = R[order[at++]];
-      var bounds = L.latLngBounds([r.fp, r.tp]).pad(0.12);
-      var z = Math.min(map.getBoundsZoom(bounds), 6);
-      z = Math.max(z, map.getMinZoom() + 0.3);
-      var c = inWorld(bounds.getCenter(), Math.max(map.getMinZoom(), z - 0.75));
+      var fr = frame(r), skipped = 0;
+      while (!fr.ok && skipped++ < 6) {
+        if (at >= order.length) reshuffle();
+        r = R[order[at++]];
+        fr = frame(r);
+      }
+      var c = fr.c, z = fr.z;
       self._fm.warm([c.lat, c.lng], z).then(function () {
         if (!self._fm || gen !== self._gen) return;
         map.flyTo([c.lat, c.lng], z, { duration: 1.5, easeLinearity: 0.25 });
