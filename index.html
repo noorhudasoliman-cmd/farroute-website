@@ -161,6 +161,7 @@ body[data-theme=dark]{--paper:#2B211B;--card:#211F1D;--ink:#F4EBDC;--muted:#B3A8
   .fr-stepcell > div:first-child{align-self:stretch !important;flex:0 0 52px !important;
     width:52px;justify-content:flex-start !important}
   .fr-stepcell > div:last-child{flex:1 1 auto;min-width:0;padding-top:2px}
+  .fr-stepcell{padding-bottom:18px}
   .fr-leg{display:block !important;left:50% !important;top:56px !important;
     width:44px !important;height:calc(100% - 56px + 32px) !important;
     transform:translateX(-50%) !important}
@@ -351,10 +352,11 @@ input,select,button,textarea{font:inherit;color:inherit}
         <div style="max-width:1180px;margin:0 auto;padding:64px 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:40px;align-items:start">
           <div style="display:flex;flex-direction:column;gap:16px">
             <h2 style="margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(30px,4.5vw,46px);line-height:1.02;letter-spacing:-0.025em">Contact us</h2>
-            <p style="margin:0;font-size:17px;line-height:1.55;color:var(--muted);max-width:32em">Send a message and we will reply by email. You can also reach us directly.</p>
+            <p style="margin:0;font-size:17px;line-height:1.55;color:var(--muted);max-width:32em">Send a message and we will reply by email, or message us on WhatsApp for a faster answer.</p>
             <div style="display:flex;flex-direction:column;gap:10px;padding-top:4px">
               <a href="mailto:contactus@farroute.com" style="font-size:17px;font-weight:600;text-decoration:none;color:var(--routeInk)">contactus@farroute.com</a>
-              <a href="tel:+16472015591" style="font-size:17px;font-weight:600;text-decoration:none;color:var(--routeInk)">+1 647 201 5591</a>
+              <a href="https://wa.me/16472015591" target="_blank" rel="noreferrer" style="display:inline-flex;align-items:center;gap:8px;font-size:17px;font-weight:600;text-decoration:none;color:var(--routeInk)"><svg viewBox="0 0 24 24" style="width:20px;height:20px;flex:0 0 auto;fill:#25D366" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm0 18.15h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.22 8.22 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.25-8.23a8.23 8.23 0 0 1 8.24 8.24c0 4.54-3.7 8.23-8.24 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.38-1.72-.15-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.47-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.28z"/></svg>Message us on WhatsApp</a>
+              <span style="font-size:15px;color:var(--muted)">+1 647 201 5591</span>
             </div>
           </div>
           <sc-if value="{{ contactOpen }}" hint-placeholder-val="{{ true }}">
@@ -389,33 +391,21 @@ input,select,button,textarea{font:inherit;color:inherit}
       <section data-screen-label="FAQ" style="background:#2B211B;color:#F4EBDC">
         <div style="max-width:1180px;margin:0 auto;padding:56px 20px;display:flex;flex-direction:column;gap:16px">
           <span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#C9A274">FAQ · Shipping rules</span>
-          <h1 style="margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(40px,7vw,72px);line-height:.95;letter-spacing:-0.03em;max-width:14em;text-wrap:balance">What can travel, country by country.</h1>
-          <p style="margin:0;font-size:17px;line-height:1.55;opacity:.85;max-width:38em">Farroute reads the import rules published by the customs authority of every destination country once a month. Every item is checked against those rules before a price is shown.</p>
-          <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:6px">
-            <span style="border:1px solid rgba(244,241,234,.3);border-radius:999px;padding:6px 12px;font-size:13px">Last checked {{ lastChecked }}</span>
-            <span style="border:1px solid rgba(244,241,234,.3);border-radius:999px;padding:6px 12px;font-size:13px">Next check {{ nextCheck }}</span>
-          </div>
+          <h1 style="margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(40px,7vw,72px);line-height:.95;letter-spacing:-0.03em;max-width:14em;text-wrap:balance">What can ship, country by country.</h1>
+          <p style="margin:0;font-size:17px;line-height:1.55;opacity:.85;max-width:38em">Farroute stays current on import rules published by the customs authority of every destination. Every item is checked to ensure a successful arrival of the items in your cart before a price is shown.</p>
         </div>
       </section>
 
       <section style="max-width:1180px;margin:0 auto;padding:56px 20px;display:flex;flex-direction:column;gap:20px">
         <h2 style="margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(28px,4vw,40px);letter-spacing:-0.02em">How Farroute checks an order</h2>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:14px">
-          <sc-for list="{{ checkSteps }}" as="c" hint-placeholder-count="3">
-            <div style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:8px">
-              <span style="font-family:ui-monospace,Menlo,monospace;font-size:13px;color:var(--routeInk)">{{ c.n }}</span>
-              <span style="font-weight:600;font-size:18px;line-height:1.25">{{ c.t }}</span>
-              <span style="font-size:15px;line-height:1.5;color:var(--muted)">{{ c.d }}</span>
-            </div>
-          </sc-for>
-        </div>
+        <p style="margin:0;font-size:17px;line-height:1.6;color:var(--muted);max-width:42em">When a product link is pasted, Farroute identifies the item and compares the item with the air rules and the destination rules. If the item cannot travel, the order form says so and names the rule. No payment is taken.</p>
       </section>
 
       <section style="background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
         <div style="max-width:1180px;margin:0 auto;padding:56px 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:32px;align-items:start">
           <div style="display:flex;flex-direction:column;gap:14px">
             <h2 style="margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(28px,4vw,40px);letter-spacing:-0.02em">Never accepted on any route</h2>
-            <p style="margin:0;font-size:15px;line-height:1.5;color:var(--muted)">Every Farroute parcel travels by air. These goods cannot legally or physically travel by air, so the rule applies to every destination.</p>
+            <p style="margin:0;font-size:15px;line-height:1.5;color:var(--muted)">These goods are refused by the carriers Farroute ships with, so the rule applies to every destination and every route.</p>
             <div style="display:flex;flex-direction:column;border-top:1.5px solid var(--ink)">
               <sc-for list="{{ airRules }}" as="r" hint-placeholder-count="5">
                 <div style="display:grid;grid-template-columns:1fr;gap:2px;padding:12px 0;border-bottom:1px solid var(--line)">
@@ -435,7 +425,7 @@ input,select,button,textarea{font:inherit;color:inherit}
             </label>
             <div style="border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--paper)">
               <div style="padding:14px 18px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:2px">
-                <span style="font-weight:600;font-size:15px">Source: {{ authority }}</span>
+                <span style="font-weight:600;font-size:15px">As of {{ rulesAsOf }}</span>
                 <span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted)">Read {{ lastChecked }}</span>
               </div>
               <sc-for list="{{ countryRules }}" as="r" hint-placeholder-count="4">
@@ -451,20 +441,6 @@ input,select,button,textarea{font:inherit;color:inherit}
         </div>
       </section>
 
-      <section style="max-width:880px;margin:0 auto;padding:56px 20px;display:flex;flex-direction:column;gap:24px">
-        <h2 style="margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(28px,4vw,40px);letter-spacing:-0.02em">Frequently asked questions</h2>
-        <div style="border-top:1.5px solid var(--ink)">
-          <sc-for list="{{ faqs }}" as="q" hint-placeholder-count="5">
-            <div style="border-bottom:1px solid var(--line)">
-              <button onClick="{{ q.toggle }}" style="width:100%;min-height:64px;background:none;border:0;padding:16px 0;display:flex;justify-content:space-between;align-items:center;gap:16px;text-align:left;cursor:pointer;color:var(--ink)">
-                <span style="font-weight:600;font-size:18px;line-height:1.3">{{ q.q }}</span>
-                <span style="font-size:24px;line-height:1;color:var(--routeInk);flex-shrink:0">{{ q.sign }}</span>
-              </button>
-              <sc-if value="{{ q.open }}"><p style="margin:0;padding:0 0 20px;font-size:16px;line-height:1.55;color:var(--muted);max-width:40em">{{ q.a }}</p></sc-if>
-            </div>
-          </sc-for>
-        </div>
-      </section>
     </sc-if>
 
     <sc-if value="{{ isQuote }}" hint-placeholder-val="{{ false }}">
@@ -605,9 +581,9 @@ input,select,button,textarea{font:inherit;color:inherit}
           <h1 style="margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(36px,6vw,56px);line-height:1;letter-spacing:-0.02em">Start your own forwarding business</h1>
           <p style="margin:0;font-size:17px;line-height:1.5;color:var(--muted)">We enable you to earn commission every time a customer orders their package to your home or designated address.</p>
           <ol style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px">
-            <li style="display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:baseline"><span style="font-weight:700;font-stretch:87.5%;font-size:17px;color:#2E5AAC;font-variant-numeric:tabular-nums">1.</span><span style="font-size:16px;line-height:1.5">You receive a prepaid packing slip.</span></li>
-            <li style="display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:baseline"><span style="font-weight:700;font-stretch:87.5%;font-size:17px;color:#2E5AAC;font-variant-numeric:tabular-nums">2.</span><span style="font-size:16px;line-height:1.5">Bring it to DHL or USPS within 1 to 3 days and ship it to the customer.</span></li>
-            <li style="display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:baseline"><span style="font-weight:700;font-stretch:87.5%;font-size:17px;color:#2E5AAC;font-variant-numeric:tabular-nums">3.</span><span style="font-size:16px;line-height:1.5">Once the customer receives their order, you receive your pay.</span></li>
+            <li style="display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:baseline"><span style="font-weight:700;font-stretch:87.5%;font-size:17px;color:#2E5AAC;font-variant-numeric:tabular-nums">1.</span><span style="font-size:16px;line-height:1.5">You accept a delivery request, and Farroute ships the package to the designated address saved on your account.</span></li><li style="display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:baseline"><span style="font-weight:700;font-stretch:87.5%;font-size:17px;color:#2E5AAC;font-variant-numeric:tabular-nums">2.</span><span style="font-size:16px;line-height:1.5">You receive a prepaid packing slip.</span></li>
+            <li style="display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:baseline"><span style="font-weight:700;font-stretch:87.5%;font-size:17px;color:#2E5AAC;font-variant-numeric:tabular-nums">3.</span><span style="font-size:16px;line-height:1.5">Bring it to DHL or USPS within 1 to 3 days and ship it to the customer.</span></li>
+            <li style="display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:baseline"><span style="font-weight:700;font-stretch:87.5%;font-size:17px;color:#2E5AAC;font-variant-numeric:tabular-nums">4.</span><span style="font-size:16px;line-height:1.5">Once the customer receives their order, you receive your pay.</span></li>
           </ol>
         </div>
         <div style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:14px">
@@ -1154,9 +1130,10 @@ class Component extends DCLogic {
       if (!self._fm || gen !== self._gen) return;
       if (at >= order.length) reshuffle();
       var r = R[order[at++]];
-      var bounds = L.latLngBounds([r.fp, r.tp]).pad(0.3);
+      var bounds = L.latLngBounds([r.fp, r.tp]).pad(0.12);
       var z = Math.min(map.getBoundsZoom(bounds), 6);
-      var c = inWorld(bounds.getCenter(), z);
+      z = Math.max(z, map.getMinZoom() + 0.3);
+      var c = inWorld(bounds.getCenter(), Math.max(map.getMinZoom(), z - 0.75));
       self._fm.warm([c.lat, c.lng], z).then(function () {
         if (!self._fm || gen !== self._gen) return;
         map.flyTo([c.lat, c.lng], z, { duration: 1.5, easeLinearity: 0.25 });
@@ -1449,14 +1426,9 @@ class Component extends DCLogic {
       protoNav, courierTabs, jobs, job, activeSteps, trackSteps,
       blocked: !!hit, notBlocked: !hit, blockReason: hit ? hit[1] : '',
       samples: [['Trail running shoes', 'https://store.example/products/trail-running-shoe'], ['Eau de parfum 50 ml', 'https://store.example/products/eau-de-parfum-50ml']].map(([label, url]) => ({ label, use: () => this.setState({ link: url }) })),
-      lastChecked: 'September 1, 2026', nextCheck: 'October 1, 2026',
+      rulesAsOf: 'October 27, 2026',
       authority: authorities[s.dest], countryRules,
       airRules: [['Perfume', 'Contains flammable alcohol.'], ['Aerosols', 'Pressurised cans can burst at altitude.'], ['Loose batteries', 'A fire risk in aircraft holds.'], ['Food', 'Needs health and import clearance.'], ['Oversized goods', 'Over 30 kg, or a longest side over 120 cm.']].map(([item, why]) => ({ item, why })),
-      checkSteps: [
-        { n: '01', t: 'Rules are read every month', d: 'On the first day of each month, Farroute reads the published import rules of every destination customs authority and records the date.' },
-        { n: '02', t: 'Every link is checked', d: 'When a product link is pasted, Farroute identifies the item and compares the item with the air rules and the destination rules.' },
-        { n: '03', t: 'A clear answer before payment', d: 'If the item cannot travel, the order form says so and names the rule. No payment is taken.' }
-      ],
       heroTabs: [['Order an item', 'order'], ['Track an order', 'track']].map(([label, k]) => ({ label, pick: () => this.setState({ heroTab: k }), bg: s.heroTab === k ? 'var(--card)' : 'var(--paper)', bar: s.heroTab === k ? '#2E5AAC' : 'transparent' })),
       tabOrder: s.heroTab === 'order', tabTrack: s.heroTab === 'track',
       fromShown: s.link ? 'United States' : 'Read from the link',
@@ -1469,10 +1441,9 @@ class Component extends DCLogic {
       sizeName: sizeDefs[s.size].name.toLowerCase(), sizeExamples: sizeDefs[s.size].ex,
       covers: ['Item price at the store', 'Courier fee', 'International shipping', 'Payment handling'],
       coverage: [['United States', 214, 6], ['United Kingdom', 128, 7], ['Japan', 96, 8], ['Germany', 88, 7], ['South Korea', 61, 8]].map(([from, n, base]) => { const o = (dests.indexOf(s.dest) % 3); return { from, couriers: n + ' active couriers', days: (base + o) + ' to ' + (base + o + 3) + ' days' }; }),
-      faqs: faqDefs.map((f, i) => ({ q: f[0], a: f[1], open: s.faq === i, sign: s.faq === i ? '\u2212' : '+', toggle: () => this.setState({ faq: s.faq === i ? -1 : i }) })),
       footerCols: [
-        { h: 'Customers', links: [['Order an item', 'landing'], ['Track an order', 'tracking'], ['What can travel', 'rules'], ['Contact us', 'contact']].map(([t, k]) => ({ t, go: this.go(k) })) },
-        { h: 'Couriers', links: [['Apply', 'apply'], ['Courier pay', 'apply'], ['Appeals', 'apply'], ['Courier help', 'apply']].map(([t, k]) => ({ t, go: this.go(k) })) },
+        { h: 'Customers', links: [['Order an item', 'landing'], ['What can ship', 'rules'], ['Contact us', 'contact']].map(([t, k]) => ({ t, go: this.go(k) })) },
+        { h: 'Couriers', links: [['Apply', 'apply'], ['Courier pay', 'apply'], ['Courier help', 'contact']].map(([t, k]) => ({ t, go: this.go(k) })) },
         { h: 'Farroute', links: [['About', 'landing'], ['FAQ', 'rules'], ['Download soon', 'account']].map(([t, k]) => ({ t, go: this.go(k) })) }
       ],
       goTop: () => { this.setState({ screen: 'landing', heroTab: 'order' }); window.scrollTo({ top: 0, behavior: 'smooth' }); },
