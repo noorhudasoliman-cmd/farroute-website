@@ -21,8 +21,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@87.5,400;87.5,600;87.5,700;100,400;100,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
-body{margin:0;--bg:var(--card);--paper:#F4EBDC;--card:#FBF6EE;--ink:#2B211B;--muted:#5E574E;--line:#DED1BD;--route:#C9A274;--routeInk:#2E5AAC;--kraft:#C9A274;--ok:#2F6B4A;--okBg:#E4ECDF;--sea:#E7DECF;--seaLight:#F2EBDF;--land:#FBF7F0;--landEdge:#DFD3C1;--landHi:#EBDDC6;background:var(--paper);color:var(--ink);font-family:Archivo,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-body[data-theme=dark]{--paper:#2B211B;--card:#211F1D;--ink:#F4EBDC;--muted:#B3A893;--line:#38332E;--route:#C9A274;--routeInk:#8FAEE6;--kraft:#4A3D2C;--ok:#8FCFA8;--okBg:#1E2E24;--sea:#1C1A18;--seaLight:#24211E;--land:#2A2724;--landEdge:#3A3530;--landHi:#3D3326}
+body{margin:0;--bg:var(--card);--paper:#F4EBDC;--card:#FBF6EE;--ink:#2B211B;--muted:#5E574E;--line:#DED1BD;--route:#C9A274;--routeInk:#2E5AAC;--alert:#C8371A;--kraft:#C9A274;--ok:#2F6B4A;--okBg:#E4ECDF;--sea:#E7DECF;--seaLight:#F2EBDF;--land:#FBF7F0;--landEdge:#DFD3C1;--landHi:#EBDDC6;background:var(--paper);color:var(--ink);font-family:Archivo,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body[data-theme=dark]{--paper:#2B211B;--card:#211F1D;--ink:#F4EBDC;--muted:#B3A893;--line:#38332E;--route:#C9A274;--routeInk:#8FAEE6;--alert:#E8846B;--kraft:#4A3D2C;--ok:#8FCFA8;--okBg:#1E2E24;--sea:#1C1A18;--seaLight:#24211E;--land:#2A2724;--landEdge:#3A3530;--landHi:#3D3326}
 *{box-sizing:border-box}
 /* The route card is drawn as a shipping label: a cream stock with a dark rule,
    a FROM block over a TO block, and a stamp saying the route does not exist
@@ -385,6 +385,21 @@ input,select,button,textarea{font:inherit;color:inherit}
             </div>
           </sc-if>
         </div>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{ isAbout }}" hint-placeholder-val="{{ false }}">
+      <section data-screen-label="About" style="max-width:1120px;margin:0 auto;padding:44px 20px 10px;display:flex;flex-direction:column;gap:20px">
+        <span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--routeInk)">About</span>
+        <h1 style="margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(34px,5.6vw,56px);line-height:1.02;letter-spacing:-0.025em;max-width:15em">The internet should not have borders.</h1>
+        <p style="margin:0;font-size:clamp(19px,2.2vw,23px);line-height:1.5;max-width:30em">In the moment you are purchasing something and receive the <span style="color:var(--alert);font-weight:700">Does not ship to your country</span> error, we will connect you with <span style="color:var(--routeInk);font-weight:700">a courier who can</span>.</p>
+      </section>
+
+      <section style="max-width:1120px;margin:0 auto;padding:10px 20px 56px;display:flex;flex-direction:column;gap:22px">
+        <p style="margin:0;font-size:17px;line-height:1.65;color:var(--muted);max-width:34em">We enable our couriers to <span style="color:var(--routeInk);font-weight:700">run their own forwarding business</span>. They buy your item locally, pack the item and send the parcel straight to you by international mail.</p>
+        <p style="margin:0;font-size:17px;line-height:1.65;color:var(--muted);max-width:34em">Where you live no longer limits what you can buy. If the item can legally travel, <span style="color:var(--routeInk);font-weight:700">we will find a route</span>. You see <span style="color:var(--routeInk);font-weight:700">one full price and a customs estimate</span> before you pay.</p>
+        <p style="margin:0;font-size:17px;line-height:1.65;color:var(--muted);max-width:34em">Our couriers <span style="color:var(--routeInk);font-weight:700">choose to accept their orders</span>. We bring them customers, prepaid labels and the tools to grow. Couriers see <span style="color:var(--routeInk);font-weight:700">every dollar of their pay</span> before they accept a job.</p>
+        <p style="margin:0;font-size:17px;line-height:1.65;color:var(--muted);max-width:34em">Every order is checked against customs rules and declared at its real value. Your payment is <span style="color:var(--routeInk);font-weight:700">held until a courier confirms the purchase</span>, and you get <span style="color:var(--routeInk);font-weight:700">a full refund</span> if no one takes the job within 72 hours.</p>
       </section>
     </sc-if>
 
@@ -1568,10 +1583,11 @@ class Component extends DCLogic {
       footerCols: [
         { h: 'Customers', links: [['Order an item', 'landing'], ['What can ship', 'rules'], ['Contact us', 'contact']].map(([t, k]) => ({ t, go: this.go(k) })) },
         { h: 'Couriers', links: [['Apply', 'apply'], ['Courier pay', 'pay'], ['Courier help', 'contact']].map(([t, k]) => ({ t, go: this.go(k) })) },
-        { h: 'Farroute', links: [['About', 'landing'], ['FAQ', 'rules'], ['Download soon', 'account']].map(([t, k]) => ({ t, go: this.go(k) })) }
+        { h: 'Farroute', links: [['About', 'about'], ['FAQ', 'rules'], ['Download soon', 'account']].map(([t, k]) => ({ t, go: this.go(k) })) }
       ],
       goTop: () => { this.setState({ screen: 'landing', heroTab: 'order' }); window.scrollTo({ top: 0, behavior: 'smooth' }); },
       isPay: s.screen === 'pay',
+      isAbout: s.screen === 'about',
       isRules: s.screen === 'rules', isContact: s.screen === 'contact', isLanding: s.screen === 'landing', isQuote: s.screen === 'quote', isTracking: s.screen === 'tracking', isApply: s.screen === 'apply',
       isCourier: courierScreens.includes(s.screen), isEarnings: s.screen === 'earnings', isJobs: s.screen === 'jobs', isJob: s.screen === 'job', isActive: s.screen === 'active',
       link: s.link, dest: s.dest, destinations: dests, destList: dests.join(', '),
