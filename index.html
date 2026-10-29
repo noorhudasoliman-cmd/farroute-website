@@ -1345,7 +1345,11 @@ class Component extends DCLogic {
       ['Delivered', 'Estimated ' + (arrivals[s.dest] || '')]
     ];
     const trackSteps = tr.map((t, i) => ({ label: t[0], detail: t[1], done: i < 4, current: i === 4, todo: i > 4, notLast: i < tr.length - 1 }));
-    const courierScreens = ['earnings', 'jobs', 'job', 'active', 'pay'];
+    // Only the screens inside the signed-in courier app belong here. This array
+    // drives the courier tab strip and the Become A Courier tab underline, so a
+    // standalone page such as Courier pay must never be a member: adding one puts
+    // the courier dashboard tabs under that page and lights the wrong nav tab.
+    const courierScreens = ['earnings', 'jobs', 'job', 'active'];
     const sizeDefs = [
       { name: 'Small', kg: 'up to 2 kg', px: '56px', fits: 'Fits in a shoebox. The most common Farroute parcel.', ex: ['Shoes', 'Books', 'Phone cases', 'Clothing', 'Cosmetics without aerosol'] },
       { name: 'Medium', kg: '2 to 10 kg', px: '76px', fits: 'Fits in a carry-on suitcase.', ex: ['Keyboards', 'Boots', 'Board games', 'Small speakers', 'Kitchen tools'] },
