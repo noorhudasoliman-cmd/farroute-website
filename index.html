@@ -574,6 +574,38 @@ input,select,button,textarea{font:inherit;color:inherit}
       </div>
     </sc-if>
 
+    <sc-if value="{{ isPay }}" hint-placeholder-val="{{ false }}">
+      <section data-screen-label="Courier pay" style="max-width:1120px;margin:0 auto;padding:40px 20px 16px;display:flex;flex-direction:column;gap:18px">
+        <span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--routeInk)">Courier pay</span>
+        <h1 style="margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(34px,5.6vw,56px);line-height:1.02;letter-spacing:-0.025em;max-width:16em">The parcel comes to you. You ship on your schedule, not in thirty minutes.</h1>
+        <p style="margin:0;font-size:18px;line-height:1.5;color:var(--muted);max-width:34em">No driving to strangers. No racing a timer. No hoping for a tip.</p>
+      </section>
+
+      <section style="max-width:1120px;margin:0 auto;padding:16px 20px 8px;display:flex;flex-direction:column;gap:18px">
+        <h2 style="margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(24px,3.4vw,34px);letter-spacing:-0.02em">Three things this job does not have</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:16px"><div style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:9px"><span style="font-weight:700;font-stretch:87.5%;font-size:21px;letter-spacing:-0.01em">A clock</span><span style="font-size:15px;line-height:1.55;color:var(--muted)">The parcel arrives at your address and waits. You have 3 days to drop the parcel at DHL or USPS. Take the parcel on your way to work, on your way to the shops, or on a Saturday morning. Nobody is counting your minutes.</span></div><div style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:9px"><span style="font-weight:700;font-stretch:87.5%;font-size:21px;letter-spacing:-0.01em">A car requirement</span><span style="font-size:15px;line-height:1.55;color:var(--muted)">You are not driving to a customer. There is one trip, to a carrier point you already pass. Grocery delivery pays mileage because driving is the real cost of that job. Here that cost is close to zero.</span></div><div style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:9px"><span style="font-weight:700;font-stretch:87.5%;font-size:21px;letter-spacing:-0.01em">Tip roulette</span><span style="font-size:15px;line-height:1.55;color:var(--muted)">On a grocery app close to half of what a shopper earns is tips, so nearly half the pay depends on a stranger deciding after the fact. Farroute shows one number before you accept, and that number is the whole number.</span></div></div>
+      </section>
+
+      <section style="max-width:1120px;margin:0 auto;padding:28px 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:34px;align-items:start">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <h2 style="margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(24px,3.4vw,34px);letter-spacing:-0.02em">How the pay works</h2>
+          <p style="margin:0;font-size:16px;line-height:1.55;color:var(--muted);max-width:34em">You are paid for each parcel you handle, and the figure is on the request before you accept. The figure does not change with the price of what is inside, because your work is the same either way.</p>
+          <div style="background:var(--card);border:1px dashed var(--routeInk);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:6px">
+            <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--routeInk)">Rates not set yet</span>
+            <span style="font-size:15px;line-height:1.55;color:var(--muted)">The per parcel figure, the extra for a large or heavy parcel, and the extra for a distant drop-off point are still being set. This page publishes the amounts once they are fixed.</span>
+          </div>
+          <p style="margin:0;font-size:16px;line-height:1.55;color:var(--muted);max-width:34em">Farroute buys the item and Farroute buys the shipping label. There is nothing to put on your own card and nothing to claim back. Payouts land every week, to a bank account in your country, for every parcel that reached its customer.</p>
+          <p style="margin:0;font-size:16px;line-height:1.55;color:var(--muted);max-width:34em">Every request shows the item, the destination and the pay before you decide. There is no acceptance rate, no scheduling and no penalty for saying no.</p>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px;display:flex;flex-direction:column;gap:2px">
+          <span style="font-weight:700;font-stretch:87.5%;font-size:20px;letter-spacing:-0.01em;margin-bottom:8px">Next to a food or grocery app</span>
+          <div style="display:flex;justify-content:space-between;gap:18px;padding:13px 0;border-bottom:1px solid var(--line)"><span style="font-size:15px;color:var(--muted);flex:1 1 0;min-width:0">Who travels</span><span style="font-size:15px;font-weight:700;flex:1 1 0;min-width:0;text-align:right">The parcel travels to you</span></div><div style="display:flex;justify-content:space-between;gap:18px;padding:13px 0;border-bottom:1px solid var(--line)"><span style="font-size:15px;color:var(--muted);flex:1 1 0;min-width:0">Your deadline</span><span style="font-size:15px;font-weight:700;flex:1 1 0;min-width:0;text-align:right">3 days, not minutes</span></div><div style="display:flex;justify-content:space-between;gap:18px;padding:13px 0;border-bottom:1px solid var(--line)"><span style="font-size:15px;color:var(--muted);flex:1 1 0;min-width:0">Pay certainty</span><span style="font-size:15px;font-weight:700;flex:1 1 0;min-width:0;text-align:right">One number, before you accept</span></div><div style="display:flex;justify-content:space-between;gap:18px;padding:13px 0;border-bottom:1px solid var(--line)"><span style="font-size:15px;color:var(--muted);flex:1 1 0;min-width:0">Your car</span><span style="font-size:15px;font-weight:700;flex:1 1 0;min-width:0;text-align:right">One trip to a carrier point</span></div><div style="display:flex;justify-content:space-between;gap:18px;padding:13px 0;border-bottom:1px solid var(--line)"><span style="font-size:15px;color:var(--muted);flex:1 1 0;min-width:0">Work window</span><span style="font-size:15px;font-weight:700;flex:1 1 0;min-width:0;text-align:right">Whenever suits you</span></div><div style="display:flex;justify-content:space-between;gap:18px;padding:13px 0;border-bottom:1px solid var(--line)"><span style="font-size:15px;color:var(--muted);flex:1 1 0;min-width:0">Money up front</span><span style="font-size:15px;font-weight:700;flex:1 1 0;min-width:0;text-align:right">None, ever</span></div>
+          <p style="margin:14px 0 0;font-size:15px;line-height:1.55;color:var(--muted)">One parcel arrives at your door. One parcel leaves. That is the job.</p>
+          <button onClick="{{ goApply }}" style="margin-top:16px;height:52px;border:0;border-radius:12px;background:#2B211B;color:#F4EBDC;font-family:Archivo,system-ui,sans-serif;font-weight:700;font-stretch:87.5%;font-size:17px;cursor:pointer">Apply to be a courier</button>
+        </div>
+      </section>
+    </sc-if>
+
     <sc-if value="{{ isApply }}" hint-placeholder-val="{{ false }}">
       <section data-screen-label="Courier apply" style="max-width:1120px;margin:0 auto;padding:40px 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:32px;align-items:start">
         <div style="display:flex;flex-direction:column;gap:18px">
@@ -1307,7 +1339,7 @@ class Component extends DCLogic {
       ['Delivered', 'Estimated ' + (arrivals[s.dest] || '')]
     ];
     const trackSteps = tr.map((t, i) => ({ label: t[0], detail: t[1], done: i < 4, current: i === 4, todo: i > 4, notLast: i < tr.length - 1 }));
-    const courierScreens = ['earnings', 'jobs', 'job', 'active'];
+    const courierScreens = ['earnings', 'jobs', 'job', 'active', 'pay'];
     const sizeDefs = [
       { name: 'Small', kg: 'up to 2 kg', px: '56px', fits: 'Fits in a shoebox. The most common Farroute parcel.', ex: ['Shoes', 'Books', 'Phone cases', 'Clothing', 'Cosmetics without aerosol'] },
       { name: 'Medium', kg: '2 to 10 kg', px: '76px', fits: 'Fits in a carry-on suitcase.', ex: ['Keyboards', 'Boots', 'Board games', 'Small speakers', 'Kitchen tools'] },
@@ -1525,10 +1557,11 @@ class Component extends DCLogic {
       coverage: [['United States', 214, 6], ['United Kingdom', 128, 7], ['Japan', 96, 8], ['Germany', 88, 7], ['South Korea', 61, 8]].map(([from, n, base]) => { const o = (dests.indexOf(s.dest) % 3); return { from, couriers: n + ' active couriers', days: (base + o) + ' to ' + (base + o + 3) + ' days' }; }),
       footerCols: [
         { h: 'Customers', links: [['Order an item', 'landing'], ['What can ship', 'rules'], ['Contact us', 'contact']].map(([t, k]) => ({ t, go: this.go(k) })) },
-        { h: 'Couriers', links: [['Apply', 'apply'], ['Courier pay', 'apply'], ['Courier help', 'contact']].map(([t, k]) => ({ t, go: this.go(k) })) },
+        { h: 'Couriers', links: [['Apply', 'apply'], ['Courier pay', 'pay'], ['Courier help', 'contact']].map(([t, k]) => ({ t, go: this.go(k) })) },
         { h: 'Farroute', links: [['About', 'landing'], ['FAQ', 'rules'], ['Download soon', 'account']].map(([t, k]) => ({ t, go: this.go(k) })) }
       ],
       goTop: () => { this.setState({ screen: 'landing', heroTab: 'order' }); window.scrollTo({ top: 0, behavior: 'smooth' }); },
+      isPay: s.screen === 'pay',
       isRules: s.screen === 'rules', isContact: s.screen === 'contact', isLanding: s.screen === 'landing', isQuote: s.screen === 'quote', isTracking: s.screen === 'tracking', isApply: s.screen === 'apply',
       isCourier: courierScreens.includes(s.screen), isEarnings: s.screen === 'earnings', isJobs: s.screen === 'jobs', isJob: s.screen === 'job', isActive: s.screen === 'active',
       link: s.link, dest: s.dest, destinations: dests, destList: dests.join(', '),
