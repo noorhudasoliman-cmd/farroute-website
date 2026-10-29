@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
+<script src="./geo.js" defer></script>
 </head>
 <body>
 <form name="contact" data-netlify="true" netlify-honeypot="bot-field" hidden="">
@@ -621,13 +622,14 @@ input,select,button,textarea{font:inherit;color:inherit}
         <div style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:14px">
           <sc-if value="{{ notApplied }}" hint-placeholder-val="{{ true }}">
             <span style="font-weight:600;font-size:20px">Apply</span>
-            <input placeholder="Full legal name" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
-            <select style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 12px;background:var(--paper);font-size:16px">
-              <option value="">Country of residence</option><sc-for list="{{ destinations }}" as="d" hint-placeholder-count="6"><option value="{{ d }}">{{ d }}</option></sc-for>
-            </select>
-            <input placeholder="City" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
-            <input placeholder="Email" type="email" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
-            <input placeholder="Mobile number" type="tel" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
+            <input id="apName" placeholder="Full legal name" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
+            <select id="apCountry" data-geo="country" data-geo-group="apply" data-geo-placeholder="Country of residence" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 12px;background:var(--paper);font-size:16px"><option value="">Country of residence</option></select>
+            <select id="apRegion" data-geo="region" data-geo-group="apply" data-geo-placeholder="State, province or region" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 12px;background:var(--paper);font-size:16px"><option value="">Choose a country first</option></select>
+            <input id="apCity" data-geo="city" data-geo-group="apply" list="geo-city-apply" autocomplete="off" placeholder="Choose a region first" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
+            <datalist id="geo-city-apply"></datalist>
+            <input id="apEmail" placeholder="Email" type="email" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
+            <input id="apPhone" placeholder="Mobile number" type="tel" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
+            <sc-if value="{{ apMissing }}"><span style="font-size:14px;line-height:1.45;color:var(--routeInk)">{{ apMissingText }}</span></sc-if>
             <span style="font-size:13px;line-height:1.45;color:var(--muted)">After this form, Farroute asks for a photo of a government ID and a bank account for payouts. A person on the Farroute team reviews every application.</span>
             <button onClick="{{ submitApply }}" style="height:56px;border:0;border-radius:10px;background:#2B211B;color:#F4EBDC;font-weight:700;font-size:18px;cursor:pointer" style-hover="background:#2E5AAC">Send application</button>
           </sc-if>
@@ -836,9 +838,10 @@ input,select,button,textarea{font:inherit;color:inherit}
               <input placeholder="Business name" value="{{ acBiz }}" onChange="{{ onAcBiz }}" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
             </sc-if>
             <input placeholder="Email" type="email" value="{{ acEmail }}" onChange="{{ onAcEmail }}" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
-            <select value="{{ dest }}" onChange="{{ onDest }}" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 12px;background:var(--paper);font-size:16px">
-              <option value="">{{ destLabel }}</option><sc-for list="{{ destinations }}" as="d" hint-placeholder-count="6"><option value="{{ d }}">{{ d }}</option></sc-for>
-            </select>
+            <select id="acCountry" data-geo="country" data-geo-group="account" data-geo-placeholder="Shipping country" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 12px;background:var(--paper);font-size:16px"><option value="">Shipping country</option></select>
+            <select id="acRegion" data-geo="region" data-geo-group="account" data-geo-placeholder="State, province or region" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 12px;background:var(--paper);font-size:16px"><option value="">Choose a country first</option></select>
+            <input id="acCity" data-geo="city" data-geo-group="account" list="geo-city-account" autocomplete="off" placeholder="Choose a region first" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
+            <datalist id="geo-city-account"></datalist>
             <input placeholder="Create a password" type="password" value="{{ acPass }}" onChange="{{ onAcPass }}" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
             <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;padding:2px 0">
               <input type="checkbox" checked="{{ remindMe }}" onChange="{{ onRemindMe }}" style="width:18px;height:18px;margin-top:2px;accent-color:#2E5AAC;cursor:pointer"></input>
@@ -964,6 +967,9 @@ input,select,button,textarea{font:inherit;color:inherit}
             <sc-for list="{{ col.links }}" as="l"><button onClick="{{ l.go }}" style="background:none;border:0;padding:0;text-align:left;font-size:14px;font-family:inherit;color:var(--ink);cursor:pointer" style-hover="color:#2E5AAC">{{ l.t }}</button></sc-for>
           </div>
         </sc-for>
+      </div>
+      <div style="border-top:1px solid var(--line);padding-top:16px;margin-top:4px">
+        <span style="font-size:12px;line-height:1.5;color:var(--muted)">Country, region and city names from <a href="https://www.geonames.org/" target="_blank" rel="noreferrer" style="color:var(--muted)">GeoNames</a>, used under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer" style="color:var(--muted)">CC BY 4.0</a>.</span>
       </div>
     </div>
   </footer>
@@ -1587,15 +1593,35 @@ class Component extends DCLogic {
       onDest: e => this.setState({ dest: e.target.value }),
       onReason: e => this.setState({ reason: e.target.value }),
       submitOrder: e => { e.preventDefault(); if (!hit) this.go('quote')(); },
-      submitApply: () => this.setState({ applied: true }),
+      apMissing: !!s.apMissing, apMissingText: s.apMissing || '',
+      submitApply: () => {
+        const val = id => (document.getElementById(id) || {}).value || '';
+        const geo = window.FRGeo ? window.FRGeo.value('apply')
+                                 : { countryOk: false, regionOk: false, cityOk: false };
+        const miss = [];
+        if (val('apName').trim().length < 2) miss.push('your full legal name');
+        if (!geo.countryOk) miss.push('your country');
+        if (!geo.regionOk) miss.push('your state, province or region');
+        if (!geo.cityOk) miss.push('your city, chosen from the list');
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(val('apEmail').trim())) miss.push('a valid email address');
+        if (val('apPhone').replace(/[^0-9]/g, '').length < 7) miss.push('your mobile number');
+        if (miss.length) {
+          this.setState({ apMissing: 'Please add ' + miss.join(', ') + '.' });
+          return;
+        }
+        this.setState({ apMissing: '', applied: true });
+      },
       goLanding: this.go('landing'), goRules: this.go('rules'), goAccount: this.go('account'), submitAccount: () => {
           const biz = s.acctType === 'business';
           const need = [[s.acName, biz ? 'your name' : 'your full name']];
           if (biz) need.push([s.acBiz, 'your business name']);
-          need.push([s.acEmail, 'your email'],
-                    [s.dest, biz ? 'the country you ship to' : 'a delivery country'],
-                    [s.acPass, 'a password']);
+          need.push([s.acEmail, 'your email'], [s.acPass, 'a password']);
+          const geo = window.FRGeo ? window.FRGeo.value('account')
+                                   : { countryOk: false, regionOk: false, cityOk: false };
           const missing = need.filter(n => !String(n[0] || '').trim()).map(n => n[1]);
+          if (!geo.countryOk) missing.push(biz ? 'the country you ship to' : 'a delivery country');
+          if (!geo.regionOk) missing.push('your state, province or region');
+          if (!geo.cityOk) missing.push('your city, chosen from the list');
           const mail = String(s.acEmail || '');
           if (!missing.length && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) missing.push('a valid email');
           if (missing.length) {
@@ -1603,7 +1629,7 @@ class Component extends DCLogic {
               : missing.slice(0, -1).join(', ') + ' and ' + missing[missing.length - 1];
             return this.setState({ acMissing: true, acMissingText: 'Please add ' + list + '.' });
           }
-          this.setState({ accountDone: true, acMissing: false });
+          this.setState({ accountDone: true, acMissing: false, dest: geo.country || s.dest });
         }, goQuote: this.go('quote'), goTracking: this.go('tracking'), goApply: this.go('apply'),
       goEarnings: this.go('earnings'), goJobs: this.go('jobs'),
       goHow: () => { this.setState({ screen: 'landing' }, () => { const el = document.getElementById('how'); if (el) window.scrollTo({ top: el.offsetTop - 12, behavior: 'smooth' }); }); },
