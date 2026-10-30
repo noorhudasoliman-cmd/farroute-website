@@ -207,12 +207,13 @@ input,select,button,textarea{font:inherit;color:inherit}
    is an SVG because a CSS dashed border cannot hold a 9.5 on 7.5 dash through
    a 45px corner; the long straight run below it is a gradient, which can. */
 .ab-wrap{--road:#E4D9C4;--rw:19px;--rc:9.5px;--ring:23px;--rs:3px;--dot:15px;--home:57px;
-  --ind:59px;--dash:9.5px;--dgap:7.5px;--ds:2.5px;--rx:0px;--dtop:0px;--dend:27px;
+  --ind:59px;--dash:9.5px;--dgap:7.5px;--ds:2.5px;--rx:0px;--dtop:0px;--dend:20px;
+  --leadfs:clamp(22px,2.82vw,38px);--dotx:calc(var(--ind) + 9.1835 * var(--leadfs));
   max-width:1346px;margin:0 auto;padding:40px 56px 0 26px;position:relative}
 body[data-theme=dark] .ab-wrap{--road:#3A3229}
 .ab-head{padding-left:var(--ind);display:flex;flex-direction:column;align-items:flex-start;gap:17px}
 .ab-eyebrow{margin-bottom:20px;font-family:ui-monospace,Menlo,monospace;font-size:13.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
-.ab-lead{margin:0;font-weight:400;font-size:clamp(22px,2.82vw,38px);line-height:1.32;letter-spacing:-0.012em;color:var(--ink);text-wrap:pretty}
+.ab-lead{margin:0;font-weight:400;font-size:var(--leadfs);line-height:1.32;letter-spacing:-0.012em;color:var(--ink);text-wrap:pretty}
 .ab-err{display:inline-flex;align-items:center;max-width:100%;gap:.432em;background:var(--road);border-radius:10px;
   padding:.16em .295em .16em .364em;font-size:clamp(22px,3.27vw,44px);line-height:1;
   letter-spacing:-0.012em;color:var(--ink)}
@@ -224,13 +225,20 @@ body[data-theme=dark] .ab-wrap{--road:#3A3229}
 .ab-row b{color:var(--routeInk);font-weight:700}
 .ab-row i{position:absolute;left:calc(var(--rx) + var(--rw)/2 - var(--ring)/2 - var(--ind));top:50%;transform:translateY(-50%);
   width:var(--ring);height:var(--ring);border-radius:50%;border:var(--rs) solid var(--routeInk);background:var(--paper)}
-.ab-top{position:absolute;left:0;bottom:100%;width:615px;height:120px;overflow:visible}
-.ab-top .rd{fill:none;stroke:var(--road);stroke-width:19;stroke-linecap:round;stroke-linejoin:round}
-.ab-top .dx{fill:none;stroke:var(--routeInk);stroke-width:2.5;stroke-dasharray:9.5 7.5}
-.ab-top .dt{fill:var(--ink)}
+.ab-corner,.ab-cap{position:absolute;bottom:100%;height:120px;overflow:visible}
+.ab-corner{left:0;width:110px}
+.ab-cap{left:calc(var(--dotx) - 32px);width:42px}
+.ab-corner .rd,.ab-cap .rd{fill:none;stroke:var(--road);stroke-width:19;stroke-linecap:round;stroke-linejoin:round}
+.ab-corner .dx,.ab-cap .dx{fill:none;stroke:var(--routeInk);stroke-width:2.5;stroke-dasharray:9.5 7.5}
+.ab-cap .dx{stroke-dashoffset:9.8}
+.ab-cap .dt{fill:var(--ink)}
+.ab-run{position:absolute;left:110px;width:calc(var(--dotx) - 142px);height:var(--rw);
+  bottom:calc(100% + 47px - var(--rw)/2);background:var(--road)}
+.ab-run i{position:absolute;right:0;left:0;top:calc(50% - var(--ds)/2);height:var(--ds);
+  background:repeating-linear-gradient(to left,transparent 0 var(--dgap),var(--routeInk) var(--dgap) calc(var(--dash) + var(--dgap)))}
 .ab-vert{position:absolute;left:var(--rx);top:0;bottom:125px;width:var(--rw);background:var(--road);border-radius:0 0 999px 999px}
 .ab-vert span{position:absolute;left:calc(var(--rw)/2 - var(--ds)/2);top:var(--dtop);bottom:var(--dend);width:var(--ds);
-  background:repeating-linear-gradient(to bottom,var(--routeInk) 0 var(--dash),transparent var(--dash) calc(var(--dash) + var(--dgap)))}
+  background:repeating-linear-gradient(to top,var(--routeInk) 0 var(--dash),transparent var(--dash) calc(var(--dash) + var(--dgap)))}
 .ab-vert u{display:none}
 .ab-arw{position:absolute;left:calc(var(--rx) + var(--rw)/2 - var(--ring)/2);bottom:131px;width:var(--ring);height:calc(var(--ring)*.65);
   fill:none;stroke:var(--routeInk);stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}
@@ -239,14 +247,14 @@ body[data-theme=dark] .ab-wrap{--road:#3A3229}
 .ab-home svg{width:42%;height:42%;fill:none;stroke:var(--paper);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 @media (max-width:860px){
   .ab-wrap{--rw:12px;--ring:17px;--rs:2.5px;--dot:12px;--home:42px;--ind:39px;--dash:8px;--dgap:6px;--ds:2.5px;
-    --rx:9px;--dtop:15px;--dend:21px;padding:28px 20px 0 18px}
+    --rx:9px;--dtop:15px;--dend:15px;padding:28px 20px 0 18px}
   .ab-head{padding-left:0;gap:13px}
   .ab-eyebrow{margin-bottom:14px}
   .ab-rows{margin-top:52px;padding-bottom:115px;gap:38px}
   .ab-row{grid-template-columns:1fr;gap:13px}
   .ab-row p{position:relative}
   .ab-row i{top:4px;transform:none}
-  .ab-top{display:none}
+  .ab-corner,.ab-run,.ab-cap{display:none}
   .ab-vert{top:-38px;bottom:93px;border-radius:999px}
   .ab-vert u{display:block;position:absolute;left:calc(var(--rw)/2 - var(--dot)/2);top:0;
     width:var(--dot);height:var(--dot);border-radius:50%;background:var(--ink)}
@@ -450,7 +458,9 @@ body[data-theme=dark] .ab-wrap{--road:#3A3229}
         </div>
 
         <div class="ab-rows">
-          <svg class="ab-top" viewBox="0 0 615 120" aria-hidden="true"><path class="rd" d="M 600 41 A 32 32 0 0 1 568 73 L 54.5 73 A 45 45 0 0 0 9.5 118 L 9.5 120"></path><path class="dx" d="M 600 41 A 32 32 0 0 1 568 73 L 54.5 73 A 45 45 0 0 0 9.5 118 L 9.5 120"></path><circle class="dt" cx="600" cy="33" r="7.5"></circle></svg>
+          <svg class="ab-corner" viewBox="0 0 110 120" aria-hidden="true"><path class="rd" d="M 112 73 L 54.5 73 A 45 45 0 0 0 9.5 118 L 9.5 120"></path><path class="dx" d="M 112 73 L 54.5 73 A 45 45 0 0 0 9.5 118 L 9.5 120"></path></svg>
+          <span class="ab-run" aria-hidden="true"><i></i></span>
+          <svg class="ab-cap" viewBox="0 0 42 120" aria-hidden="true"><path class="rd" d="M 32 41 A 32 32 0 0 1 0 73 L -3 73"></path><path class="dx" d="M 32 41 A 32 32 0 0 1 0 73 L -3 73"></path><circle class="dt" cx="32" cy="33" r="7.5"></circle></svg>
           <span class="ab-vert" aria-hidden="true"><span></span><u></u></span>
           <div class="ab-row"><h2>Where you live no longer limits what you can buy.</h2><p><i aria-hidden="true"></i>If the item can legally travel, we will find a route. You see one <b>full price and a customs estimate</b> before you pay.</p></div>
           <div class="ab-row"><h2>We enable our couriers to run their own forwarding business.</h2><p><i aria-hidden="true"></i>They buy your item locally, pack the item and send the parcel <b>straight to you</b> by international mail.</p></div>
