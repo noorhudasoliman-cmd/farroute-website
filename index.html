@@ -200,42 +200,56 @@ body[data-theme=dark]{--paper:#2B211B;--card:#211F1D;--ink:#F4EBDC;--muted:#B3A8
 .leaflet-tile-container img.leaflet-tile{image-rendering:auto;backface-visibility:hidden}
 a{color:var(--ink);text-decoration-color:var(--route);text-underline-offset:3px}a:hover{color:var(--routeInk)}
 input,select,button,textarea{font:inherit;color:inherit}
-/* The About page draws the route itself. One dashed line leaves the opening
-   statement, turns down the margin, calls at each promise in turn, and arrives
-   home at the foot of the page. The rail is decoration, so a narrow screen
-   folds the rail away and stacks the two columns. */
-.ab-wrap{max-width:1180px;margin:0 auto;padding:clamp(30px,4vw,46px) 20px clamp(40px,5vw,60px);position:relative}
-.ab-head{padding-left:56px;display:flex;flex-direction:column;align-items:flex-start;gap:clamp(13px,1.6vw,19px)}
-.ab-eyebrow{font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
-.ab-lead{margin:0;font-weight:400;font-size:clamp(21px,2.6vw,34px);line-height:1.33;letter-spacing:-0.012em;color:var(--ink);text-wrap:pretty;max-width:34em}
-.ab-err{display:inline-flex;align-items:center;flex-wrap:wrap;max-width:100%;gap:.42em;background:var(--line);border-radius:11px;padding:.16em .5em .2em .42em;font-size:clamp(21px,2.6vw,34px);line-height:1.33;letter-spacing:-0.012em;color:var(--ink)}
-.ab-err .mk{width:.82em;height:.82em;flex:0 0 auto;fill:none;stroke:var(--ink);stroke-width:1.7;stroke-linecap:round}
-/* The rows hang off the rail: a ring where the route calls, a headline, and the
-   detail beside the headline on the same first baseline. */
-.ab-rows{position:relative;padding-left:56px;padding-bottom:92px;margin-top:clamp(46px,6vw,86px);display:flex;flex-direction:column;gap:clamp(30px,3.6vw,46px)}
-.ab-row{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.22fr);gap:clamp(18px,5vw,96px);align-items:baseline}
-.ab-row h2{margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(21px,2.1vw,27px);line-height:1.18;letter-spacing:-0.015em;text-wrap:balance}
-.ab-row p{position:static;margin:0;font-size:clamp(15.5px,1.25vw,17px);line-height:1.62;color:var(--ink);text-wrap:pretty}
+/* The About page draws the route as a road, measured off the design: a 19px
+   kraft band with 2.5px blue dashes down the centre, open rings where the
+   route calls, and a dark terminus at the foot. The band is one CSS variable
+   set so the phone can shrink every part of the road together. The top piece
+   is an SVG because a CSS dashed border cannot hold a 9.5 on 7.5 dash through
+   a 45px corner; the long straight run below it is a gradient, which can. */
+.ab-wrap{--road:#E4D9C4;--rw:19px;--rc:9.5px;--ring:23px;--rs:3px;--dot:15px;--home:57px;
+  --ind:59px;--dash:9.5px;--dgap:7.5px;--ds:2.5px;--rx:0px;--dtop:0px;
+  max-width:1346px;margin:0 auto;padding:40px 56px 0 26px;position:relative}
+body[data-theme=dark] .ab-wrap{--road:#3A3229}
+.ab-head{padding-left:var(--ind);display:flex;flex-direction:column;align-items:flex-start;gap:17px}
+.ab-eyebrow{margin-bottom:20px;font-family:ui-monospace,Menlo,monospace;font-size:13.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.ab-lead{margin:0;font-weight:400;font-size:clamp(22px,2.82vw,38px);line-height:1.32;letter-spacing:-0.012em;color:var(--ink);text-wrap:pretty}
+.ab-err{display:inline-flex;align-items:center;max-width:100%;gap:.3em;background:var(--road);border-radius:10px;
+  padding:.26em .37em .29em .42em;font-size:clamp(22px,2.82vw,38px);line-height:1;letter-spacing:-0.012em;color:var(--ink)}
+.ab-err .mk{width:.88em;height:.88em;flex:0 0 auto;fill:none;stroke:var(--ink);stroke-width:1.7;stroke-linecap:round}
+.ab-rows{position:relative;margin-top:114px;padding-left:var(--ind);padding-bottom:96px;display:flex;flex-direction:column;gap:54px}
+.ab-row{position:relative;display:grid;grid-template-columns:497fr 612fr;gap:clamp(28px,7.1vw,96px);align-items:baseline}
+.ab-row h2{margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(22px,2.75vw,37px);line-height:1.1;letter-spacing:-0.018em;text-wrap:balance}
+.ab-row p{position:static;margin:0;font-size:clamp(16px,1.63vw,22px);line-height:1.59;color:var(--ink);text-wrap:pretty}
 .ab-row b{color:var(--routeInk);font-weight:700}
-.ab-row i{position:absolute;left:-63px;top:9px;width:15px;height:15px;border-radius:50%;border:2px solid var(--routeInk);background:var(--paper)}
-.ab-rail{position:absolute;left:0;top:-44px;bottom:70px;width:min(46%,430px);pointer-events:none}
-.ab-rail s{position:absolute;inset:0;border-top-left-radius:34px;border-top:2px dashed var(--routeInk);border-left:2px dashed var(--routeInk);border-right:0;border-bottom:0}
-.ab-rail s.sh{transform:translate(-3px,3px);border-style:solid;border-width:3px;border-color:var(--kraft);border-right:0;border-bottom:0;border-top-left-radius:35px}
-.ab-rail u{position:absolute;right:-7px;top:-6px;width:14px;height:14px;border-radius:50%;background:var(--ink)}
-.ab-rail svg{position:absolute;left:-9px;bottom:-15px;width:20px;height:20px;fill:none;stroke:var(--routeInk);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
-.ab-home{position:absolute;left:-22px;bottom:4px;width:46px;height:46px;border-radius:50%;background:var(--ink);display:flex;align-items:center;justify-content:center}
-.ab-home svg{width:21px;height:21px;fill:none;stroke:var(--paper);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ab-row i{position:absolute;left:calc(var(--rx) + var(--rw)/2 - var(--ring)/2 - var(--ind));top:50%;transform:translateY(-50%);
+  width:var(--ring);height:var(--ring);border-radius:50%;border:var(--rs) solid var(--routeInk);background:var(--paper)}
+.ab-top{position:absolute;left:0;bottom:100%;width:615px;height:120px;overflow:visible}
+.ab-top .rd{fill:none;stroke:var(--road);stroke-width:19;stroke-linecap:round;stroke-linejoin:round}
+.ab-top .dx{fill:none;stroke:var(--routeInk);stroke-width:2.5;stroke-dasharray:9.5 7.5}
+.ab-top .dt{fill:var(--ink)}
+.ab-vert{position:absolute;left:var(--rx);top:0;bottom:58px;width:var(--rw);background:var(--road);border-radius:0 0 999px 999px}
+.ab-vert span{position:absolute;left:calc(var(--rw)/2 - var(--ds)/2);top:var(--dtop);bottom:0;width:var(--ds);
+  background:repeating-linear-gradient(to bottom,var(--routeInk) 0 var(--dash),transparent var(--dash) calc(var(--dash) + var(--dgap)))}
+.ab-vert u{display:none}
+.ab-arw{position:absolute;left:calc(var(--rx) + var(--rw)/2 - var(--ring)/2);bottom:63px;width:var(--ring);height:calc(var(--ring)*.96);
+  fill:none;stroke:var(--routeInk);stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}
+.ab-home{position:absolute;left:calc(var(--rx) + var(--rw)/2 - var(--home)/2);bottom:0;width:var(--home);height:var(--home);
+  border-radius:50%;background:var(--ink);display:flex;align-items:center;justify-content:center}
+.ab-home svg{width:42%;height:42%;fill:none;stroke:var(--paper);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 @media (max-width:860px){
-  .ab-head{padding-left:0}
-  .ab-rows{padding-left:42px}
-  .ab-row{grid-template-columns:1fr;gap:14px}
+  .ab-wrap{--rw:12px;--ring:17px;--rs:2.5px;--dot:12px;--home:42px;--ind:39px;--dash:8px;--dgap:6px;--ds:2.5px;
+    --rx:9px;--dtop:15px;padding:28px 20px 0 18px}
+  .ab-head{padding-left:0;gap:13px}
+  .ab-eyebrow{margin-bottom:14px}
+  .ab-rows{margin-top:52px;padding-bottom:72px;gap:38px}
+  .ab-row{grid-template-columns:1fr;gap:13px}
   .ab-row p{position:relative}
-  .ab-row i{left:-33px;top:6px}
-  .ab-rail{left:16px;width:2px;top:-40px}
-  .ab-rail s{border-top:0;border-top-left-radius:0}
-  .ab-rail s.sh{border-top-left-radius:0}
-  .ab-rail u{right:auto;left:-6px;top:-7px}
-  .ab-home{left:-6px}}
+  .ab-row i{top:4px;transform:none}
+  .ab-top{display:none}
+  .ab-vert{top:-38px;border-radius:999px}
+  .ab-vert u{display:block;position:absolute;left:calc(var(--rw)/2 - var(--dot)/2);top:0;
+    width:var(--dot);height:var(--dot);border-radius:50%;background:var(--ink)}
+  .ab-arw{bottom:46px}}
 </style>
 </helmet>
 <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
@@ -434,12 +448,14 @@ input,select,button,textarea{font:inherit;color:inherit}
         </div>
 
         <div class="ab-rows">
-          <div class="ab-rail" aria-hidden="true"><s class="sh"></s><s></s><u></u><svg viewBox="0 0 24 24"><path d="M5.5 10 12 17l6.5-7"></path></svg></div>
+          <svg class="ab-top" viewBox="0 0 615 120" aria-hidden="true"><path class="rd" d="M 603 41 Q 603 73 578 73 L 54.5 73 Q 9.5 73 9.5 118 L 9.5 120"></path><path class="dx" d="M 603 41 Q 603 73 578 73 L 54.5 73 Q 9.5 73 9.5 118 L 9.5 120"></path><circle class="dt" cx="600" cy="33" r="7.5"></circle></svg>
+          <span class="ab-vert" aria-hidden="true"><span></span><u></u></span>
           <div class="ab-row"><h2>Where you live no longer limits what you can buy.</h2><p><i aria-hidden="true"></i>If the item can legally travel, we will find a route. You see one <b>full price and a customs estimate</b> before you pay.</p></div>
           <div class="ab-row"><h2>We enable our couriers to run their own forwarding business.</h2><p><i aria-hidden="true"></i>They buy your item locally, pack the item and send the parcel <b>straight to you</b> by international mail.</p></div>
           <div class="ab-row"><h2>Our couriers choose to accept their orders.</h2><p><i aria-hidden="true"></i>We bring them customers, prepaid labels and the tools to grow. Couriers see <b>every dollar of their pay</b> before they accept a job.</p></div>
           <div class="ab-row"><h2>Every order is checked against customs rules and declared at its real value.</h2><p><i aria-hidden="true"></i>Your payment is held until a courier confirms the purchase, and you get a full refund if no one takes the job within <b>72 hours</b>.</p></div>
-          <span class="ab-home" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.6 10.4 12 3.5l8.4 6.9V20a1 1 0 0 1-1 1h-14.8a1 1 0 0 1-1-1z"></path></svg></span>
+          <svg class="ab-arw" viewBox="0 0 23 22" aria-hidden="true"><path d="M2.5 3 11.5 18.5 20.5 3"></path></svg>
+          <span class="ab-home" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.6 10.4 12 3.5l8.4 6.9V20a1 1 0 0 1-1 1h-14.8a1 1 0 0 1-1-1z"></path><path d="M9.6 21v-5.4h4.8V21"></path></svg></span>
         </div>
       </section>
     </sc-if>
