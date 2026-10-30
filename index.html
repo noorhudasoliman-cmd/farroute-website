@@ -1116,8 +1116,9 @@ class Component extends DCLogic {
   // Walks the researched shipping gaps like a tracker: in on one route, hold,
   // out to the world, a beat, then the next. Every entry is a real product, a
   // real origin and a destination the seller does not serve, so each line drawn
-  // is a route that does not exist until Farroute opens it. Random order, and
-  // every entry is shown before any repeats.
+  // is a route that does not exist until Farroute opens it. The ranked openers
+  // run first in their ranked order, then the rest in random order, and every
+  // entry is shown before any repeats.
   tour() {
     var self = this, gen = (self._gen = (self._gen || 0) + 1);
     var R = (window.FR_ROUTES || []).slice();
@@ -1125,13 +1126,32 @@ class Component extends DCLogic {
     var L = window.L, map = self._fm.map;
     var lab = document.getElementById('frlabel');
     var order = [], at = 0;
+
+    // The research sheet ranks a handful of rows above the rest on brand
+    // recognition and on how hard the evidence behind the gap is, so the tour
+    // opens with those rows, in that ranked order, on every pass. Each row is
+    // named by its photograph, which is numbered by its line on the sheet, so
+    // the order survives the list being re-sorted. A name with no row left
+    // behind it is skipped rather than leaving a hole.
+    var LEAD = ['p042', 'p050', 'p002', 'p038', 'p055', 'p096', 'p108', 'p103',
+      'p091', 'p052', 'p056', 'p001', 'p005', 'p017', 'p073', 'p097', 'p028'];
+    var lead = [];
+    for (var li = 0; li < LEAD.length; li++) {
+      for (var ri = 0; ri < R.length; ri++) {
+        if (R[ri].img && R[ri].img.indexOf(LEAD[li] + '.') > -1 && lead.indexOf(ri) < 0) {
+          lead.push(ri); break;
+        }
+      }
+    }
+
     var reshuffle = function () {
-      var pool = R.map(function (_, i) { return i; });
+      var pool = [];
+      for (var i = 0; i < R.length; i++) if (lead.indexOf(i) < 0) pool.push(i);
       for (var i = pool.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
         var t = pool[i]; pool[i] = pool[j]; pool[j] = t;
       }
-      order = [];
+      order = lead.slice();
       while (pool.length) {
         var prev = order.length ? R[order[order.length - 1]] : null;
         var pick = 0;
