@@ -200,6 +200,42 @@ body[data-theme=dark]{--paper:#2B211B;--card:#211F1D;--ink:#F4EBDC;--muted:#B3A8
 .leaflet-tile-container img.leaflet-tile{image-rendering:auto;backface-visibility:hidden}
 a{color:var(--ink);text-decoration-color:var(--route);text-underline-offset:3px}a:hover{color:var(--routeInk)}
 input,select,button,textarea{font:inherit;color:inherit}
+/* The About page draws the route itself. One dashed line leaves the opening
+   statement, turns down the margin, calls at each promise in turn, and arrives
+   home at the foot of the page. The rail is decoration, so a narrow screen
+   folds the rail away and stacks the two columns. */
+.ab-wrap{max-width:1180px;margin:0 auto;padding:clamp(30px,4vw,46px) 20px clamp(40px,5vw,60px);position:relative}
+.ab-head{padding-left:56px;display:flex;flex-direction:column;align-items:flex-start;gap:clamp(13px,1.6vw,19px)}
+.ab-eyebrow{font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+.ab-lead{margin:0;font-weight:400;font-size:clamp(21px,2.6vw,34px);line-height:1.33;letter-spacing:-0.012em;color:var(--ink);text-wrap:pretty;max-width:34em}
+.ab-err{display:inline-flex;align-items:center;flex-wrap:wrap;max-width:100%;gap:.42em;background:var(--line);border-radius:11px;padding:.16em .5em .2em .42em;font-size:clamp(21px,2.6vw,34px);line-height:1.33;letter-spacing:-0.012em;color:var(--ink)}
+.ab-err .mk{width:.82em;height:.82em;flex:0 0 auto;fill:none;stroke:var(--ink);stroke-width:1.7;stroke-linecap:round}
+/* The rows hang off the rail: a ring where the route calls, a headline, and the
+   detail beside the headline on the same first baseline. */
+.ab-rows{position:relative;padding-left:56px;padding-bottom:92px;margin-top:clamp(46px,6vw,86px);display:flex;flex-direction:column;gap:clamp(30px,3.6vw,46px)}
+.ab-row{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.22fr);gap:clamp(18px,5vw,96px);align-items:baseline}
+.ab-row h2{margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(21px,2.1vw,27px);line-height:1.18;letter-spacing:-0.015em;text-wrap:balance}
+.ab-row p{position:static;margin:0;font-size:clamp(15.5px,1.25vw,17px);line-height:1.62;color:var(--ink);text-wrap:pretty}
+.ab-row b{color:var(--routeInk);font-weight:700}
+.ab-row i{position:absolute;left:-63px;top:9px;width:15px;height:15px;border-radius:50%;border:2px solid var(--routeInk);background:var(--paper)}
+.ab-rail{position:absolute;left:0;top:-44px;bottom:70px;width:min(46%,430px);pointer-events:none}
+.ab-rail s{position:absolute;inset:0;border-top-left-radius:34px;border-top:2px dashed var(--routeInk);border-left:2px dashed var(--routeInk);border-right:0;border-bottom:0}
+.ab-rail s.sh{transform:translate(-3px,3px);border-style:solid;border-width:3px;border-color:var(--kraft);border-right:0;border-bottom:0;border-top-left-radius:35px}
+.ab-rail u{position:absolute;right:-7px;top:-6px;width:14px;height:14px;border-radius:50%;background:var(--ink)}
+.ab-rail svg{position:absolute;left:-9px;bottom:-15px;width:20px;height:20px;fill:none;stroke:var(--routeInk);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.ab-home{position:absolute;left:-22px;bottom:4px;width:46px;height:46px;border-radius:50%;background:var(--ink);display:flex;align-items:center;justify-content:center}
+.ab-home svg{width:21px;height:21px;fill:none;stroke:var(--paper);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+@media (max-width:860px){
+  .ab-head{padding-left:0}
+  .ab-rows{padding-left:42px}
+  .ab-row{grid-template-columns:1fr;gap:14px}
+  .ab-row p{position:relative}
+  .ab-row i{left:-33px;top:6px}
+  .ab-rail{left:16px;width:2px;top:-40px}
+  .ab-rail s{border-top:0;border-top-left-radius:0}
+  .ab-rail s.sh{border-top-left-radius:0}
+  .ab-rail u{right:auto;left:-6px;top:-7px}
+  .ab-home{left:-6px}}
 </style>
 </helmet>
 <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
@@ -389,19 +425,22 @@ input,select,button,textarea{font:inherit;color:inherit}
     </sc-if>
 
     <sc-if value="{{ isAbout }}" hint-placeholder-val="{{ false }}">
-      <section data-screen-label="About" style="max-width:760px;margin:0 auto;padding:clamp(30px,4vw,44px) 20px 0;display:flex;flex-direction:column;gap:clamp(10px,1.3vw,13px)">
-        <span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)">About</span>
-        <div style="border:1.5px solid var(--ink);border-radius:12px;background:var(--paper);padding:clamp(16px,2vw,21px) clamp(18px,2.3vw,24px);display:flex;flex-direction:column;gap:clamp(7px,0.9vw,10px)">
-          <h1 style="margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(19px,2.4vw,25px);line-height:1.45;letter-spacing:-0.01em">The internet should not have borders.</h1>
-          <p style="margin:0;font-size:clamp(19px,2.4vw,25px);line-height:1.45;color:var(--ink);text-wrap:pretty">In the moment you are purchasing something and receive the <span style="color:var(--alert);font-weight:700">Does not ship to your country</span> error, we will connect you with <span style="color:var(--routeInk);font-weight:700">a courier who can</span>.</p>
+      <section data-screen-label="About" class="ab-wrap">
+        <div class="ab-head">
+          <span class="ab-eyebrow">About</span>
+          <h1 class="ab-lead">The internet should not have borders. The moment you are purchasing something and receive the error:</h1>
+          <span class="ab-err"><svg class="mk" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2"></circle><path d="M8.6 8.6 15.4 15.4"></path><path d="M15.4 8.6 8.6 15.4"></path></svg>Does not ship to your country</span>
+          <p class="ab-lead">We will connect you with a courier who can.</p>
         </div>
-      </section>
 
-      <section style="max-width:760px;margin:0 auto;padding:clamp(34px,4.4vw,48px) 20px clamp(52px,7vw,72px);display:flex;flex-direction:column;gap:clamp(30px,4vw,42px)">
-        <p style="margin:0;font-size:17.5px;line-height:1.62;color:var(--ink);text-wrap:pretty">We enable our couriers to <span style="color:var(--routeInk);font-weight:700">run their own forwarding business</span>. They buy your item locally, pack the item and send the parcel straight to you by international mail.</p>
-        <p style="margin:0;font-size:17.5px;line-height:1.62;color:var(--ink);text-wrap:pretty">Where you live no longer limits what you can buy. If the item can legally travel, <span style="color:var(--routeInk);font-weight:700">we will find a route</span>. You see <span style="color:var(--routeInk);font-weight:700">one full price and a customs estimate</span> before you pay.</p>
-        <p style="margin:0;font-size:17.5px;line-height:1.62;color:var(--ink);text-wrap:pretty">Our couriers <span style="color:var(--routeInk);font-weight:700">choose to accept their orders</span>. We bring them customers, prepaid labels and the tools to grow. Couriers see <span style="color:var(--routeInk);font-weight:700">every dollar of their pay</span> before they accept a job.</p>
-        <p style="margin:0;font-size:17.5px;line-height:1.62;color:var(--ink);text-wrap:pretty">Every order is checked against customs rules and declared at its real value. Your payment is <span style="color:var(--routeInk);font-weight:700">held until a courier confirms the purchase</span>, and you get <span style="color:var(--routeInk);font-weight:700">a full refund</span> if no one takes the job within 72 hours.</p>
+        <div class="ab-rows">
+          <div class="ab-rail" aria-hidden="true"><s class="sh"></s><s></s><u></u><svg viewBox="0 0 24 24"><path d="M5.5 10 12 17l6.5-7"></path></svg></div>
+          <div class="ab-row"><h2>Where you live no longer limits what you can buy.</h2><p><i aria-hidden="true"></i>If the item can legally travel, we will find a route. You see one <b>full price and a customs estimate</b> before you pay.</p></div>
+          <div class="ab-row"><h2>We enable our couriers to run their own forwarding business.</h2><p><i aria-hidden="true"></i>They buy your item locally, pack the item and send the parcel <b>straight to you</b> by international mail.</p></div>
+          <div class="ab-row"><h2>Our couriers choose to accept their orders.</h2><p><i aria-hidden="true"></i>We bring them customers, prepaid labels and the tools to grow. Couriers see <b>every dollar of their pay</b> before they accept a job.</p></div>
+          <div class="ab-row"><h2>Every order is checked against customs rules and declared at its real value.</h2><p><i aria-hidden="true"></i>Your payment is held until a courier confirms the purchase, and you get a full refund if no one takes the job within <b>72 hours</b>.</p></div>
+          <span class="ab-home" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.6 10.4 12 3.5l8.4 6.9V20a1 1 0 0 1-1 1h-14.8a1 1 0 0 1-1-1z"></path></svg></span>
+        </div>
       </section>
     </sc-if>
 
