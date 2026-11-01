@@ -137,23 +137,13 @@ body[data-theme=dark]{--paper:#2B211B;--card:#211F1D;--ink:#F4EBDC;--muted:#B3A8
 .fr-run{transform:translate(-46px,-50%);opacity:0;will-change:transform,opacity;animation:fr-run 12.6s linear infinite both}
 .fr-route{width:100%;transform:scaleX(0);transform-origin:0 50%;opacity:0;will-change:transform,opacity;animation:fr-route 12.6s linear infinite both}
 .fr-tip{transform:translateX(-6px);opacity:0;will-change:opacity;animation:fr-tip 12.6s linear infinite both}
-/* Phones. The header needs about 510px laid out in one row and a phone gives
-   390, so it was being clipped: Create account read as "ount". The nav drops to
-   its own row underneath the wordmark instead.
+/* Phones. The header is left alone here: the tabs fold into the menu on their
+   own once they crowd the wordmark, which happens well before a phone width,
+   so the wordmark keeps its own line and its full size at every width.
    The steps stack vertically on a narrow screen, so a connector that runs
    horizontally from one icon towards the next is pointing at nothing. It is
    taken out rather than left pointing off the side of the screen. */
 @media (max-width:640px){
-  /* The wordmark sits under the mark so the whole header fits one row, with the
-     menu beside it on the same level rather than pushed to a second row. */
-  header > div{height:auto !important;padding-top:7px;padding-bottom:0;gap:10px !important;align-items:center !important}
-  header > div > button:first-child{flex-direction:column !important;gap:1px !important;align-items:center !important}
-  header > div > button:first-child svg{width:38px !important;height:25px !important}
-  header > div > button:first-child span{font-size:14px !important;letter-spacing:-0.01em !important}
-  header nav{justify-content:flex-end !important;overflow:visible !important;gap:0 !important;align-items:center !important}
-  /* The current page is marked by the underline the template puts on the
-     bottom border, so that border must be left alone here. */
-  header nav button{font-size:12.5px !important;padding:0 6px 3px !important;white-space:nowrap}
   /* On a phone the steps stack, so each one becomes a row: the icon in a
      column down the left, its text beside it. That gives the connector a
      vertical path to travel, which a horizontal one never had here. */
@@ -195,6 +185,25 @@ body[data-theme=dark]{--paper:#2B211B;--card:#211F1D;--ink:#F4EBDC;--muted:#B3A8
 }
 @media (prefers-reduced-motion:reduce){.fr-trk.a,.fr-trk.b{animation:none;transform:translateX(100%)}
 @media (max-width:640px){.fr-trk.a,.fr-trk.b{transform:translateY(100%)}.fr-run{transform:translate(-50%,-10px)}.fr-route{transform:translateX(-50%) scaleY(1)}}.fr-run{animation:none;opacity:1;transform:translate(-22px,-50%)}.fr-route{animation:none;opacity:1;transform:scaleX(1)}.fr-tip{animation:none;opacity:1}}
+/* The three tabs fold into a menu the moment they crowd the wordmark, at any
+   width and on any device. Which width that is gets measured in script rather
+   than written into a media query here, because the point where three labels
+   stop fitting moves with the font that actually loaded and with the labels
+   themselves. The class the script sets lives on the document element, so a
+   redraw of the page cannot lose the state. */
+.fr-burger{display:none;flex-direction:column;justify-content:center;gap:5px;
+  margin-left:auto;flex:0 0 auto;align-self:center;width:36px;padding:9px 0;
+  background:none;border:0;cursor:pointer}
+.fr-burger span{display:block;width:22px;height:2px;margin:0 auto;border-radius:2px;background:var(--ink)}
+.fr-menu{display:none;position:absolute;top:100%;right:20px;z-index:7;min-width:216px;
+  flex-direction:column;gap:2px;padding:7px;background:var(--card);
+  border:1px solid var(--line);border-top:0;border-radius:0 0 13px 13px;
+  box-shadow:0 16px 30px rgba(43,33,27,.16)}
+/* The tabs carry their layout in a style attribute, which the template writes,
+   so folding them away has to outrank that attribute. */
+html.navmini .fr-tabs{display:none !important}
+html.navmini .fr-burger{display:flex}
+html.navmini.navopen .fr-menu{display:flex}
 .leaflet-container{background:#BACFE4;font-family:Archivo,system-ui,sans-serif}
 .leaflet-control-attribution{font-size:10px}
 .leaflet-tile-container img.leaflet-tile{image-rendering:auto;backface-visibility:hidden}
@@ -323,17 +332,23 @@ body[data-theme=dark] .ab-wrap{--road:#3A3229}
 <div style="min-height:100vh;display:flex;flex-direction:column">
 
 
-  <header style="background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:6">
-    <div style="max-width:1280px;margin:0 auto;padding:0 20px;display:flex;align-items:stretch;gap:24px;height:60px">
-      <button onClick="{{ goLanding }}" style="display:flex;align-items:center;gap:7px;background:none;border:0;padding:0;cursor:pointer;color:var(--ink);flex:0 1 auto;min-width:0;overflow:hidden">
+  <header style="background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:1200">
+    <div class="fr-bar" style="max-width:1280px;margin:0 auto;padding:0 20px;display:flex;align-items:stretch;gap:24px;height:60px;overflow:hidden">
+      <button onClick="{{ goLanding }}" class="fr-mark" style="display:flex;align-items:center;gap:7px;background:none;border:0;padding:0;cursor:pointer;color:var(--ink);flex:0 0 auto">
         <svg style="width:36px;height:24px;color:var(--ink);flex:0 0 auto"><use href="#fr"></use></svg>
         <span style="font-weight:700;font-stretch:87.5%;font-size:19px;letter-spacing:-0.02em;white-space:nowrap">Farroute</span>
       </button>
-      <nav style="display:flex;align-items:stretch;justify-content:flex-end;gap:10px;overflow-x:auto;flex:1;min-width:0">
+      <nav class="fr-tabs" style="display:flex;align-items:stretch;justify-content:flex-end;gap:10px;overflow-x:auto;flex:1;min-width:0">
         <sc-for list="{{ navTabs }}" as="t" hint-placeholder-count="4">
           <button onClick="{{ t.go }}" style="background:none;border:0;border-bottom:3px solid {{ t.bar }};padding:3px 12px 0;font-size:15px;font-weight:600;color:{{ t.color }};cursor:pointer;white-space:nowrap" style-hover="color:var(--ink)">{{ t.label }}</button>
         </sc-for>
       </nav>
+      <button class="fr-burger" data-navburger aria-label="Menu" aria-expanded="false" aria-haspopup="true"><span></span><span></span><span></span></button>
+    </div>
+    <div class="fr-menu" data-navmenu>
+      <sc-for list="{{ navTabs }}" as="t" hint-placeholder-count="4">
+        <button onClick="{{ t.go }}" style="display:block;width:100%;text-align:left;background:none;border:0;border-left:3px solid {{ t.bar }};border-radius:0 8px 8px 0;padding:12px 14px;font-size:16px;font-weight:600;color:{{ t.color }};cursor:pointer;white-space:nowrap" style-hover="background:var(--paper)">{{ t.label }}</button>
+      </sc-for>
     </div>
   </header>
 
@@ -1749,6 +1764,69 @@ class Component extends DCLogic {
     };
   }
 }
+</script>
+<script>
+(function () {
+  // The tabs fold into the menu as soon as they come within a comfortable gap
+  // of the wordmark, wherever that happens. The gap is read off the page, not
+  // taken from a width written down in advance: the labels are laid out, the
+  // distance from the wordmark to the first tab is measured, and anything
+  // under the minimum folds them away. A measurement holds when the font
+  // loads late, when the page is zoomed, and if a label is ever reworded.
+  var MIN_GAP = 40, root = document.documentElement, queued = false;
+
+  var sync = function () {
+    var b = document.querySelector('[data-navburger]');
+    if (b) b.setAttribute('aria-expanded', root.classList.contains('navopen') ? 'true' : 'false');
+  };
+
+  var fit = function () {
+    queued = false;
+    var bar = document.querySelector('.fr-bar');
+    if (!bar) return;
+    // The tabs are hidden while folded, so they have to be put back before the
+    // gap can be read. Nothing is painted in between: the class goes back on
+    // in the same frame.
+    var folded = root.classList.contains('navmini');
+    if (folded) root.classList.remove('navmini');
+    var mark = bar.querySelector('.fr-mark'), nav = bar.querySelector('.fr-tabs');
+    var tab = nav && nav.querySelector('button');
+    if (!mark || !tab) { if (folded) root.classList.add('navmini'); sync(); return; }
+    var gap = tab.getBoundingClientRect().left - mark.getBoundingClientRect().right;
+    var tight = gap < MIN_GAP || nav.scrollWidth > nav.clientWidth + 1;
+    root.classList.toggle('navmini', tight);
+    if (!tight) root.classList.remove('navopen');
+    sync();
+  };
+
+  var queue = function () { if (!queued) { queued = true; requestAnimationFrame(fit); } };
+
+  addEventListener('resize', queue, { passive: true });
+  addEventListener('orientationchange', queue, { passive: true });
+  addEventListener('pageshow', queue, { passive: true });
+  if (window.ResizeObserver) new ResizeObserver(queue).observe(root);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(queue);
+  // The page is drawn from a template, so the header may arrive after this
+  // script. A short run of checks catches the first draw without leaving an
+  // observer watching the map redraw itself for the rest of the visit.
+  for (var i = 1; i <= 12; i++) setTimeout(queue, i * 250);
+  queue();
+
+  document.addEventListener('click', function (e) {
+    var el = e.target && e.target.closest ? e.target : null;
+    if (el && el.closest('[data-navburger]')) { root.classList.toggle('navopen'); sync(); return; }
+    // A choice inside the menu navigates and closes the menu behind itself,
+    // and a click anywhere else closes the menu without navigating.
+    root.classList.remove('navopen');
+    sync();
+  });
+  addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && root.classList.contains('navopen')) {
+      root.classList.remove('navopen'); sync();
+      var b = document.querySelector('[data-navburger]'); if (b) b.focus();
+    }
+  });
+})();
 </script>
 </body>
 </html>
