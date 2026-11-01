@@ -371,7 +371,7 @@ body[data-theme=dark] .ab-wrap{--road:#3A3229}
               <div style="position:relative;align-self:stretch;display:flex;justify-content:center"><span style="position:relative;z-index:2;width:52px;height:52px;border-radius:50%;border:1px solid var(--line);background:var(--paper);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" style="width:26px;height:26px;fill:none;stroke:var(--ink);stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"></path><path d="M12 9.2v4.2"></path><path d="M12 17.1h.01"></path></svg></span><div class="fr-leg" style="z-index:1;position:absolute;top:50%;left:calc(50% + 26px);width:calc(100% - 26px);transform:translateY(-50%);height:42px;pointer-events:none"><span class="fr-route" style="position:absolute;left:0;top:calc(50% + 11px);height:2px;background:var(--routeInk);border-radius:2px;animation-delay:0s"></span><span class="fr-trk b" style="animation-delay:0s"><svg viewBox="0 0 12 12" class="fr-tip" style="position:absolute;left:0;top:calc(50% + 6px);width:12px;height:12px;fill:none;stroke:var(--routeInk);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;animation-delay:0s"><path d="M3.5 1.5 8.5 6l-5 4.5"></path></svg></span><span class="fr-trk a" style="animation-delay:0s"><svg viewBox="0 0 72 48" class="fr-run" style="position:absolute;left:0;top:calc(50% - 9px);width:45px;height:30px;animation-delay:0s"><use href="#phn"></use></svg></span></div></div>
               <div style="display:flex;flex-direction:column;gap:8px">
                 <span style="font-weight:600;font-size:20px;line-height:1.2;color:var(--ink);text-wrap:pretty"><span style="color:var(--routeInk)">Error</span>: Does not ship to your country</span>
-                <span style="font-size:15px;line-height:1.5;color:var(--muted);text-wrap:pretty">You receive an error message at checkout and Farroute provides you with a delivery price and customs estimate.</span>
+                <span style="font-size:15px;line-height:1.5;color:var(--muted);text-wrap:pretty">You receive an error message at checkout and Farroute provides you with a delivery price.</span>
               </div>
             </div>
               <div class="fr-stepcell" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px">
@@ -462,7 +462,7 @@ body[data-theme=dark] .ab-wrap{--road:#3A3229}
           <span class="ab-run" aria-hidden="true"><i></i></span>
           <svg class="ab-cap" viewBox="0 0 42 120" aria-hidden="true"><path class="rd" d="M 32 41 A 32 32 0 0 1 0 73 L -3 73"></path><path class="dx" d="M 32 41 A 32 32 0 0 1 0 73 L -3 73"></path><circle class="dt" cx="32" cy="33" r="7.5"></circle></svg>
           <span class="ab-vert" aria-hidden="true"><span></span><u></u></span>
-          <div class="ab-row"><h2>Where you live no longer limits what you can buy.</h2><p><i aria-hidden="true"></i>If the item can legally travel, we will find a route. You see one <b>full price and a customs estimate</b> before you pay.</p></div>
+          <div class="ab-row"><h2>Where you live no longer limits what you can buy.</h2><p><i aria-hidden="true"></i>If the item can legally travel, we will find a route. You see one <b>full price</b> before you pay.</p></div>
           <div class="ab-row"><h2>We enable our couriers to run their own forwarding business.</h2><p><i aria-hidden="true"></i>They buy your item locally, pack the item and send the parcel <b>straight to you</b> by international mail.</p></div>
           <div class="ab-row"><h2>Our couriers choose to accept their orders.</h2><p><i aria-hidden="true"></i>We bring them customers, prepaid labels and the tools to grow. Couriers see <b>every dollar of their pay</b> before they accept a job.</p></div>
           <div class="ab-row"><h2>Every order is checked against customs rules and declared at its real value.</h2><p><i aria-hidden="true"></i>Your payment is held until a courier confirms the purchase, and you get a full refund if no one takes the job within <b>72 hours</b>.</p></div>
@@ -1684,7 +1684,7 @@ class Component extends DCLogic {
       arrival: arrivals[s.dest] || 'Estimated once a courier is matched',
       exclusions: ['Perfume', 'Aerosols', 'Loose batteries', 'Food', 'Oversized goods'],
       steps: [
-        { n: '1', who: '', lead: '', t: 'Error', tail: ': Does not ship to your country', d: 'You receive an error message at checkout and Farroute provides you with a delivery price and customs estimate.' },
+        { n: '1', who: '', lead: '', t: 'Error', tail: ': Does not ship to your country', d: 'You receive an error message at checkout and Farroute provides you with a delivery price.' },
         { n: '2', who: '', lead: 'Farroute connects you with a ', t: 'local courier', tail: '.', d: 'Within 1 hour, you will be connected with a local courier.' },
         { n: '3', who: '', lead: 'The parcel is ', t: 'forwarded', tail: ' to you.', d: 'You receive a tracking code from the international courier of your choice.' },
         { n: '4', who: '', lead: 'You ', t: 'receive', tail: ' your order.', d: 'Customs in your country assesses duties on arrival.' }
