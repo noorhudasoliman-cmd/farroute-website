@@ -942,6 +942,12 @@ body[data-theme=dark] .ab-wrap{--road:#3A3229}
             <select id="acRegion" data-geo="region" data-geo-group="account" data-geo-placeholder="State, province or region" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 12px;background:var(--paper);font-size:16px"><option value="">Choose a country first</option></select>
             <input id="acCity" data-geo="city" data-geo-group="account" list="geo-city-account" autocomplete="off" placeholder="Choose a region first" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
             <datalist id="geo-city-account"></datalist>
+            <label style="display:flex;flex-direction:column;gap:6px">
+              <span style="font-size:14px;line-height:1.4;color:var(--muted)">Where are you most excited to ship from?</span>
+              <select value="{{ acFrom }}" onChange="{{ onAcFrom }}" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 12px;background:var(--paper);font-size:16px">
+                <option value="">Choose a country</option><sc-for list="{{ destinations }}" as="d" hint-placeholder-count="6"><option value="{{ d }}">{{ d }}</option></sc-for>
+              </select>
+            </label>
             <input placeholder="Create a password" type="password" value="{{ acPass }}" onChange="{{ onAcPass }}" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
             <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;padding:2px 0">
               <input type="checkbox" checked="{{ remindMe }}" onChange="{{ onRemindMe }}" style="width:18px;height:18px;margin-top:2px;accent-color:#2E5AAC;cursor:pointer"></input>
@@ -1579,6 +1585,8 @@ class Component extends DCLogic {
         preLaunch: left > 0,
         remindMe: s.remindMe !== false,
         acName: s.acName || '', acBiz: s.acBiz || '', acEmail: s.acEmail || '', acPass: s.acPass || '',
+        acFrom: s.acFrom || '',
+        onAcFrom: e => this.setState({ acFrom: e.target.value, acMissing: false }),
         onAcName: e => this.setState({ acName: e.target.value, acMissing: false }),
         onAcBiz: e => this.setState({ acBiz: e.target.value, acMissing: false }),
         onAcEmail: e => this.setState({ acEmail: e.target.value, acMissing: false }),
@@ -1752,6 +1760,7 @@ class Component extends DCLogic {
           if (!geo.countryOk) missing.push(biz ? 'the country you ship to' : 'a delivery country');
           if (!geo.regionOk) missing.push('your state, province or region');
           if (!geo.cityOk) missing.push('your city, chosen from the list');
+          if (!String(s.acFrom || '').trim()) missing.push('where you are most excited to ship from');
           const mail = String(s.acEmail || '');
           if (!missing.length && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) missing.push('a valid email');
           if (missing.length) {
