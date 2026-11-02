@@ -31,18 +31,39 @@
   var START = [22, 10];
   var LAND_STOPS = ['3A2C22', '5E4936', '84694E', 'A68866', 'C1A47F', 'D5BE9B', 'E4D4B7', 'EFE5D2', 'F8F3EA'];
 
-  function load(u) {
+  function load(u, pri) {
     return new Promise(function (res) {
       var i = new Image(); i.crossOrigin = 'anonymous';
+      if (pri) { try { i.fetchPriority = pri; } catch (e) {} }
       i.onload = function () { res(i); }; i.onerror = function () { res(null); };
       i.src = u;
+    });
+  }
+
+  /* A preload is a head start, never a queue the picture has to wait behind.
+     Seeding the world and the route ahead asks for hundreds of tiles, and on a
+     phone those were sent all at once: the sixteen tiles actually on screen
+     then sat behind them, so the map showed bare squares for seconds and the
+     backdrop that covers the gaps never arrived at all. Everything that is not
+     on screen goes through here instead, a few at a time and marked low
+     priority, so the browser serves what the visitor is looking at first. */
+  var MAX_PRELOAD = 6, running = 0, waiting = [];
+  function pump() {
+    while (running < MAX_PRELOAD && waiting.length) { running++; waiting.shift()(); }
+  }
+  function queued(u) {
+    return new Promise(function (res) {
+      waiting.push(function () {
+        load(u, 'low').then(function (r) { running--; pump(); res(r); });
+      });
+      pump();
     });
   }
 
   // Used by the preload, where a tile that does not arrive must not be mistaken
   // for one that did. Tries twice, then reports the failure.
   function loadStrict(u) {
-    return load(u).then(function (r) { return r || load(u); })
+    return queued(u).then(function (r) { return r || queued(u); })
       .then(function (r) { if (!r) throw new Error('tile'); return r; });
   }
 
@@ -64,9 +85,17 @@
     var state = {
       source: opts.source || 'esri',
       brandGrade: opts.brandGrade !== false,
-      gradeStrength: opts.gradeStrength != null ? opts.gradeStrength : 0.7
+      gradeStrength: opts.gradeStrength != null ? opts.gradeStrength : 0.7,
+      worldImage: opts.worldImage || null
     };
     var map, base, layer, under, onZoom, ro, lut = null, lutS = null, uTok = null, moved = false, auto = false;
+
+    // One place decides what a small frame is. A phone has less connection and
+    // less processor to spend, and holds fewer tiles it is not showing.
+    // 700 is also the width the page preloads the two backdrop sizes at, so
+    // the one asked for in the head is the one this picks.
+    function small() { return (root.innerWidth || el.clientWidth || 0) < 700; }
+    MAX_PRELOAD = small() ? 4 : 8;
 
     // Tiles drawn 1px oversize so no hairline seams appear between them at fractional zoom.
     if (!L.GridLayer.prototype._frSeamFix) {
@@ -149,10 +178,13 @@
       }
     }
 
-    function makeLayer(url, max, attr, live) {
+    function makeLayer(url, max, attr, live, bg) {
       var ret = (root.devicePixelRatio || 1) > 1.4, off = ret ? 1 : 0;
       var Layer = L.GridLayer.extend({
         createTile: function (c, done) {
+          // On screen: straight out to the network. Building the backdrop: into
+          // the preload queue, behind whatever the visitor is looking at.
+          var get = this.options.frBg ? queued : load;
           var cv = document.createElement('canvas'); cv.width = cv.height = 256;
           var z = c.z + off, x = c.x, y = c.y;
           // Water outline tile: same zoom up to 16, then upscaled from 16.
@@ -160,7 +192,7 @@
           // Sea texture tile: 3 zoom levels coarser so currents read as smooth, not noisy.
           var pz = Math.max(0, z - 3), psh = z - pz, px = x >> psh, py = y >> psh, pn = 1 << psh;
           var U = function (zz, xx, yy) { return url.replace('{z}', zz).replace('{x}', xx).replace('{y}', yy); };
-          Promise.all([load(U(z, x, y)), load(MASK + mz + '/' + my + '/' + mx), load(U(pz, px, py))]).then(function (r) {
+          Promise.all([get(U(z, x, y)), get(MASK + mz + '/' + my + '/' + mx), get(U(pz, px, py))]).then(function (r) {
             var img = r[0], mk = r[1], pimg = r[2];
             if (!img) return done(null, cv);
             var ctx = cv.getContext('2d', { willReadFrequently: true });
@@ -200,24 +232,73 @@
       // otherwise rebuilds the grid every 200ms while the camera is in motion,
       // and nothing here is dragged by hand, so there is no interaction to
       // keep up with.
-      return new Layer({ tileSize: ret ? 128 : 256, maxNativeZoom: max - off, maxZoom: max + 2, noWrap: true, bounds: BOUNDS, keepBuffer: 4, updateWhenZooming: false, updateWhenIdle: true, attribution: attr });  // every level is preloaded before a
+      // keepBuffer is a ring of tiles held outside the frame. Four of them on a
+      // phone is more tiles off screen than on it, each one three requests and
+      // a grading pass, so the small screen keeps the Leaflet default instead.
+      return new Layer({ tileSize: ret ? 128 : 256, maxNativeZoom: max - off, maxZoom: max + 2, noWrap: true, bounds: BOUNDS, keepBuffer: small() ? 2 : 4, updateWhenZooming: false, updateWhenIdle: true, attribution: attr, frBg: !!bg });  // every level is preloaded before a
       // move, so drawing each one as the camera passes costs nothing and keeps
       // the picture continuous instead of snapping at the end.
     }
 
-    // One graded 1024px world image underneath, so no blank tiles show while zooming.
-    function buildUnderlay() {
-      var lyr = makeLayer(BLUE_MARBLE, 8, ''), off = lyr.constructor._off;
-      var big = document.createElement('canvas'); big.width = big.height = 4096;
-      var bx = big.getContext('2d'), jobs = [];
-      for (var y = 0; y < 16; y++) for (var x = 0; x < 16; x++) (function (x, y) {
-        jobs.push(new Promise(function (res) { lyr.createTile({ x: x, y: y, z: 4 - off }, function (e, cv) { bx.drawImage(cv, x * 256, y * 256); res(); }); }));
+    // One graded world image underneath, so no blank tiles show while zooming.
+    // It was built from 256 tiles onto a 4096 square canvas and handed to the
+    // map as a base64 data URL. That is 16.8 million pixels, which is the point
+    // where iOS stops honouring a canvas, and the encode alone took seconds on
+    // a phone: the one thing that covers the gaps was the slowest thing to
+    // arrive. 64 tiles onto a 2048 square is a sixteenth of the pixels and a
+    // quarter of the tiles, and at this size the backdrop is still four times
+    // the resolution any screen shows of it.
+    // Draws the whole world once, graded, onto one canvas. Building it in the
+    // browser is what the map used to do on every visit: 64 tiles, each three
+    // requests and a grading pass, before the one thing that covers a gap was
+    // on screen. On a throttled phone that took 19 seconds, and the visitor
+    // spent them looking at bare blue. The picture never changes, so it is
+    // built once here and kept as a file. Regenerate it with
+    // tools/make-world-image.mjs whenever gradeStrength or LAND_STOPS change.
+    function drawWorld(tiles, px) {
+      var lyr = makeLayer(BLUE_MARBLE, 8, '', false, true), off = lyr.constructor._off;
+      var zt = Math.round(Math.log2(tiles));
+      var big = document.createElement('canvas'); big.width = big.height = px;
+      var bx = big.getContext('2d'), cell = px / tiles, jobs = [];
+      for (var y = 0; y < tiles; y++) for (var x = 0; x < tiles; x++) (function (x, y) {
+        jobs.push(new Promise(function (res) {
+          lyr.createTile({ x: x, y: y, z: zt - off }, function (e, cv) {
+            bx.drawImage(cv, 0, 0, 256, 256, x * cell, y * cell, cell, cell); res();
+          });
+        }));
       })(x, y);
+      return Promise.all(jobs).then(function () { return big; });
+    }
+
+    // The backdrop. One file from our own server, up before the first tile, so
+    // a frame with no tiles yet is still a map rather than an empty rectangle.
+    // If the file is missing the world is drawn in the browser instead, which
+    // is slow but correct, and the map is never left with nothing underneath.
+    function buildUnderlay(then) {
       var token = uTok = {};
-      Promise.all(jobs).then(function () {
-        if (token !== uTok || !map) return;
-        under = L.imageOverlay(big.toDataURL('image/jpeg', 0.9), [[-85.0511, -180], [85.0511, 180]], { pane: 'tilePane', zIndex: 0 }).addTo(map);
-        under.getElement().style.zIndex = 0;
+      // Whatever happens to the backdrop, the tiles are never held for longer
+      // than this. A map with no backdrop is worse than one without; a map
+      // waiting on a file that will not come is worse than both.
+      var went = false, go = function () { if (!went) { went = true; then && then(); } };
+      setTimeout(go, 1800);
+      var put = function (src) {
+        if (token !== uTok || !map || under) return go();
+        under = L.imageOverlay(src, [[-85.0511, -180], [85.0511, 180]], { pane: 'tilePane', zIndex: 0 }).addTo(map);
+        var el2 = under.getElement(); if (el2) el2.style.zIndex = 0;
+        go();
+        seedWide();
+      };
+      // Asked for ahead of the tiles and at high priority: it is one request to
+      // our own server against forty-eight to two map services, and until it
+      // lands the frame is an empty rectangle. A phone is given the smaller
+      // copy, which is still more than its screen can show.
+      var src = state.worldImage || (small() ? './img/world-small.jpg' : './img/world.jpg');
+      load(src, 'high').then(function (img) {
+        if (token !== uTok || !map) return go();
+        if (img) return put(src);
+        // No file to be had, so the world is drawn here instead: slow, but the
+        // map is never left with nothing underneath it.
+        drawWorld(8, 2048).then(function (cv) { put(cv.toDataURL('image/jpeg', 0.86)); });
       });
     }
 
@@ -231,14 +312,21 @@
     function seedWide() {
       if (seeded) return; seeded = true;
       // Every level the camera can occupy must be held by something sharp, or
-      // the blur simply moves to whichever level is not. 2 to 5 covers the wide
-      // part; the photo takes over from 6.4 and is preloaded per flight.
-      var zs = [2, 3, 4, 5], i = 0;
+      // the blur simply moves to whichever level is not. The levels it can
+      // occupy depend on the frame: a phone fits two ends of a route only by
+      // standing back, so it never leaves the widest levels, while a wide
+      // screen goes a couple deeper. Seeding to level 5 regardless asked for
+      // 1,360 tiles, 1,024 of them at a level a phone never shows, and that
+      // flood is what starved the sixteen tiles it did show. Level 5 is seeded
+      // per route by the preload below instead.
+      var deep = Math.min(4, Math.max(3, Math.ceil(map.getMinZoom() + 2.2)));
+      var zs = [], i = 0;
+      for (var z0 = 2; z0 <= deep; z0++) zs.push(z0);
       var step = function () {
         if (i >= zs.length) return;
         var z = zs[i++], n = 1 << z, jobs = [];
         for (var x = 0; x < n; x++) for (var y = 0; y < n; y++) {
-          jobs.push(load(BLUE_MARBLE.replace('{z}', z).replace('{x}', x).replace('{y}', y)));
+          jobs.push(queued(BLUE_MARBLE.replace('{z}', z).replace('{x}', x).replace('{y}', y)));
         }
         Promise.all(jobs).then(function () { if (i >= zs.length) wideSignal(); else setTimeout(step, 120); });
       };
@@ -251,12 +339,24 @@
       if (base) map.removeLayer(base);
       if (onZoom) map.off('zoom', onZoom);
       if (under) { map.removeLayer(under); under = null; }
+      map.setMaxZoom(s.max + 2);
+      // The backdrop is one small file from our own server and it is a whole
+      // world; the tiles are forty-eight requests to two map services that
+      // only make a picture once all of them land. Asked for at the same time
+      // they simply share the connection, and on a phone that left the frame
+      // empty for seconds. So the backdrop is fetched first and the tiles are
+      // added once it is up, or after the wait below if it never arrives.
+      buildUnderlay(function () { if (map) addTiles(s); });
+    }
+
+    function addTiles(s) {
       // Zoomed out: Blue Marble only (no water outlines, no high-res photo).
       base = makeLayer(BLUE_MARBLE, 8, 'NASA Blue Marble', true).addTo(map);
       // The backdrop carries the middle of a flight and is not needed to show
       // the opening view, so it is built once the map is already on screen.
-      base.once('load', function () { setTimeout(buildUnderlay, 60); seedWide(); });
-      setTimeout(function () { if (!under) buildUnderlay(); }, 6000);
+      // The seed follows the backdrop rather than competing with it for the
+      // connection, and goes ahead anyway if the backdrop never arrives.
+      setTimeout(seedWide, 12000);
       layer = makeLayer(s.url, s.max, s.attr + ', water outlines © Esri').addTo(map);
       // High-res photo fades in from zoom 4.2 to 5.8 (Esri) or 5.5 to 7.1 (Sentinel).
       // The photo takes over just above where the world is held globally, so no
@@ -286,7 +386,6 @@
         layer.setOpacity(o);
       };
       map.on('zoom', onZoom); onZoom();
-      map.setMaxZoom(s.max + 2);
     }
 
     el.style.background = el.style.background || '#C2D6E8';
@@ -379,7 +478,7 @@
           // Levels 2 to 5 are already held for the whole world, so seeding them
           // again per route fetched the same tiles over and over.
           var tz = Math.round(z);
-          var lo = Math.max(6, (idx === 0 ? tz - 7 : tz - 3));
+          var lo = Math.max(5, (idx === 0 ? tz - 7 : tz - 3));
           var hi = Math.min(8, (idx === 0 ? tz - 2 : tz + 1));
           for (var wz = lo; wz <= hi; wz++) {
             var wp = map.project(L.latLng(pt[0], pt[1]), wz);
@@ -433,7 +532,15 @@
       set: function (patch) {
         var srcChanged = patch.source && patch.source !== state.source;
         Object.assign(state, patch);
-        if (srcChanged) setSource(); else { base.redraw(); layer.redraw(); }
+        if (srcChanged) setSource();
+        else { base && base.redraw(); layer && layer.redraw(); }
+      },
+      // Used by tools/make-world-image.mjs to regenerate img/world.jpg through
+      // this exact grading pipeline. Nothing at runtime calls it.
+      worldImage: function (tiles, px, quality) {
+        return drawWorld(tiles || 8, px || 2048).then(function (cv) {
+          return cv.toDataURL('image/jpeg', quality || 0.86);
+        });
       },
       destroy: function () { ro && ro.disconnect(); map && map.remove(); map = null; }
     };

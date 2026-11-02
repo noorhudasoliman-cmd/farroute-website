@@ -20,7 +20,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@87.5,400;87.5,600;87.5,700;100,400;100,600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="./vendor/leaflet-1.9.4/leaflet.css">
+<!-- The world the map draws under its tiles. Asked for here, while Leaflet is
+     still loading, so the map's first frame is a whole world rather than an
+     empty rectangle. A phone takes the smaller copy. Regenerate both with
+     tools/make-world-image.mjs. -->
+<link rel="preload" as="image" href="./img/world-small.jpg" media="(max-width: 699px)" fetchpriority="high">
+<link rel="preload" as="image" href="./img/world.jpg" media="(min-width: 700px)" fetchpriority="high">
 <style>
 body{margin:0;--bg:var(--card);--paper:#F4EBDC;--card:#FBF6EE;--ink:#2B211B;--muted:#5E574E;--line:#DED1BD;--route:#C9A274;--routeInk:#2E5AAC;--alert:#C8371A;--kraft:#C9A274;--ok:#2F6B4A;--okBg:#E4ECDF;--sea:#E7DECF;--seaLight:#F2EBDF;--land:#FBF7F0;--landEdge:#DFD3C1;--landHi:#EBDDC6;background:var(--paper);color:var(--ink);font-family:Archivo,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 body[data-theme=dark]{--paper:#2B211B;--card:#211F1D;--ink:#F4EBDC;--muted:#B3A893;--line:#38332E;--route:#C9A274;--routeInk:#8FAEE6;--alert:#E8846B;--kraft:#4A3D2C;--ok:#8FCFA8;--okBg:#1E2E24;--sea:#1C1A18;--seaLight:#24211E;--land:#2A2724;--landEdge:#3A3530;--landHi:#3D3326}
@@ -1140,7 +1146,7 @@ class Component extends DCLogic {
     if (window.createFarrouteMap) return start();
     var go = function () {
       Promise.all([
-        window.L ? Promise.resolve() : need('script', { src: 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', async: false }),
+        window.L ? Promise.resolve() : need('script', { src: './vendor/leaflet-1.9.4/leaflet.js', async: false }),
         need('script', { src: './farroute-map.js', async: false }),
         need('script', { src: './routes.js', async: false })
       ]).then(start).catch(function (e) {
