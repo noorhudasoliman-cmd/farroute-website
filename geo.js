@@ -14,11 +14,17 @@
    kept here and restored whenever the fields reappear. */
 (function (root) {
   var BASE = './geo/';
+  /* The region and town files are asked for by version. Raise VER whenever a
+     file in geo/ changes, so a browser holding yesterday's file fetches today's
+     instead of the copy it saved. The fetch no longer forces that saved copy
+     either, so a forgotten bump costs one quick revalidation rather than
+     leaving somebody picking towns that were taken off the list. */
+  var VER = '2';
   var countries = null, loading = {}, cache = {};
   var picked = {};                       // group -> {country, region, city}
 
   function get(url) {
-    return fetch(url, { cache: 'force-cache' }).then(function (r) {
+    return fetch(url).then(function (r) {
       if (!r.ok) throw new Error(url + ' ' + r.status);
       return r.json();
     });
@@ -89,7 +95,7 @@
     if (!cc) return Promise.resolve(null);
     if (cache[cc]) return Promise.resolve(cache[cc]);
     if (loading[cc]) return loading[cc];
-    loading[cc] = get(BASE + cc + '.json').then(function (d) {
+    loading[cc] = get(BASE + cc + '.json?v=' + VER).then(function (d) {
       cache[cc] = d; delete loading[cc]; return d;
     }, function () { delete loading[cc]; return null; });
     return loading[cc];

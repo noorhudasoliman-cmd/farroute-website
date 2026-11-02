@@ -205,11 +205,6 @@ body[data-theme=dark]{--paper:#2B211B;--card:#211F1D;--ink:#F4EBDC;--muted:#B3A8
 html.navmini .fr-tabs{display:none !important}
 html.navmini .fr-burger{display:flex}
 html.navmini.navopen .fr-menu{display:flex}
-/* The business account is written up on the account screen but is not on offer
-   yet, so the tile beside Personal cannot be picked and the limits behind it
-   sit under a blur, next to a line that stays sharp and says coming soon. */
-.fr-dim{opacity:.45}
-.fr-blur{filter:blur(4px);user-select:none;pointer-events:none}
 .leaflet-container{background:#BACFE4;font-family:Archivo,system-ui,sans-serif}
 .leaflet-control-attribution{font-size:10px}
 .leaflet-tile-container img.leaflet-tile{image-rendering:auto;backface-visibility:hidden}
@@ -930,25 +925,16 @@ body[data-theme=dark] .ab-wrap{--road:#3A3229}
                 <span style="font-weight:700;font-size:16px">Personal</span>
                 <span style="font-size:13px;opacity:.75">Personal items not for resale</span>
               </button>
-              <div aria-disabled="true" style="border:1.5px solid var(--line);background:var(--paper);border-radius:10px;padding:12px 10px;display:flex;flex-direction:column;gap:2px;text-align:left">
-                <span class="fr-dim" style="font-weight:700;font-size:16px">Business</span>
-                <span class="fr-dim" style="font-size:13px">Larger orders</span>
+              <button type="button" onClick="{{ pickBusiness }}" style="border:1.5px solid {{ businessEdge }};background:{{ businessBg }};color:{{ businessInk }};border-radius:10px;padding:12px 10px;cursor:pointer;display:flex;flex-direction:column;gap:2px;text-align:left">
+                <span style="font-weight:700;font-size:16px">Business</span>
+                <span style="font-size:13px;opacity:.75">Larger orders</span>
                 <span style="font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--routeInk);padding-top:3px">Coming soon</span>
-              </div>
+              </button>
             </div>
-            <div style="background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:12px">
-              <div style="display:flex;flex-direction:column;gap:7px">
-                <span style="font-size:13px;font-weight:700;letter-spacing:.01em">What a personal parcel can be</span>
-                <span style="font-size:14px;line-height:1.5;color:var(--muted)">Each parcel can weigh up to 20 kg (44 lb). Its longest side can be up to 100 cm (39 in), and its length plus girth (the distance around the box) up to 200 cm (79 in).</span>
-                <span style="font-size:14px;line-height:1.5;color:var(--muted)">That covers most everyday orders, such as shoes, clothing, a laptop or a small kitchen appliance. A few destinations have lower limits, and your quote will tell you if yours does.</span>
-              </div>
-              <div style="height:1px;background:var(--line)"></div>
-              <div style="display:flex;flex-direction:column;gap:7px">
-                <span style="font-size:13px;font-weight:700;letter-spacing:.01em">What a business box will be, once the business account opens</span>
-                <span class="fr-blur" aria-hidden="true" style="font-size:14px;line-height:1.5;color:var(--muted)">Each box can weigh up to 30 kg (66 lb) and measure up to 120 × 80 × 80 cm (47 × 31 × 31 in). An order can include several boxes.</span>
-                <span class="fr-blur" aria-hidden="true" style="font-size:14px;line-height:1.5;color:var(--muted)">Heavy or large boxes may include a handling fee, which is always shown in your quote. A few destinations have lower limits, and your quote will tell you if yours does.</span>
-              </div>
-            </div>
+            <!-- The business account is not on offer yet, so picking Business leaves
+                 the sign up form in place but blurred and dead to the pointer, and
+                 the note under the button says what a business box will be. -->
+            <div style="display:flex;flex-direction:column;gap:14px;filter:{{ acFormBlur }};pointer-events:{{ acFormHit }};user-select:{{ acFormSel }}">
             <sc-if value="{{ isPersonal }}" hint-placeholder-val="{{ true }}">
               <input placeholder="Full name" value="{{ acName }}" onChange="{{ onAcName }}" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
             </sc-if>
@@ -978,6 +964,15 @@ body[data-theme=dark] .ab-wrap{--road:#3A3229}
             </sc-if>
             <sc-if value="{{ acMissing }}"><span style="font-size:14px;line-height:1.45;color:var(--routeInk)">{{ acMissingText }}</span></sc-if>
             <button onClick="{{ submitAccount }}" style="height:56px;border:0;border-radius:10px;background:#2B211B;color:#F4EBDC;font-weight:700;font-size:17px;cursor:pointer" style-hover="background:#2E5AAC">Create account</button>
+            </div>
+            <sc-if value="{{ isPersonal }}" hint-placeholder-val="{{ true }}">
+              <span style="font-size:14px;line-height:1.5;color:var(--muted)">Each parcel can weigh up to 20 kg (44 lb). Its longest side can be up to 100 cm (39 in), and its length plus girth (the distance around the box) up to 200 cm (79 in).</span>
+              <span style="font-size:14px;line-height:1.5;color:var(--muted)">That covers most everyday orders, such as shoes, clothing, a laptop or a small kitchen appliance. A few destinations have lower limits, and your quote will tell you if yours does.</span>
+            </sc-if>
+            <sc-if value="{{ isBusiness }}" hint-placeholder-val="{{ false }}">
+              <span style="font-size:14px;line-height:1.5;color:var(--muted)">Each box can weigh up to 30 kg (66 lb) and measure up to 120 × 80 × 80 cm (47 × 31 × 31 in). An order can include several boxes.</span>
+              <span style="font-size:14px;line-height:1.5;color:var(--muted)">Heavy or large boxes may include a handling fee, which is always shown in your quote. A few destinations have lower limits, and your quote will tell you if yours does.</span>
+            </sc-if>
           </sc-if>
           <sc-if value="{{ accountDone }}" hint-placeholder-val="{{ false }}">
             <button onClick="{{ goLanding }}" style="height:52px;border:1.5px solid var(--ink);border-radius:10px;background:transparent;color:var(--ink);font-weight:600;cursor:pointer">Back to the home page</button>
@@ -1618,15 +1613,18 @@ class Component extends DCLogic {
         isBusiness: s.acctType === 'business',
         destLabel: s.acctType === 'business' ? 'Country you ship to' : 'Deliver to',
         pickPersonal: () => this.setState({ acctType: 'personal', acMissing: false }),
+        pickBusiness: () => this.setState({ acctType: 'business', acMissing: false }),
         personalEdge: (s.acctType || 'personal') === 'personal' ? '#2E5AAC' : 'var(--line)',
         personalBg: (s.acctType || 'personal') === 'personal' ? 'var(--paper)' : 'transparent',
         personalInk: (s.acctType || 'personal') === 'personal' ? '#2E5AAC' : 'var(--ink)',
-        // The business account is a notice on the account screen, not a choice, so
-        // acctType can only be personal and the business branches below stay dark.
-        // Opening the business account means putting the tile back as a button with
-        // onClick pickBusiness: () => this.setState({ acctType: 'business',
-        // acMissing: false }), and the businessEdge, businessBg and businessInk
-        // colours that matched the personal three above.
+        businessEdge: s.acctType === 'business' ? '#2E5AAC' : 'var(--line)',
+        businessBg: s.acctType === 'business' ? 'var(--paper)' : 'transparent',
+        businessInk: s.acctType === 'business' ? '#2E5AAC' : 'var(--ink)',
+        // Business can be chosen, to read what a business box will be, but the form
+        // behind the choice is blurred and takes no clicks until the account opens.
+        acFormBlur: s.acctType === 'business' ? 'blur(4px)' : 'none',
+        acFormHit: s.acctType === 'business' ? 'none' : 'auto',
+        acFormSel: s.acctType === 'business' ? 'none' : 'auto',
         onRemindMe: e => this.setState({ remindMe: e.target.checked }),
         googleReady: !!GOOGLE_CLIENT_ID,
         cName: s.cName || '', cEmail: s.cEmail || '', cMsg: s.cMsg || '',
@@ -1772,6 +1770,9 @@ class Component extends DCLogic {
       },
       goLanding: this.go('landing'), goRules: this.go('rules'), goAccount: this.go('account'), submitAccount: () => {
           const biz = s.acctType === 'business';
+          // The business form is blurred and takes no clicks, so this only runs if
+          // somebody reaches the button by keyboard. No business account opens yet.
+          if (biz) return;
           const need = [[s.acName, biz ? 'your name' : 'your full name']];
           if (biz) need.push([s.acBiz, 'your business name']);
           need.push([s.acEmail, 'your email'], [s.acPass, 'a password']);

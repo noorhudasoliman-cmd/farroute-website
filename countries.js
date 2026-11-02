@@ -1,5 +1,6 @@
 /* The one list of places Farroute delivers to, taken from the delivery country
-   list of November 1, 2026: 234 open places out of the 246 the list covers.
+   list of November 2, 2026: the 234 open places out of the 246 it covers, and
+   only those. Nothing not available, on hold or limited belongs here.
    The twelve left out are the five blocked by US sanctions, the three no
    carrier delivers to, the three held back at launch, and Western Sahara,
    which can only be addressed as Morocco.
