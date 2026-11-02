@@ -1,7 +1,8 @@
-/* Country, region and city pickers backed by a GeoNames extract held in this
-   repository: 246 countries, 3,857 regions and 230,654 cities of 500 people or
-   more. Only the chosen country's file is fetched, so the page stays light and
-   somebody in a small town still finds their town.
+/* Country, region and city pickers. The places on offer come from
+   countries.js; the regions and cities behind them come from a GeoNames
+   extract held in this repository, 3,857 regions and 230,654 cities of 500
+   people or more. Only the chosen country's file is fetched, so the page stays
+   light and somebody in a small town still finds their town.
 
    Markup: a group of three fields sharing a data-geo-group name.
      <select data-geo="country" data-geo-group="apply">
@@ -150,12 +151,15 @@
              countryOk: !!s.country, regionOk: regionOk, cityOk: cityOk };
   }
 
-  get(BASE + 'countries.json').then(function (list) {
-    countries = list;
+  // The places on offer come from countries.js, which every picker on the site
+  // reads. Holding a second copy of the list here is how the account form and
+  // the courier form came to offer different places.
+  countries = root.FR_COUNTRIES || null;
+  if (countries) {
     hydrate();
     new MutationObserver(function () { hydrate(); })
       .observe(document.body, { childList: true, subtree: true });
-  }, function () { /* the fields stay disabled rather than accepting anything */ });
+  }
 
   root.FRGeo = { value: value, hydrate: hydrate };
 })(window);

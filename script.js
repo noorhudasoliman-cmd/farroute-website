@@ -117,3 +117,20 @@ if (form) {
       });
   });
 }
+
+// Every country picker on the site is filled from the one list in
+// countries.js. A page that writes its own list of places ends up offering
+// countries no parcel can be sent to.
+(function () {
+  var list = window.FR_COUNTRIES || [];
+  if (!list.length) return;
+  document.querySelectorAll('[data-fr-countries]').forEach(function (sel) {
+    var frag = document.createDocumentFragment();
+    list.forEach(function (c) {
+      var o = document.createElement('option');
+      o.value = c.n; o.textContent = c.n;
+      frag.appendChild(o);
+    });
+    sel.appendChild(frag);
+  });
+})();
