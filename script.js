@@ -1,8 +1,12 @@
 // Footer year
 document.getElementById("year").textContent = new Date().getFullYear();
 
-// Live countdown to launch
-const launchTarget = new Date("2026-10-30T00:00:00");
+// Live countdown to launch. The same instant the main page counts down to:
+// noon in New York on December 15, 2026, written in UTC so that every country
+// reaches it at the same moment. No page carries the clock elements any more,
+// so this ticks for nobody, but a stale date here is a trap for whoever adds
+// them back.
+const launchTarget = new Date("2026-12-15T17:00:00Z");
 const cdDays = document.getElementById("cd-days");
 const cdHours = document.getElementById("cd-hours");
 const cdMins = document.getElementById("cd-mins");

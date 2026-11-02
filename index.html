@@ -373,6 +373,7 @@ body[data-theme=dark] .ab-wrap{--road:#3A3229}
               <div style="min-width:70px;padding:4px 6px;display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-weight:700;font-stretch:87.5%;font-size:34px;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">{{ cdMins }}</span><span style="font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Minutes</span></div>
               <div style="min-width:70px;padding:4px 6px;display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-weight:700;font-stretch:87.5%;font-size:34px;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">{{ cdSecs }}</span><span style="font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Seconds</span></div>
             </div>
+            <span style="font-size:14px;line-height:1.45;color:var(--muted)">12pm EST, 17:00 UTC, the same moment in every country.</span>
           </sc-if>
           <button class="fr-dl" onClick="{{ goDownload }}">{{ downloadLabel }}</button>
         </div>
@@ -576,9 +577,9 @@ body[data-theme=dark] .ab-wrap{--road:#3A3229}
             <input placeholder="Security code" inputmode="numeric" style="height:52px;min-width:0;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
           </div>
           <input placeholder="Delivery address" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
-          <button type="button" disabled="" style="height:56px;border:0;border-radius:10px;background:var(--line);color:var(--muted);font-weight:700;font-size:17px;cursor:not-allowed">Orders open December 15, 2026</button>
+          <button type="button" disabled="" style="height:56px;border:0;border-radius:10px;background:var(--line);color:var(--muted);font-weight:700;font-size:17px;cursor:not-allowed">Orders open December 15, 2026, 12pm EST</button>
           <button onClick="{{ goAccount }}" style="height:52px;border:1.5px solid var(--ink);border-radius:10px;background:transparent;color:var(--ink);font-weight:600;font-size:16px;cursor:pointer" style-hover="border-color:#2E5AAC;color:#2E5AAC">Create an account to order on launch day</button>
-          <span style="font-size:13px;color:var(--muted);line-height:1.45">This price is a quote. Prices can change before launch. From December 15, Farroute holds each payment until a courier confirms the purchase, and refunds the full amount if no courier accepts the job within 72 hours.</span>
+          <span style="font-size:13px;color:var(--muted);line-height:1.45">This price is a quote. Prices can change before launch. From December 15 at 12pm EST, Farroute holds each payment until a courier confirms the purchase, and refunds the full amount if no courier accepts the job within 72 hours.</span>
         </div>
       </section>
     </sc-if>
@@ -914,7 +915,7 @@ body[data-theme=dark] .ab-wrap{--road:#3A3229}
     <sc-if value="{{ isAccount }}" hint-placeholder-val="{{ false }}">
       <section data-screen-label="Create account" style="max-width:520px;margin:0 auto;padding:48px 20px 64px;display:flex;flex-direction:column;gap:18px">
         <div style="display:flex;flex-direction:column;gap:8px">
-          <span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--routeInk)">Opens December 15, 2026</span>
+          <span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--routeInk)">Opens December 15, 2026, 12pm EST</span>
           <h1 style="margin:0;font-weight:700;font-stretch:87.5%;font-size:clamp(34px,6vw,48px);line-height:1;letter-spacing:-0.02em">{{ acHeading }}</h1>
           <p style="margin:0;font-size:16px;line-height:1.5;color:var(--muted)">{{ acSub }}</p>
         </div>
@@ -956,7 +957,7 @@ body[data-theme=dark] .ab-wrap{--road:#3A3229}
             <input placeholder="Create a password" type="password" value="{{ acPass }}" onChange="{{ onAcPass }}" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
             <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;padding:2px 0">
               <input type="checkbox" checked="{{ remindMe }}" onChange="{{ onRemindMe }}" style="width:18px;height:18px;margin-top:2px;accent-color:#2E5AAC;cursor:pointer"></input>
-              <span style="font-size:15px;line-height:1.45">Remind me on launch day, December 15, 2026.</span>
+              <span style="font-size:15px;line-height:1.45">Remind me on launch day, December 15, 2026, at 12pm EST.</span>
             </label>
             <sc-if value="{{ googleReady }}" hint-placeholder-val="{{ false }}">
               <div style="display:flex;align-items:center;gap:12px;padding:2px 0"><span style="height:1px;background:var(--line);flex:1"></span><span style="font-size:13px;color:var(--muted)">or</span><span style="height:1px;background:var(--line);flex:1"></span></div>
@@ -1587,8 +1588,13 @@ class Component extends DCLogic {
       const unassigned = 9 - Object.keys(s.assigned).length;
       const Q = s.adminRange === 'Quarter';
       const ringDefs = Q ? [['Delivered', 2688, .79, 'var(--ok)'], ['In transit', 578, .17, '#2E5AAC'], ['Refunded', 136, .04, 'var(--muted)']] : [['Delivered', 1021, .79, 'var(--ok)'], ['In transit', 214, .17, '#2E5AAC'], ['Refunded', 49, .04, 'var(--muted)']];
-      // Counts down to launch. The clock above ticks once a second.
-      const LAUNCH = new Date('2026-12-15T00:00:00').getTime();
+      // Counts down to launch. The clock above ticks once a second. Farroute
+      // opens at noon in New York on December 15, which is 17:00 UTC, and the
+      // instant is written in UTC so that it is the same moment in every
+      // country. Written without the Z, a browser would read it as midnight
+      // wherever the visitor happens to be, and the site would open at a
+      // different moment in each one.
+      const LAUNCH = new Date('2026-12-15T17:00:00Z').getTime();
       const left = Math.max(0, LAUNCH - (s.now || Date.now()));
       const pad2 = n => String(n).padStart(2, '0');
       return {
@@ -1607,7 +1613,7 @@ class Component extends DCLogic {
         onAcPass: e => this.setState({ acPass: e.target.value, acMissing: false }),
         acHeading: s.accountDone ? 'Account Created' : 'Create your account',
         acSub: s.accountDone ? 'Route anything.'
-          : 'An account saves your delivery address. Farroute emails you on December 15 when orders open.',
+          : 'An account saves your delivery address. Farroute emails you when orders open at 12pm EST on December 15.',
         acMissing: !!s.acMissing, acMissingText: s.acMissingText || '',
         isPersonal: (s.acctType || 'personal') === 'personal',
         isBusiness: s.acctType === 'business',
@@ -1646,7 +1652,7 @@ class Component extends DCLogic {
         courierFg: (s.screen === 'apply' || courierScreens.includes(s.screen)) ? '#F4EBDC' : 'var(--paper)',
         navTabs: [['Home', 'landing'], ['Create Account', 'account'], ['Become A Courier', 'apply']].map(([label, k]) => { const on = s.screen === k || (k === 'apply' && courierScreens.includes(s.screen)) || (k === 'landing' && s.screen === 'quote'); return { label, go: this.go(k), color: 'var(--ink)', bar: on ? '#2E5AAC' : 'transparent' }; }),
         protoNav: [['Landing', 'landing'], ['FAQ', 'rules'], ['Quote', 'quote'], ['Tracking', 'tracking'], ['Courier apply', 'apply'], ['Earnings', 'earnings'], ['Jobs', 'jobs'], ['Job preview', 'job'], ['Active job', 'active'], ['Account', 'account'], ['Admin', 'admin']].map(([label, k]) => ({ label, go: this.go(k) })),
-        downloadLabel: (new Date() >= new Date('2026-12-15T00:00:00')) ? 'Download now' : 'Download soon',
+        downloadLabel: left > 0 ? 'Download soon' : 'Download now',
         goDownload: this.go('account'),
         isAdmin: s.screen === 'admin', isAccount: s.screen === 'account', accountDone: !!s.accountDone, accountOpen: !s.accountDone,
         hasLink, showMaps: !saver, noMaps: saver,
