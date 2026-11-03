@@ -1341,7 +1341,14 @@ class Component extends DCLogic {
       var cz = map._getBoundsCenterZoom(bounds, {
         paddingTopLeft: L.point(0, topPad), paddingBottomRight: L.point(0, botPad) });
       var z = Math.min(cz.zoom, 6);
-      var c = inWorld(cz.center, Math.max(map.getMinZoom(), z - 0.75));
+      // The centre is held inside the world at the zoom the camera will sit at,
+      // not at one three quarters of a level wider. Guarding at the wider
+      // setting measured the world as 60 percent of its size, and whenever that
+      // came out narrower than the frame the longitude was dropped to zero: 56
+      // of the 107 routes were being centred on the Atlantic, and a route like
+      // Japan to Italy, whose middle is 75 degrees east, then had to stand back
+      // to zoom 2.8 to keep both ends on screen when its own bounds fit at 3.7.
+      var c = inWorld(cz.center, Math.max(map.getMinZoom(), z));
       // Clamping the centre to keep the world covering the frame can pull it off
       // the route. Where that happens, back the zoom off until the ends are
       // inside the band again rather than leaving them off screen.
@@ -1388,13 +1395,13 @@ class Component extends DCLogic {
         else if (xh > sz2.x - PIN) dx = (sz2.x - PIN) - xh;
         if (!dx && !dy) return cc;
         var moved = map.unproject(L.point(o.x - dx, o.y - dy), zz);
-        return inWorld(moved, Math.max(map.getMinZoom(), zz - 0.75));
+        return inWorld(moved, Math.max(map.getMinZoom(), zz));
       };
       var guard = 0;
       c = slide(c, z);
       while (!fits(c, z) && z > map.getMinZoom() + 0.001 && guard++ < 48) {
         z = Math.max(map.getMinZoom(), z - 0.1);
-        c = slide(inWorld(cz.center, Math.max(map.getMinZoom(), z - 0.75)), z);
+        c = slide(inWorld(cz.center, Math.max(map.getMinZoom(), z)), z);
       }
       return { c: c, z: z, topPad: topPad, botPad: botPad, ok: fits(c, z) };
     };
