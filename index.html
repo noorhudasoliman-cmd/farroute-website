@@ -1144,12 +1144,23 @@ class Component extends DCLogic {
       self.tour();
     };
     if (window.createFarrouteMap) return start();
+    // The three files are fetched once however many times this runs. The guard
+    // used to be window.L, which is only set when a load finishes: the template
+    // mounts this component more than once, and each mount found no Leaflet yet
+    // and started its own copy. Three script tags later, each one replacing
+    // window.L, the map was left built by a copy the page no longer held, so
+    // anything comparing the two against each other was comparing strangers.
     var go = function () {
-      Promise.all([
-        window.L ? Promise.resolve() : need('script', { src: './vendor/leaflet-1.9.4/leaflet.js', async: false }),
-        need('script', { src: './farroute-map.js', async: false }),
-        need('script', { src: './routes.js', async: false })
-      ]).then(start).catch(function (e) {
+      var boot = window.__frMapBoot;
+      if (!boot) {
+        boot = window.__frMapBoot = Promise.all([
+          window.L ? Promise.resolve() : need('script', { src: './vendor/leaflet-1.9.4/leaflet.js', async: false }),
+          need('script', { src: './farroute-map.js', async: false }),
+          need('script', { src: './routes.js', async: false })
+        ]);
+      }
+      boot.then(start).catch(function (e) {
+          window.__frMapBoot = null;
           if (window.console) console.error('Farroute map bootstrap failed:', e);
         });
     };
