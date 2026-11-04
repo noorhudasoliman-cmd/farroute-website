@@ -14,6 +14,27 @@
   <input type="email" name="email" />
   <textarea name="message"></textarea>
 </form>
+<form name="signup" data-netlify="true" netlify-honeypot="bot-field" hidden="">
+  <input type="text" name="bot-field" />
+  <input type="text" name="name" />
+  <input type="text" name="business" />
+  <input type="email" name="email" />
+  <input type="text" name="country" />
+  <input type="text" name="region" />
+  <input type="text" name="city" />
+  <input type="text" name="excited-to-ship-from" />
+  <input type="text" name="remind-on-launch" />
+  <input type="text" name="account-type" />
+</form>
+<form name="courier-application" data-netlify="true" netlify-honeypot="bot-field" hidden="">
+  <input type="text" name="bot-field" />
+  <input type="text" name="name" />
+  <input type="email" name="email" />
+  <input type="tel" name="phone" />
+  <input type="text" name="country" />
+  <input type="text" name="region" />
+  <input type="text" name="city" />
+</form>
 <x-dc>
 <helmet>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -960,7 +981,6 @@ body[data-theme=dark] .ab-wrap{--road:#3A3229}
                 <option value="">Choose a country</option><sc-for list="{{ destinations }}" as="d" hint-placeholder-count="6"><option value="{{ d }}">{{ d }}</option></sc-for>
               </select>
             </label>
-            <input placeholder="Create a password" type="password" value="{{ acPass }}" onChange="{{ onAcPass }}" style="height:52px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--paper);font-size:16px"></input>
             <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;padding:2px 0">
               <input type="checkbox" checked="{{ remindMe }}" onChange="{{ onRemindMe }}" style="width:18px;height:18px;margin-top:2px;accent-color:#2E5AAC;cursor:pointer"></input>
               <span style="font-size:15px;line-height:1.45">Remind me on launch day, December 15, 2026, at 12pm EST.</span>
@@ -988,97 +1008,6 @@ body[data-theme=dark] .ab-wrap{--road:#3A3229}
       </section>
     </sc-if>
 
-    <sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ false }}">
-      <section data-screen-label="Admin dashboard" style="max-width:1280px;margin:0 auto;padding:28px 20px 56px;display:flex;flex-direction:column;gap:14px">
-        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px">
-          <div style="display:flex;flex-direction:column;gap:4px">
-            <span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.08em;color:var(--muted)">INTERNAL · FARROUTE TEAM ONLY</span>
-            <h1 style="margin:0;font-weight:700;font-stretch:87.5%;font-size:40px;letter-spacing:-0.02em">Operations</h1>
-          </div>
-          <div style="display:flex;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:4px">
-            <sc-for list="{{ ranges }}" as="r" hint-placeholder-count="2"><button onClick="{{ r.pick }}" style="height:36px;border:0;border-radius:7px;padding:0 14px;font-weight:600;cursor:pointer;background:{{ r.bg }};color:{{ r.fg }}">{{ r.label }}</button></sc-for>
-          </div>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px">
-          <sc-for list="{{ stats }}" as="st" hint-placeholder-count="5">
-            <div style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:6px">
-              <span style="font-size:13px;color:var(--muted)">{{ st.label }}</span>
-              <span style="font-weight:700;font-stretch:87.5%;font-size:32px;line-height:1;letter-spacing:-0.02em">{{ st.value }}</span>
-              <span style="font-size:12px;color:var(--muted)">{{ st.note }}</span>
-            </div>
-          </sc-for>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:12px">
-          <div style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:14px">
-            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><span style="font-weight:700;font-size:16px">Revenue</span><span style="font-size:13px;color:var(--muted)">US$, thousands</span></div>
-            <div style="display:flex;align-items:stretch;gap:8px;height:200px">
-              <sc-for list="{{ bars }}" as="b" hint-placeholder-count="9">
-                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0">
-                  <span style="font-size:11px;font-weight:600">{{ b.v }}</span>
-                  <div style="flex:1;width:100%;position:relative"><div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:min(100%,34px);height:{{ b.h }};background:{{ b.c }};border-radius:6px 6px 2px 2px"></div></div>
-                  <span style="font-size:11px;color:var(--muted)">{{ b.m }}</span>
-                </div>
-              </sc-for>
-            </div>
-          </div>
-          <div style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:14px">
-            <span style="font-weight:700;font-size:16px">Orders by status</span>
-            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;flex:1;align-items:center">
-              <sc-for list="{{ rings }}" as="r" hint-placeholder-count="3">
-                <div style="display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center">
-                  <svg viewBox="0 0 80 80" style="width:88px;height:88px;transform:rotate(-90deg)"><circle cx="40" cy="40" r="34" style="fill:none;stroke:var(--line);stroke-width:7"></circle><circle cx="40" cy="40" r="34" style="fill:none;stroke:{{ r.c }};stroke-width:7;stroke-linecap:round;stroke-dasharray:{{ r.dash }}"></circle></svg>
-                  <span style="font-weight:700;font-size:18px">{{ r.n }}</span>
-                  <span style="font-size:13px;color:var(--muted)">{{ r.label }}</span>
-                </div>
-              </sc-for>
-            </div>
-          </div>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:12px">
-          <div style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:6px">
-            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:6px"><span style="font-weight:700;font-size:16px">Courier applications</span><span style="font-size:13px;color:var(--muted)">{{ openApps }} waiting</span></div>
-            <sc-for list="{{ apps }}" as="a" hint-placeholder-count="5">
-              <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line)">
-                <div style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-weight:600;font-size:15px">{{ a.name }}</span><span style="font-size:13px;color:var(--muted)">{{ a.place }} · {{ a.check }}</span></div>
-                <div style="display:flex;gap:6px;align-items:center">
-                  <sc-if value="{{ a.canApprove }}"><button onClick="{{ a.approve }}" style="height:36px;border:0;border-radius:8px;background:var(--ink);color:var(--paper);padding:0 12px;font-weight:600;cursor:pointer">Approve</button></sc-if>
-                  <sc-if value="{{ a.waiting }}"><span style="font-size:12px;color:var(--muted)">Waiting for ID check</span></sc-if>
-                  <sc-if value="{{ a.open }}"><button onClick="{{ a.decline }}" style="height:36px;border:1px solid var(--line);border-radius:8px;background:transparent;padding:0 12px;font-weight:600;cursor:pointer">Decline</button></sc-if>
-                  <sc-if value="{{ a.decided }}"><span style="font-size:13px;font-weight:700;color:{{ a.dColor }}">{{ a.decision }}</span></sc-if>
-                </div>
-              </div>
-            </sc-for>
-          </div>
-          <div style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:6px">
-            <div style="display:flex;flex-direction:column;gap:2px;margin-bottom:6px"><span style="font-weight:700;font-size:16px">Jobs without a courier after 24 hours</span><span style="font-size:13px;color:var(--muted)">An offer sends the full job preview. The courier still chooses to accept.</span></div>
-            <sc-for list="{{ toAssign }}" as="j" hint-placeholder-count="4">
-              <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line)">
-                <div style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-weight:600;font-size:15px">{{ j.item }}</span><span style="font-size:13px;color:var(--muted)">{{ j.id }} · {{ j.route }} · Dispatch by {{ j.deadline }}</span></div>
-                <sc-if value="{{ j.open }}">
-                  <div style="display:flex;gap:6px">
-                    <select value="{{ j.pick }}" onChange="{{ j.onPick }}" style="height:36px;border:1px solid var(--line);border-radius:8px;background:var(--paper);padding:0 8px;font-size:13px">
-                      <sc-for list="{{ j.options }}" as="o"><option value="{{ o }}">{{ o }}</option></sc-for>
-                    </select>
-                    <button onClick="{{ j.assign }}" style="height:36px;border:0;border-radius:8px;background:#2B211B;color:#F4EBDC;padding:0 12px;font-weight:600;cursor:pointer">Offer job</button>
-                  </div>
-                </sc-if>
-                <sc-if value="{{ j.done }}"><span style="font-size:13px;font-weight:600;color:var(--ok)">Offered to {{ j.who }}</span></sc-if>
-              </div>
-            </sc-for>
-          </div>
-        </div>
-        <div style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px">
-          <span style="font-weight:700;font-size:16px">Revenue by route this month</span>
-          <sc-for list="{{ routeRev }}" as="r" hint-placeholder-count="6">
-            <div style="display:grid;grid-template-columns:minmax(120px,220px) 1fr auto;gap:12px;align-items:center;font-size:14px">
-              <span style="font-weight:600">{{ r.name }}</span>
-              <div style="height:10px;background:var(--paper);border-radius:999px;overflow:hidden"><div style="height:100%;width:{{ r.w }};background:var(--ink);border-radius:999px"></div></div>
-              <span style="font-weight:600;white-space:nowrap">{{ r.v }}</span>
-            </div>
-          </sc-for>
-        </div>
-      </section>
-    </sc-if>
   </main>
 
   <footer style="background:var(--card);border-top:1px solid var(--line)">
@@ -1108,9 +1037,21 @@ body[data-theme=dark] .ab-wrap{--road:#3A3229}
 const GOOGLE_CLIENT_ID = '';
 
 class Component extends DCLogic {
-  state = { screen: this.props.startScreen || 'landing', link: '', dest: '', heroTab: 'order', size: 0, faq: 0, sizeManual: null, trackStage: 8, adminRange: 'Month', appDecisions: {}, assigned: {}, assignPick: {}, jobIdx: 0, step: 1, reason: '', appealSent: false, completed: false, applied: false, now: Date.now() };
+  state = { screen: this.props.startScreen || 'landing', link: '', dest: '', heroTab: 'order', size: 0, faq: 0, sizeManual: null, trackStage: 8, jobIdx: 0, step: 1, reason: '', appealSent: false, completed: false, applied: false, now: Date.now() };
   componentDidMount() { this.theme(); this._tick = setInterval(() => this.setState({ now: Date.now() }), 1000); this.google(); this.heroMap(); }
   componentWillUnmount() { clearInterval(this._tick); clearTimeout(this._tour); this._fm && this._fm.destroy(); }
+
+  // Saves a form through the host's own form handling, the path the contact
+  // form already uses. Resolves true only when the host accepted the
+  // submission, so nobody is ever told their details were saved when the save
+  // did not happen. The field names here must match a hidden form at the top
+  // of this file or the host rejects the post.
+  saveForm(form, fields) {
+    var body = new URLSearchParams({ 'form-name': form });
+    Object.keys(fields).forEach(function (k) { body.append(k, fields[k] == null ? '' : String(fields[k])); });
+    return fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body.toString() })
+      .then(function (r) { return r.ok; }).catch(function () { return false; });
+  }
 
   // The satellite map on the home page. Leaflet and the map file load after the
   // page is interactive so neither blocks the text or the countdown.
@@ -1598,20 +1539,6 @@ class Component extends DCLogic {
       const sizeById = { 'FR-2208': 'Small parcel', 'FR-2211': 'Medium parcel', 'FR-2214': 'Medium parcel', 'FR-2219': 'Medium parcel' };
       const jobsV = jobs.map(j => ({ ...j, size: sizeById[j.id], code: (cities[j.dest.split(', ')[1]] || [])[4] }));
       const jc = cities[job.dest.split(', ')[1]] || dc;
-      const monthRev = [['Jan', 12.4], ['Feb', 14.1], ['Mar', 15.8], ['Apr', 18.2], ['May', 21.0], ['Jun', 24.6], ['Jul', 28.9], ['Aug', 33.2], ['Sep', 38.4]];
-      const qRev = [['Q1', 42.3], ['Q2', 63.8], ['Q3', 100.5]];
-      const series = s.adminRange === 'Quarter' ? qRev : monthRev;
-      const mx = Math.max(...series.map(r => r[1]));
-      const appDefs = [['A-3301', 'Amara Okafor', 'Houston, United States', 'ID check passed'], ['A-3302', 'Kenji Watanabe', 'Osaka, Japan', 'ID check passed'], ['A-3303', 'Lena Fischer', 'Hamburg, Germany', 'ID check pending'], ['A-3304', 'Tom Hughes', 'Leeds, United Kingdom', 'ID check passed'], ['A-3305', 'Seo-yeon Park', 'Busan, South Korea', 'ID check passed']];
-      const setDec = (id, v) => this.setState(p => ({ appDecisions: { ...p.appDecisions, [id]: v } }));
-      const apps = appDefs.map(a => { const d = s.appDecisions[a[0]]; const passed = a[3] === 'ID check passed'; return { name: a[1], place: a[2], check: a[3], open: !d, canApprove: !d && passed, waiting: !d && !passed, decided: !!d, decision: d === 'approved' ? 'Approved' : 'Declined', dColor: d === 'approved' ? 'var(--ok)' : 'var(--muted)', approve: () => setDec(a[0], 'approved'), decline: () => setDec(a[0], 'declined') }; });
-      const openJobDefs = [['FR-2231', 'Ceramic pour-over set', 'United States to Ghana', 'Sat, Sep 26', 'United States'], ['FR-2234', 'Film camera, used', 'Japan to Philippines', 'Sun, Sep 27', 'Japan'], ['FR-2236', 'Football boots, size 9 UK', 'United Kingdom to Nigeria', 'Sun, Sep 27', 'United Kingdom'], ['FR-2240', 'Stand mixer attachment', 'Germany to Egypt', 'Mon, Sep 28', 'Germany']];
-      const pool = { 'United States': ['Dana R., Columbus', 'Marcus L., Houston'], Japan: ['Yui T., Tokyo', 'Ren K., Osaka'], 'United Kingdom': ['Priya S., London', 'Owen M., Manchester'], Germany: ['Jonas B., Berlin', 'Mia K., Munich'] };
-      const toAssign = openJobDefs.map(j => { const who = s.assigned[j[0]]; const pick = s.assignPick[j[0]] || pool[j[4]][0]; return { id: j[0], item: j[1], route: j[2], deadline: j[3], options: pool[j[4]], pick, open: !who, done: !!who, who: who || '', onPick: e => { const v = e.target.value; this.setState(p => ({ assignPick: { ...p.assignPick, [j[0]]: v } })); }, assign: () => this.setState(p => ({ assigned: { ...p.assigned, [j[0]]: pick } })) }; });
-      const openApps = apps.filter(a => a.open).length + 18;
-      const unassigned = 9 - Object.keys(s.assigned).length;
-      const Q = s.adminRange === 'Quarter';
-      const ringDefs = Q ? [['Delivered', 2688, .79, 'var(--ok)'], ['In transit', 578, .17, '#2E5AAC'], ['Refunded', 136, .04, 'var(--muted)']] : [['Delivered', 1021, .79, 'var(--ok)'], ['In transit', 214, .17, '#2E5AAC'], ['Refunded', 49, .04, 'var(--muted)']];
       // Counts down to launch. The clock above ticks once a second. Farroute
       // opens at noon in New York on December 15, which is 17:00 UTC, and the
       // instant is written in UTC so that it is the same moment in every
@@ -1628,13 +1555,12 @@ class Component extends DCLogic {
         cdSecs: pad2(Math.floor(left / 1000) % 60),
         preLaunch: left > 0,
         remindMe: s.remindMe !== false,
-        acName: s.acName || '', acBiz: s.acBiz || '', acEmail: s.acEmail || '', acPass: s.acPass || '',
+        acName: s.acName || '', acBiz: s.acBiz || '', acEmail: s.acEmail || '',
         acFrom: s.acFrom || '',
         onAcFrom: e => this.setState({ acFrom: e.target.value, acMissing: false }),
         onAcName: e => this.setState({ acName: e.target.value, acMissing: false }),
         onAcBiz: e => this.setState({ acBiz: e.target.value, acMissing: false }),
         onAcEmail: e => this.setState({ acEmail: e.target.value, acMissing: false }),
-        onAcPass: e => this.setState({ acPass: e.target.value, acMissing: false }),
         acHeading: s.accountDone ? 'Account Created' : 'Create your account',
         acSub: s.accountDone ? 'Route anything.'
           : 'An account saves your delivery address. Farroute emails you when orders open at 12pm EST on December 15.',
@@ -1675,10 +1601,10 @@ class Component extends DCLogic {
         courierBg: (s.screen === 'apply' || courierScreens.includes(s.screen)) ? '#2E5AAC' : 'var(--ink)',
         courierFg: (s.screen === 'apply' || courierScreens.includes(s.screen)) ? '#F4EBDC' : 'var(--paper)',
         navTabs: [['Home', 'landing'], ['Create Account', 'account'], ['Become A Courier', 'apply']].map(([label, k]) => { const on = s.screen === k || (k === 'apply' && courierScreens.includes(s.screen)) || (k === 'landing' && s.screen === 'quote'); return { label, go: this.go(k), color: 'var(--ink)', bar: on ? '#2E5AAC' : 'transparent' }; }),
-        protoNav: [['Landing', 'landing'], ['FAQ', 'rules'], ['Quote', 'quote'], ['Tracking', 'tracking'], ['Courier apply', 'apply'], ['Earnings', 'earnings'], ['Jobs', 'jobs'], ['Job preview', 'job'], ['Active job', 'active'], ['Account', 'account'], ['Admin', 'admin']].map(([label, k]) => ({ label, go: this.go(k) })),
+        protoNav: [['Landing', 'landing'], ['FAQ', 'rules'], ['Quote', 'quote'], ['Tracking', 'tracking'], ['Courier apply', 'apply'], ['Earnings', 'earnings'], ['Jobs', 'jobs'], ['Job preview', 'job'], ['Active job', 'active'], ['Account', 'account']].map(([label, k]) => ({ label, go: this.go(k) })),
         downloadLabel: left > 0 ? 'Download soon' : 'Download now',
         goDownload: this.go('account'),
-        isAdmin: s.screen === 'admin', isAccount: s.screen === 'account', accountDone: !!s.accountDone, accountOpen: !s.accountDone,
+        isAccount: s.screen === 'account', accountDone: !!s.accountDone, accountOpen: !s.accountDone,
         hasLink, showMaps: !saver, noMaps: saver,
         sizes: sizeDefs.map((z, i) => ({ name: z.name, kg: z.kg, px: ['38px', '50px', '64px'][i], detected: hasLink && !hit && s.sizeManual == null && i === autoSize, border: i === sizeIdx ? '#2E5AAC' : 'var(--line)', pick: () => this.setState({ sizeManual: i }) })),
         price: prices[sizeIdx],
@@ -1704,18 +1630,6 @@ class Component extends DCLogic {
         jobs: jobsV, job: { ...job, size: sizeById[job.id] },
         jobStops: JSON.stringify([{ ...col, label: 'Columbus' }, { lon: jc[1], lat: jc[2], label: jc[0] }]),
         jobHl: 'United States of America,' + job.dest.split(', ')[1],
-        ranges: ['Month', 'Quarter'].map(r => ({ label: r, pick: () => this.setState({ adminRange: r }), bg: s.adminRange === r ? 'var(--ink)' : 'transparent', fg: s.adminRange === r ? 'var(--paper)' : 'var(--ink)' })),
-        stats: [
-          { label: 'Orders', value: Q ? '3,402' : '1,284', note: Q ? 'Up 57 percent on Q2' : 'Up 18 percent on August' },
-          { label: 'Revenue', value: Q ? 'US$100.5k' : 'US$38.4k', note: 'Farroute margin after courier pay' },
-          { label: 'Active couriers', value: '587', note: 'Took a job in the last 30 days' },
-          { label: 'Applications waiting', value: String(openApps), note: 'Oldest waiting 2 days' },
-          { label: 'Jobs without a courier', value: String(unassigned), note: 'Posted over 24 hours ago' }
-        ],
-        bars: series.map((r, i) => ({ m: r[0], v: r[1].toFixed(1), h: Math.round(r[1] / mx * 100) + '%', c: i === series.length - 1 ? '#2E5AAC' : 'var(--ink)' })),
-        rings: ringDefs.map(r => ({ label: r[0], n: r[1].toLocaleString('en-US'), c: r[3], dash: (r[2] * 213.6).toFixed(1) + ' 213.6' })),
-        apps, openApps, toAssign,
-        routeRev: [['United States to Nigeria', 9.8], ['United States to Kenya', 7.1], ['Japan to Philippines', 6.4], ['United Kingdom to Ghana', 5.2], ['Germany to Egypt', 4.3], ['South Korea to Vietnam', 3.6]].map(r => ({ name: r[0], v: 'US$' + r[1].toFixed(1) + 'k', w: Math.round(r[1] / 9.8 * 100) + '%' }))
       };
     })();
     const faqDefs = [
@@ -1796,7 +1710,14 @@ class Component extends DCLogic {
           this.setState({ apMissing: 'Please add ' + miss.join(', ') + '.' });
           return;
         }
-        this.setState({ apMissing: '', applied: true });
+        this.setState({ apMissing: '' });
+        this.saveForm('courier-application', {
+          name: val('apName').trim(), email: val('apEmail').trim(), phone: val('apPhone').trim(),
+          country: geo.country || '', region: geo.region || '', city: geo.city || ''
+        }).then(ok => {
+          if (ok) this.setState({ apMissing: '', applied: true });
+          else this.setState({ apMissing: 'Your application did not save. Please check your connection and try again.' });
+        });
       },
       goLanding: this.go('landing'), goRules: this.go('rules'), goAccount: this.go('account'), submitAccount: () => {
           const biz = s.acctType === 'business';
@@ -1805,7 +1726,7 @@ class Component extends DCLogic {
           if (biz) return;
           const need = [[s.acName, biz ? 'your name' : 'your full name']];
           if (biz) need.push([s.acBiz, 'your business name']);
-          need.push([s.acEmail, 'your email'], [s.acPass, 'a password']);
+          need.push([s.acEmail, 'your email']);
           const geo = window.FRGeo ? window.FRGeo.value('account')
                                    : { countryOk: false, regionOk: false, cityOk: false };
           const missing = need.filter(n => !String(n[0] || '').trim()).map(n => n[1]);
@@ -1820,7 +1741,17 @@ class Component extends DCLogic {
               : missing.slice(0, -1).join(', ') + ' and ' + missing[missing.length - 1];
             return this.setState({ acMissing: true, acMissingText: 'Please add ' + list + '.' });
           }
-          this.setState({ accountDone: true, acMissing: false, dest: geo.country || s.dest });
+          this.setState({ acMissing: false });
+          this.saveForm('signup', {
+            name: s.acName, business: s.acBiz || '', email: mail,
+            country: geo.country || '', region: geo.region || '', city: geo.city || '',
+            'excited-to-ship-from': s.acFrom || '',
+            'remind-on-launch': s.remindMe ? 'yes' : 'no',
+            'account-type': s.acctType || 'personal'
+          }).then(ok => {
+            if (ok) this.setState({ accountDone: true, acMissing: false, dest: geo.country || s.dest });
+            else this.setState({ acMissing: true, acMissingText: 'Your details did not save. Please check your connection and try again.' });
+          });
         }, goQuote: this.go('quote'), goTracking: this.go('tracking'), goApply: this.go('apply'),
       goEarnings: this.go('earnings'), goJobs: this.go('jobs'),
       goHow: () => { this.setState({ screen: 'landing' }, () => { const el = document.getElementById('how'); if (el) window.scrollTo({ top: el.offsetTop - 12, behavior: 'smooth' }); }); },
